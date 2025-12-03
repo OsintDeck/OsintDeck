@@ -9,9 +9,7 @@ Este repositorio contiene:
 
 [IMAGEN...]
 
----
-
-## Características principales
+===== Características principales =====
 
 ### <img src="https://unpkg.com/feather-icons/dist/icons/search.svg" width="16"> Detección automática del tipo de dato
 
@@ -67,32 +65,124 @@ Incluyen:
 
 Endpoint admin: `osd_metrics_summary`
 
----
-
-## Shortcode
+===== Shortcode =====
 
 ```
 [osint_deck]
 [osint_deck category="dominios" access="gratuito" limit="20"]
 ```
 
-**Parámetros:**
+Parámetros:
 
-* `category`: filtra por categoría de herramienta.
-* `access`: tipo de acceso (gratuito, registro, pago).
-* `limit`: cantidad inicial de resultados (por defecto 20).
+* `category`: filtra por categoría
+* `access`: tipo de acceso
+* `limit`: cantidad inicial de resultados (por defecto 20)
 
----
+===== Instalación =====
 
-## Shortcode
+### <img src="https://unpkg.com/feather-icons/dist/icons/download.svg" width="16"> Instalación manual
+
+1. Descargar el repositorio.
+2. Copiar la carpeta `osint-deck` dentro de:
 
 ```
-[osint_deck]
-[osint_deck category="dominios" access="gratuito" limit="20"]
+wp-content/plugins/
 ```
 
-**Parámetros:**
+3. Activar el plugin desde WordPress → Plugins → Activar
+4. (Opcional) Importar herramientas desde:
 
-* `category`: filtra por categoría de herramienta.
-* `access`: tipo de acceso (gratuito, registro, pago).
-* `limit`: cantidad inicial de resultados (por defecto 20).
+```
+template-de-herramientas/*.json
+```
+
+### WP-CLI
+
+```
+wp plugin activate osint-deck
+```
+
+===== Validación de dominios y TLDs =====
+
+* Lista IANA local en `assets/data/tlds-alpha-by-domain.txt`
+* Cron semanal: `osd_refresh_tlds_weekly`
+* Validación offline mediante `osd_is_valid_domain()`
+
+===== Rate limiting =====
+
+Implementado en `osd_user_event`:
+
+* 60 acciones por minuto por IP
+* 1 reporte por herramienta por día
+* Respuestas JSON estandarizadas
+
+===== Administración =====
+
+Incluye:
+
+* Configuración de límites y seguridad
+* CRUD de herramientas
+* Import/export en JSON
+* Logs de usuario y logs administrativos
+* Métricas resumidas
+* Ajustes para badges y ventanas de tiempo
+
+===== Hooks y cron =====
+
+### Activación
+
+* Semillas de TLD
+* Cron para métricas y actualización IANA
+
+### Desactivación
+
+* Limpieza de cron jobs
+
+### Cron jobs
+
+* `osd_metrics_daily`
+* `osd_refresh_tlds_weekly`
+
+===== AJAX =====
+
+### Públicos
+
+* `osd_user_event`
+* `osd_check_tld`
+
+### Administrativos
+
+* `osd_metrics_summary`
+* `osd_tools_*`
+* `osd_logs_*`
+* Exportación CSV/JSON
+
+===== Roadmap inicial =====
+
+* Nuevos tipos de input avanzados
+* Exportación de mazos personalizados
+* Dashboard ampliado con métricas comparativas
+* Integración con fuentes externas OSINT
+* Publicación en WordPress Plugin Directory
+
+===== Autores =====
+
+Sebastián Cendra
+Claudio Pandelo
+Paolo Peña Ramírez
+Guillermo Quintana
+Damián Radiminsky
+
+===== Licencia =====
+
+MIT
+Este software es gratuito para uso personal y profesional.
+
+===== Contribuciones =====
+
+Se aceptan pull requests y reportes de issues.
+Mantener un estilo de código consistente y documentar los cambios relevantes.
+
+===== Versión =====
+
+**1.0.0** — Primera versión pública del plugin.
