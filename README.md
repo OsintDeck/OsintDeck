@@ -1,183 +1,134 @@
-# OSINT Deck
+<div align="center">
+  <img src="https://osint.com.ar/wp-content/uploads/2023/10/cropped-logo-osint-com-ar-1.png" alt="OSINT Deck Logo" width="200" />
+  <h1>OSINT Deck</h1>
+  <p><strong>Centraliza, Organiza y Acelera tus Investigaciones OSINT en WordPress</strong></p>
 
-OSINT Deck es un plugin de WordPress diseñado para centralizar y organizar herramientas OSINT en un mazo dinámico.
-El sistema detecta automáticamente el tipo de dato ingresado y activa las herramientas correspondientes, permitiendo análisis rápidos, ordenados y reproducibles en un entorno unificado.
+  <p>
+    <a href="#-características">Características</a> •
+    <a href="#-instalación">Instalación</a> •
+    <a href="#-documentación">Documentación</a> •
+    <a href="#-stack-tecnológico">Tech Stack</a>
+  </p>
 
-Este repositorio contiene:
+  <p>
+    <img src="https://img.shields.io/badge/WordPress-Plugin-21759B?style=for-the-badge&logo=wordpress&logoColor=white" alt="WordPress Plugin" />
+    <img src="https://img.shields.io/badge/Versión-1.0.0-blue?style=for-the-badge" alt="Version 1.0.0" />
+    <img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="License MIT" />
+  </p>
+</div>
 
-- `osint-deck/` → plugin completo
-- `template-de-herramientas/` → JSON de ejemplo para importar herramientas
+---
 
-![OSINT Deck Preview](https://via.placeholder.com/800x400?text=OSINT+Deck+Preview)
+## 🚀 Descripción
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/cpu.svg" width="16"> Características principales
+**OSINT Deck** es un plugin avanzado para WordPress diseñado para transformar tu sitio en una estación de trabajo de inteligencia. Centraliza tus herramientas favoritas en un mazo dinámico que reacciona inteligentemente a tus datos.
 
-### <img src="https://unpkg.com/feather-icons/dist/icons/search.svg" width="16"> Detección automática del tipo de dato
+El sistema **detecta automáticamente** el tipo de dato ingresado (Email, IP, Dominio, etc.) y despliega instantáneamente las herramientas correspondientes, permitiendo análisis rápidos, ordenados y reproducibles.
 
-El plugin identifica automáticamente el contenido ingresado, soportando:
+---
 
-- Email
-- Dominio / subdominio
-- URL
-- IP v4 / v6
-- ASN
-- MAC
-- UUID
-- Hashes (MD5, SHA1, SHA256)
-- Teléfonos
-- Coordenadas
-- Wallets BTC / ETH
-- Claves PGP
-- Archivos conocidos
-- Username / alias
-- Nombre completo
-- ZIP / Código postal
-- Paquetes `com.*.*`
-- Palabras clave / intención de búsqueda
+## 🛠 Stack Tecnológico
 
-### <img src="https://unpkg.com/feather-icons/dist/icons/layers.svg" width="16"> Mazo dinámico de herramientas
+Este proyecto ha sido construido utilizando tecnologías robustas y modernas para asegurar rendimiento y escalabilidad:
 
-- Cartas individuales por herramienta
-- Botón principal “Analizar {input}”
-- Acciones extra: copiar, abrir, compartir
-- Filtros por categoría, licencia y tipo de acceso
-- Badges automáticos: Nueva, Popular, Reportada, Recomendada
-- Reporte de herramientas inactivas con un clic
+<div align="center">
+  <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white" alt="WordPress API" />
+  <img src="https://img.shields.io/badge/AJAX-000000?style=for-the-badge&logo=json&logoColor=white" alt="AJAX" />
+</div>
 
-### <img src="https://unpkg.com/feather-icons/dist/icons/sliders.svg" width="16"> Filtros dinámicos en el frontend
+---
 
-- Categoría
-- Acceso (gratuito / registro / pago)
-- Tipo de herramienta
-- Licencia
-- Último tipo de input utilizado
+## ✨ Características Principales
 
-### <img src="https://unpkg.com/feather-icons/dist/icons/bar-chart-2.svg" width="16"> Métricas internas
+### 🧠 Detección Inteligente de Tipos de Dato
+Olvídate de buscar la herramienta correcta. OSINT Deck identifica automáticamente:
 
-Las métricas se generan diariamente y se almacenan en `osd_tool_metrics`.
+| Categoría | Tipos Soportados |
+|-----------|------------------|
+| **Red** | IP (v4/v6), Dominios, Subdominios, ASN, MAC |
+| **Identidad** | Emails, Usernames, Nombres Completos, Teléfonos |
+| **Cripto** | Wallets BTC, ETH |
+| **Forense** | Hashes (MD5, SHA1, SHA256), Archivos, UUIDs |
+| **Geo** | Coordenadas, ZIP/Códigos Postales |
 
-Incluyen:
+### 🎴 Mazo Dinámico de Herramientas
+- **Cartas Interactivas:** Cada herramienta es una carta con acciones rápidas.
+- **Acciones One-Click:** Analizar, Copiar, Abrir, Compartir.
+- **Filtros en Tiempo Real:** Por categoría, licencia y tipo de acceso.
+- **Badges Automáticos:** `Popular`, `Nueva`, `Recomendada`.
 
-- `clicks_7d`
-- `reports_7d`
-- `created_at`
-- `last_input_type`
-- Badges calculados desde `OSD_Metrics::meta_for()`
+### 🛡️ Seguridad y Rate Limiting
+- **Protección de Abuso:** 60 acciones/minuto por IP.
+- **Validación Offline:** Verificación de dominios y TLDs sin latencia externa.
+- **Reportes:** Sistema de reporte de herramientas caídas.
 
-Endpoint principal de administración: `osd_metrics_summary`.
+### 📊 Métricas Avanzadas
+Panel administrativo con estadísticas detalladas:
+- `clicks_7d`: Tendencias de uso semanal.
+- `last_input_type`: Análisis de los tipos de datos más investigados.
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/code.svg" width="16"> Shortcode
+---
 
-```text
-[osint_deck]
-[osint_deck category="dominios" access="gratuito" limit="20"]
-```
+## 📦 Instalación
 
-Parámetros:
+### Método Manual
+1.  Descarga el repositorio completo.
+2.  Copia la carpeta `osint-deck` en tu directorio de plugins:
+    ```bash
+    /wp-content/plugins/osint-deck/
+    ```
+3.  Activa el plugin desde el panel de administración de WordPress.
 
-- `category`: filtra por categoría de herramienta
-- `access`: tipo de acceso (por ejemplo, gratuito, registro, pago)
-- `limit`: cantidad inicial de resultados (por defecto 20)
-
-## <img src="https://unpkg.com/feather-icons/dist/icons/download.svg" width="16"> Instalación
-
-### Instalación manual
-1. Descargar este repositorio.
-2. Copiar la carpeta del plugin dentro de:
-   ```text
-   wp-content/plugins/osint-deck
-   ```
-3. En el panel de WordPress ir a: **Plugins → OSINT Deck → Activar**.
-
-(Opcional) Importar herramientas usando los JSON de:
-```text
-template-de-herramientas/*.json
-```
-
-### WP-CLI
+### Vía WP-CLI
 ```bash
 wp plugin activate osint-deck
 ```
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/globe.svg" width="16"> Validación de dominios y TLDs
+> **Tip:** Puedes importar herramientas de ejemplo desde la carpeta `template-de-herramientas/`.
 
-- Lista IANA local en `assets/data/tlds-alpha-by-domain.txt`.
-- Tarea semanal: `osd_refresh_tlds_weekly`.
-- Validación offline mediante `osd_is_valid_domain()` (sin llamadas externas).
+---
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/shield.svg" width="16"> Rate limiting
+## 💻 Uso
 
-Implementado en `osd_user_event`:
+Implementa OSINT Deck en cualquier página o entrada utilizando el shortcode:
 
-- 60 acciones por minuto por IP
-- 1 reporte por herramienta por día
-- Respuestas JSON consistentes (códigos como `rate_limited`, `report_limit`)
+```shortcode
+[osint_deck]
+```
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/settings.svg" width="16"> Administración
+O con parámetros personalizados:
 
-Funcionalidades del panel de administración:
+```shortcode
+[osint_deck category="dominios" access="gratuito" limit="20"]
+```
 
-- Configuración de límites y opciones de seguridad
-- CRUD de herramientas
-- Importación y exportación en JSON
-- Logs de usuario y logs administrativos
-- Métricas resumidas por herramienta
-- Ajustes de badges y ventanas de tiempo
+---
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/clock.svg" width="16"> Hooks y tareas programadas
+## 🤝 Contribuciones
 
-### Activación
-- Inicialización de opciones básicas
-- Carga de TLD iniciales
-- Programación de tareas para métricas y actualización de TLD
+¡Las contribuciones son bienvenidas! Si tienes una idea para una nueva herramienta o una mejora en el código:
 
-### Desactivación
-- Limpieza de cron jobs creados por el plugin
+1.  Haz un Fork del proyecto.
+2.  Crea tu rama de funcionalidad (`git checkout -b feature/AmazingFeature`).
+3.  Haz Commit de tus cambios (`git commit -m 'Add some AmazingFeature'`).
+4.  Push a la rama (`git push origin feature/AmazingFeature`).
+5.  Abre un Pull Request.
 
-### Cron jobs principales
-- `osd_metrics_daily`
-- `osd_refresh_tlds_weekly`
+---
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/wifi.svg" width="16"> AJAX
+## 📄 Licencia
 
-### Públicos
-- `osd_user_event`
-- `osd_check_tld`
+Distribuido bajo la licencia **MIT**. Ver `LICENSE` para más información.
 
-### Administrativos
-- `osd_metrics_summary`
-- `osd_tools_*`
-- `osd_logs_*`
-- Endpoints para exportación CSV/JSON
+---
 
-## <img src="https://unpkg.com/feather-icons/dist/icons/map.svg" width="16"> Roadmap inicial
-
-- [ ] Soporte para nuevos tipos de input avanzados
-- [ ] Exportación de mazos personalizados
-- [ ] Dashboard ampliado con comparativas de métricas
-- [ ] Integración con fuentes externas OSINT
-- [ ] Publicación en WordPress Plugin Directory
-
-## <img src="https://unpkg.com/feather-icons/dist/icons/users.svg" width="16"> Autores
-
-Equipo de desarrollo:
-
-- Sebastián Cendra
-- Claudio Pandelo
-- Paolo Peña Ramírez
-- Guillermo Quintana
-- Damián Radiminsky
-
-## <img src="https://unpkg.com/feather-icons/dist/icons/file-text.svg" width="16"> Licencia
-
-**MIT**
-Este software es gratuito para uso personal y profesional.
-
-## <img src="https://unpkg.com/feather-icons/dist/icons/git-pull-request.svg" width="16"> Contribuciones
-
-Se aceptan pull requests y reportes de issues.
-La guía básica de colaboración está en `CONTRIBUTING.md`.
-
-## <img src="https://unpkg.com/feather-icons/dist/icons/tag.svg" width="16"> Versión
-
-**1.0.0** – Primera versión pública del plugin.
+<div align="center">
+  <p>Desarrollado con ❤️ por el equipo de OSINT Deck</p>
+  <p>
+    Sebastián Cendra • Claudio Pandelo • Paolo Peña Ramírez • Guillermo Quintana • Damián Radiminsky
+  </p>
+</div>
