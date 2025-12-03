@@ -1,0 +1,24 @@
+# Sample TLD list (update from IANA when available)
+AC
+AI
+AR
+BIZ
+BR
+CL
+CO
+COM
+DEV
+EDU
+ES
+FR
+GOV
+ID
+INFO
+IO
+IT
+MX
+NET
+ORG
+PE
+UK
+US

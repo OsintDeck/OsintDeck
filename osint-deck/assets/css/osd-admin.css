@@ -1,0 +1,94 @@
+/**
+ * Osint Deck - Admin Dashboard Styles
+ * Dark Mode Only
+ */
+
+:root {
+    --osd-admin-bg: #0a0c0f;
+    --osd-admin-card: #16181d;
+    --osd-admin-border: #23252a;
+    --osd-admin-text: #f2f4f8;
+    --osd-admin-text-muted: #9ca3af;
+    --osd-admin-accent: #00ffe0;
+    --osd-admin-danger: #ef4444;
+    --osd-admin-success: #10b981;
+}
+
+.osd-admin-wrap {
+    background-color: var(--osd-admin-bg);
+    color: var(--osd-admin-text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 20px 0 0;
+}
+
+.osd-admin-card {
+    background-color: var(--osd-admin-card);
+    border: 1px solid var(--osd-admin-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.osd-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--osd-admin-border);
+    padding-bottom: 16px;
+}
+
+.osd-admin-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--osd-admin-text);
+    margin: 0;
+}
+
+/* Buttons */
+.osd-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+}
+
+.osd-btn-primary {
+    background-color: var(--osd-admin-accent);
+    color: #000;
+}
+
+.osd-btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* Tables */
+.osd-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.osd-table th,
+.osd-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--osd-admin-border);
+}
+
+.osd-table th {
+    color: var(--osd-admin-text-muted);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.osd-table td {
+    color: var(--osd-admin-text);
+}
