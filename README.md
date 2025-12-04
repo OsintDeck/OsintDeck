@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <a href="https://osintdeck.github.io">
-    <img src="https://osint.com.ar/wp-content/uploads/2023/10/cropped-logo-osint-com-ar-1.png" alt="OSINT Deck Logo" width="220" />
+    <img width="375" height="129" alt="logo" src="https://github.com/user-attachments/assets/93e843af-b512-4be8-9112-29bfc029c0a7" alt="OSINT Deck Logo" width="220" />
   </a>
   <br />
   <br />
