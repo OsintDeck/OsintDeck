@@ -3,10 +3,7 @@
   <a href="https://osintdeck.github.io">
     <img width="375" height="129" alt="logo" src="https://github.com/user-attachments/assets/93e843af-b512-4be8-9112-29bfc029c0a7" alt="OSINT Deck Logo" width="220" />
   </a>
-  <br />
-  <br />
 
-  # OSINT Deck
   **Intelligence Workstation for WordPress**
 
   <p style="font-size: 1.1em; max-width: 600px; margin: 0 auto;">
