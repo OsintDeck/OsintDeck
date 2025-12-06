@@ -1392,48 +1392,82 @@ url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
 
 ---
 
-graph TD
+flowchart TD
 
-%% ===== Inicio =====
-A[🔎 Usuario ingresa búsqueda] --> B{¿Detecta Input OSINT?}
+    %% =========================
+    %% 1. ENTRADA Y PARSING
+    %% =========================
+    A[Usuario escribe en el buscador] --> B[Parser de texto]
+    B --> C{¿Hay indicadores<br/>OSINT válidos?}
 
-%% --- Rama Catálogo ---
-B -- ❌ No hay input --> C[📁 Modo Catálogo]
-C --> C1[Filtra Tools por nombre/tags/category]
-C --> C2[Muestra solo Cards con input = none]
-C2 --> Z[Fin]
+    %% ---------- MODO CATÁLOGO ----------
+    C -- No --> C1[Modo CATÁLOGO]
+    C1 --> C2[Filtrar Tools por texto,<br/>tags_global, categoría]
+    C2 --> C3[Mostrar solo Cards con<br/>input.types = ['none']]
+    C3 --> Z[Fin]
 
-%% --- Rama Investigación ---
-B -- ✔ Sí hay input --> D[🧠 Modo Investigación]
-D --> E[Detectar tipos → domain/ip/url/email/hash/...]
-E --> F[Buscar Cards compatibles según input.types]
+    %% ---------- MODO INVESTIGACIÓN ----------
+    C -- Sí --> D[Modo INVESTIGACIÓN]
+    D --> D1[Extraer lista de inputs<br/>detectados (domain, ip, url, email...)]
+    D1 --> D2[Recorrer Tools y sus Cards]
 
-%% Resolver ambigüedad cuando hay más de un dato
-F --> G{¿Múltiples inputs válidos?}
-G -- No --> H[Seleccionar único input]
-G -- Sí --> I{resolve_strategy}
-I -- ask --> I1[Mostrar modal para elegir] --> H
-I -- prefer-domain --> I2[Tomar dominio] --> H
-I -- prefer-ip --> I3[Tomar IP] --> H
-I -- auto --> I4[Selección automática lógica] --> H
+    D2 --> D3{card.input.types<br/>coincide con algún tipo<br/>detectado?}
+    D3 -- No --> D2
+    D3 -- Sí --> D4[Añadir card a<br/>cards_candidatas]
 
-%% Ejecutar card
-H --> J{input.mode}
-J -- manual --> J1[Abre web → usuario escribe manual]
-J -- url --> J2[Genera URL con patrón {input}]
-J -- api --> J3[Consulta API y muestra resultados]
-J -- none --> J4[Abrir card sin input]
+    D4 --> E{¿cards_candidatas<br/>está vacía?}
+    E -- Sí --> E1[No hay herramientas<br/>compatibles con el input] --> Z
+    E -- No --> F[Procesar cada card<br/>candidata]
 
-J1 --> Z
-J2 --> Z
-J3 --> Z
-J4 --> Z
+    %% =========================
+    %% 2. RESOLVER INPUT POR CARD
+    %% =========================
+    F --> G{¿Cuántos inputs<br/>compatibles tiene<br/>la card?}
 
-%% ==== Estilos ====
-style A fill:#ffd700,stroke:#333,stroke-width:2px
-style C fill:#b3d9ff,stroke:#333,stroke-width:1px
-style D fill:#baffc9,stroke:#333,stroke-width:1px
-style J2 fill:#fff2a8,stroke:#333,stroke-width:1px
-style J3 fill:#ffebc2,stroke:#333,stroke-width:1px
+    G -- 1 --> H[Elegir ese input<br/>directamente]
+    G -- >1 --> I{resolve_strategy}
+
+    %% resolve_strategy = ask
+    I -- ask --> I1[Mostrar modal para que<br/>el usuario elija el input]
+    I1 --> H
+
+    %% resolve_strategy = prefer-domain
+    I -- prefer-domain --> I2[Si hay domain usar domain,<br/>si no otro tipo compatible]
+    I2 --> H
+
+    %% resolve_strategy = prefer-ip
+    I -- prefer-ip --> I3[Si hay ip usar ip,<br/>si no otro tipo compatible]
+    I3 --> H
+
+    %% resolve_strategy = auto
+    I -- auto --> I4[Usar reglas globales<br/>(según category.code)]
+    I4 --> H
+
+    %% =========================
+    %% 3. EJECUCIÓN SEGÚN mode
+    %% =========================
+    H --> J{card.input.mode}
+
+    J -- manual --> J1[Abrir card.url<br/>el usuario escribe el dato<br/>en la web de la herramienta]
+    J -- url --> J2[Construir URL final<br/>reemplazando {input}<br/>en pattern]
+    J -- api --> J3[Llamar API con el input<br/>y mostrar resultado<br/>en OSINT Deck]
+    J -- none --> J4[Card informativa,<br/>sin uso de input]
+
+    J1 --> K[Actualizar stats<br/>(clicks, last_use...)]
+    J2 --> K
+    J3 --> K
+    J4 --> K
+
+    K --> Z[Fin]
+
+    %% =========================
+    %% ESTILOS BÁSICOS
+    %% =========================
+    style A fill:#ffd700,stroke:#333,stroke-width:2px
+    style C1 fill:#b3d9ff,stroke:#333,stroke-width:1px
+    style D fill:#baffc9,stroke:#333,stroke-width:1px
+    style F fill:#e5e7eb,stroke:#333,stroke-width:1px
+    style J2 fill:#fff8c2,stroke:#333,stroke-width:1px
+    style J3 fill:#ffe4b5,stroke:#333,stroke-width:1px
 
 
