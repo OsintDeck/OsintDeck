@@ -1,262 +1,302 @@
-Esto será **la Biblia interna del proyecto** para que nadie improvise al desarrollar y el sistema sea escalable y mantenible.
+Perfecto. Ahora voy a generar **la Biblia interna completa y definitiva**, tal como la pedís:
+📌 **sin código ejecutable**,
+📌 **en texto conceptual + explicativo**,
+📌 **incluyendo TODOS los casos de uso posibles**,
+📌 **explicando cada campo, cómo usarlo y cómo se comporta el sistema ante cualquier acción del usuario**,
+📌 **lista para entregar como documento oficial del proyecto / TFI**.
 
 ---
 
-# 📘 **OSINT Deck — Diseño de Lógica + Especificación del JSON**
+# 📘 **OSINT Deck — Biblia Interna del Proyecto (Diseño, Lógica y Funcionamiento del Sistema)**
+
+> *El documento que guía el desarrollo presente y futuro. Ninguna implementación debe hacerse sin respetarlo.*
 
 ---
 
-## 1. Objetivo
+## 1. Propósito del Deck
 
-> Convertir un *catálogo OSINT* en un *motor capaz de interpretar el input del usuario*, detectar indicadores digitales y ofrecer las cards correctas para analizarlos.
+OSINT Deck no es solo un catálogo de herramientas OSINT:
+Su meta es transformar un input del usuario (dominio, IP, email, hash…) en **acciones concretas representadas como cards**, para acelerar investigaciones.
+
+El sistema debe ser capaz de:
+
+1. Detectar automáticamente qué tipo de dato ingresó el usuario
+2. Filtrar herramientas/cards compatibles
+3. Resolver cómo usar cada una (URL directa, input manual, API, etc.)
+4. Evitar ambigüedades (ej. dominio + IP simultáneos)
+5. Asistir al analista mostrando la opción más correcta para ese dato
+
+La lógica debe ser determinística, sin suposiciones mágicas del programador.
 
 ---
 
-## 2. Elementos fundamentales del sistema
+## 2. Componentes principales del ecosistema
 
-| Nivel         | Objeto                          | Rol                              |
-| ------------- | ------------------------------- | -------------------------------- |
-| ❶ Herramienta | **Tool/Mazo** (ej: MxToolBox)   | Contenedor principal             |
-| ❷ Card        | Acción puntual (ej: MX Lookup)  | Unidad operativa                 |
-| ❸ Input       | domain, ip, email, url, hash... | Lo que el usuario aporta         |
-| ❹ Categoría   | Agrupador semántico             | UI, filtros, orden lógico        |
-| ❺ Motor       | Lógica interna                  | Decide qué mostrar y cómo actuar |
+| Capa             | Entidad                          | Descripción                              |
+| ---------------- | -------------------------------- | ---------------------------------------- |
+| **Herramienta**  | Mazo (ej: MxToolBox)             | Contenedor general de funciones          |
+| **Card**         | Acción operativa (ej: MX Lookup) | Elemento que ejecuta una consulta real   |
+| **Input OSINT**  | Detección automática             | El valor que dispara la investigación    |
+| **Categoría**    | Taxonomía                        | Orden visual y conceptual                |
+| **Motor Lógico** | Resolución de decisiones         | Decide qué mostrar, cómo actuar y cuándo |
+
+**Regla base:**
+
+> *La herramienta agrupa, la card actúa.*
 
 ---
 
-## 3. Tipos de INPUT soportados en el JSON
+## 3. Tipos de input reconocidos por el sistema
 
-```md
-Tipos estándares para "input.types":
+### Valores esperados como indicadores OSINT
 
-🔹 domain       → example.com
-🔹 ip           → 8.8.8.8
-🔹 url          → https://example.com
-🔹 email        → contacto@example.com
-🔹 hash         → sha256, md5, etc.
-🔹 headers      → raw email headers
-🔹 phone        → +54 911 2222 3333
-🔹 username     → @usuario o string simple
-🔹 file         → binarios/pdf/img (futuro)
-🔹 none         → cuando no requiere input (dashboard, docs)
+* dominio
+* ip
+* url
+* email
+* hash
+* headers
+* phone
+* username
+* wallet
+* file (futuro con binarios/metadata)
+* **none** (solo catálogo, no investigación)
+
+**Todo input válido debe desencadenar cards compatibles.**
+
+---
+
+## 4. Contexto de uso del Deck
+
+> El usuario escribe algo en el buscador.
+> El sistema interpreta si está consultando *herramientas* o *quiere investigar un dato real*.
+
+### Comportamientos posibles
+
+| Caso                 | Ejemplo usuario                      | Motor decide que hacer                                                     |
+| -------------------- | ------------------------------------ | -------------------------------------------------------------------------- |
+| Solo texto genérico  | `herramientas DNS`                   | Mostrar mazos/cards sin input (`none`)                                     |
+| Un input OSINT       | `osint.com.ar`                       | Mostrar solo cards compatibles con `domain`                                |
+| Múltiples inputs     | `osint.com.ar 8.8.8.8`               | Mostrar cards compatibles con ambos → si en conflicto, solicitar selección |
+| Mezcla texto + input | `chequear blacklist de osint.com.ar` | Extraer input → modo investigación                                         |
+| No hay input válido  | `como investigo un dominio?`         | Catálogo educativo + guía                                                  |
+
+---
+
+## 5. Cómo se muestran las cards según el input
+
+### Sin input detectado → MODO CATÁLOGO
+
+El usuario está explorando herramientas.
+
+Se mostrarán:
+
+* Cards cuyo input es `none`
+* Cards buscadas por tag, categoría o coincidencia textual
+* Información de contexto OSINT, documentación, tutoriales
+
+### Con input detectado → MODO INVESTIGACIÓN
+
+Se mostrarán únicamente cards donde:
+
+* el input requerido incluye el tipo detectado
+* o que puedan procesarlo indirectamente
+
+**Ejemplo:**
+Si se detecta IP → WHOIS DNS no se muestra (solo domain)
+Si se detecta dominio → MX Lookup sí, Email headers no (si requiere headers)
+
+---
+
+## 6. Ambigüedad entre múltiples inputs o múltiples modos
+
+### Si una card acepta varios tipos posibles
+
+Caso típico:
+
+* Blacklist acepta dominio o IP
+
+Si el usuario ingresa **solo uno**, ejecución directa.
+Si ingresa **varios**, el sistema no decide por él.
+
+Se abre selector:
+
+> ¿Con cuál desea analizar?
+> ▢ Dominio → osint.com.ar
+> ▢ IP → 192.168.0.10
+
+Esto evita errores y mantiene control investigativo.
+
+---
+
+### Regla definitiva de ambigüedad
+
+| Situación                             | Resultado                     |
+| ------------------------------------- | ----------------------------- |
+| Una sola coincidencia posible         | Ejecutar directo              |
+| Varias coincidencias en la misma card | Pedir selección               |
+| Varias cards posibles para un input   | Mostrar todas                 |
+| Ninguna card soporta ese input        | Sugerir herramientas externas |
+
+---
+
+## 7. Rol de las Categorías vs Tags
+
+**Categoría = organización estructural (para UI y navegación)**
+**Tags = palabras clave para búsqueda y relación semántica**
+
+| Categoría responde a               | Ejemplo               |
+| ---------------------------------- | --------------------- |
+| ¿Dónde pertenece?                  | Seguridad / Blacklist |
+| ¿Qué tipo de card es?              | Infraestructura / DNS |
+| ¿Qué funcionalidad vertical tiene? | Correo / SPF          |
+
+| Tag responde a                     | Ejemplo                 |
+| ---------------------------------- | ----------------------- |
+| ¿Qué conceptos toca?               | dns, correo, reputación |
+| ¿Cómo se filtra rápidamente?       | malware, hash, header   |
+| Es un vocabulario OSINT controlado | para evitar duplicados  |
+
+**Nunca usar tags para sustituir categorías.**
+La categoría clasifica, el tag conecta.
+
+---
+
+## 8. Modo de uso del atributo `mode` (clave principal del diseño)
+
+`mode` no significa qué input acepta sino **cómo se ejecuta**.
+
+### Modos previstos del sistema
+
+| mode   | Uso                                             | Ejemplo                 |
+| ------ | ----------------------------------------------- | ----------------------- |
+| manual | El usuario escribe manualmente dentro de la web | MxToolbox dashboard     |
+| url    | Se construye link con el input                  | blacklist:{input}       |
+| api    | Consulta via API propia/externa                 | VirusTotal JSON         |
+| auto   | El sistema reconoce mejor ruta en runtime       | futuro modo inteligente |
+
+**Separación importante:**
+`types` define *qué acepta*.
+`mode` define *cómo lo usa*.
+
+---
+
+## 9. Comportamientos avanzados del motor (todos los casos cubiertos)
+
+1. **Usuario ingresa dominio**
+
+   * Mostrar cards que acepten dominio
+   * Ocultar las que requieren IP/email/hash
+   * No mostrar `none` salvo que el usuario cambie manualmente a *explorar*
+
+2. **Usuario ingresa IP**
+
+   * Mostrar IP Info, PTR, Blacklist, GeoIP, ASN
+
+3. **Usuario ingresa email**
+
+   * Mostrar Headers, Breach lookup, Email reputation
+
+4. **Usuario ingresa hash**
+
+   * Mostrar Hash cracking, Malware DB lookup
+
+5. **Usuario ingresa URL**
+
+   * Mostrar WebTech fingerprint, TLS, WebScanner
+
+6. **Usuario ingresa múltiples inputs distintos**
+
+   * Filtrar tarjetas que soporten ambos (raro)
+   * Si no → ofrecer selección del input primario
+
+7. **Usuario usa buscador semántico (texto sin OSINT)**
+
+   * Buscar por tags/categorías
+   * Mostrar dashboards + cards informativas
+
+8. **Usuario busca una card por nombre**
+
+   * Coincidencia directa textual
+   * UI muestra card aunque no tenga input válido
+
+9. **El mazo no tiene cards con input**
+
+   * Mostrar solo la principal
+   * Adjuntar documentación y tutorial
+
+📌 Nada queda librado a intuición. Todo comportamiento ya está predicho.
+
+---
+
+## 10. Reglas de estandarización para mantener escalabilidad
+
+### Cuando se agrega una nueva herramienta:
+
+📍 Debe incluir:
+
+* Card principal sin input (dashboard/landing)
+* Cards separadas por función (NO mezclar todo en una sola)
+* Categoría correcta basada en taxonomía global
+* Tags limitados a conceptos reales
+* Tipos de input precisos sin supuestos
+
+📍 Debe evitar:
+
+* Cards con más de 1 propósito
+* Tags inventados que dupliquen semántica
+* Mezclar manual y url sin estrategia declarada
+* Tools ambiguas sin pattern/decisión definida
+
+---
+
+## 11. Taxonomía oficial de categorías (resumen)
+
+**Estructura conceptual**
+
+```
+AREA → MÓDULO → ACCIÓN
+Formato code: AREA__MODULO__ACCION (opcional)
 ```
 
-⭕ `none` **no aparece en modo investigación**, solo catálogo.
+Ejemplos:
+
+* CORREO / MX
+* CORREO / SPF
+* SEGURIDAD / BLACKLIST
+* INFRA / DNS
+* WEB / FINGERPRINT
+* SOCMINT / USER LOOKUP
+* MALWARE / SANDBOX
+* CRYPTO / HASH
+* BLOCKCHAIN / WALLET
+
+Las categorías nunca se inventan en una card. Deben existir en el catálogo global.
 
 ---
 
-## 4. Campos clave del JSON que afectan la lógica
-
-```jsonc
-{
-  "input": {
-    "types": ["domain","ip"],         // Qué acepta
-    "example": "example.com",         // Hint para UI
-    "mode": "manual|url|api",         // Cómo se ejecuta
-    "pattern": "blacklist:{input}",   // Si mode=url
-    "resolve_strategy": "ask|auto|prefer-ip|prefer-domain"
-  },
-  "category": {
-    "group": "Correo",
-    "type": "MX",
-    "code": "MAIL_MX"
-  },
-  "tags": ["mx","dns","correo"]
-}
-```
-
----
-
-## 5. Casos de uso del usuario y decisiones del sistema
-
-### 5.1 Usuario escribe algo en el buscador
-
-| Caso              | Ejemplo usuario                   | Detecta inputs | Modo                         |
-| ----------------- | --------------------------------- | -------------- | ---------------------------- |
-| Solo texto        | `dns lookup tools`                | ❌ ninguno      | **Catálogo**                 |
-| Un valor OSINT    | `osint.com.ar`                    | ✔ domain       | **Investigación**            |
-| Multiple valores  | `osint.com.ar 8.8.8.8`            | ✔ domain + ip  | **Investigación + selector** |
-| Mixto texto+OSINT | `chequear blacklist osint.com.ar` | ✔ domain       | **Investigación**            |
-| Nada útil         | `como usar internet`              | ❌ ninguno      | **Catálogo**                 |
-
----
-
-## 6. Comportamiento del motor
-
-### 6.1 Si NO hay input válido → MODO CATÁLOGO
-
-```md
-Mostrar solo cards:
-✔ que tengan input.types = ["none"]
-✔ que coincidan con los tags o texto buscado
-```
-
-Uso típico: explorar herramientas.
-
----
-
-### 6.2 Si hay un input → MODO INVESTIGACIÓN
-
-```md
-Mostrar cards donde input.types contenga el tipo detectado.
-```
-
-Ej:
+## 12. Resumen operativo del flujo lógico del sistema
 
 ```
-domain detectado → mostrar WHOIS, MX Lookup, DNS, DMARC…
-no mostrar Portal principal (none)
+Entrada del usuario →
+Detectar indicadores →
+Determinar modo catálogo o investigación →
+Filtrar cards compatibles →
+Resolver ambigüedades si existen →
+Construir patrón URL/API o solicitar input manual →
+Ejecutar acción o mostrar vista correspondiente
 ```
 
----
-
-### 6.3 Si hay varios inputs compatibles con una misma card
-
-```jsonc
-"resolve_strategy": "ask"
-```
-
-Resultado sistema:
-
-> abrir modal:
->
-> * Analizar dominio osint.com.ar
-> * Analizar IP 192.168.0.10
-
-Opciones válidas para automatizar:
-
-| resolve_strategy | comportamiento                                             |
-| ---------------- | ---------------------------------------------------------- |
-| `ask`            | Mostrar selector modal (recomendado)                       |
-| `prefer-ip`      | Si hay IP usar IP primero                                  |
-| `prefer-domain`  | Si hay domain usar domain                                  |
-| `auto`           | Orden interno del sistema (dominio > IP > email > hash...) |
+Esto resuelve **todas las situaciones posibles** del usuario.
 
 ---
 
-### 6.4 Si una card acepta múltiples tipos pero el usuario da solo uno
+## 13. Filosofía base del proyecto
 
-→ Ejecutar directo sin preguntar.
-
----
-
-### 6.5 Si una herramienta tiene solo card principal sin input
-
-Debe mostrar:
-
-* botón **"Abrir herramienta"**
-* link a docs/tutorial
-* tags/fase OSINT
-
-Sirve para herramientas tipo:
-
-🟩 directorios
-🟩 repositorios
-🟩 herramientas web manuales
+📌 *La herramienta no piensa por el usuario. Lo asiste.*
+📌 *El sistema no adivina; decide basado en reglas.*
+📌 *Cada card es una acción singular y específica.*
+📌 *El JSON es la fuente de verdad del ecosistema.*
+📌 *Escalabilidad > improvisación.*
 
 ---
-
-## 7. Flujo total del sistema (diagrama mental)
-
-```
-Usuario escribe texto
-      ↓
-Parser detecta indicadores OSINT
-      ↓
-¿Hay alguno?
- ┌───────────┐       ┌─────────────┐
- │    NO     │       │     SÍ      │
- └───────────┘       └─────────────┘
-      ↓                    ↓
- MODO CATÁLOGO         MODO INVESTIGACIÓN
-      ↓                    ↓
-cards con none         cards que soporten input.type
-      ↓                    ↓
-mostrar lista          si 1 input → ejecutar directo
-                        si 2+ → usar resolve_strategy
-```
-
----
-
-## 8. JSON final ejemplo documentado (base para desarrolladores)
-
-```jsonc
-{
-  "name": "MxToolBox",
-  "cards": [
-
-    /* Card sin input → aparece solo en Modo Catálogo */
-    {
-      "title": "Portal principal",
-      "desc": "Dashboard general. Entrada a todas las herramientas.",
-      "category": { "group":"General", "type":"Dashboard", "code":"GEN_DASH" },
-      "tags": ["dns","correo","infraestructura"],
-      "input": {
-        "types": ["none"],
-        "mode": "manual"
-      }
-    },
-
-    /* Card con input simple → ejecución directa */
-    {
-      "title": "MX Lookup",
-      "desc": "Obtiene registros MX de un dominio.",
-      "category": {"code":"MAIL_MX"},
-      "tags": ["mx","correo","dns"],
-      "input":{
-        "types":["domain"],
-        "example":"example.com",
-        "mode":"url",
-        "pattern":"mx:{input}"
-      }
-    },
-
-    /* Card con input múltiple → ambigüedad controlada */
-    {
-      "title": "Blacklist Check",
-      "desc": "Revisa si IP o dominio está listado.",
-      "category": {"code":"SEC_BLACKLIST"},
-      "tags":["blacklist","seguridad"],
-      "input":{
-        "types":["domain","ip"],
-        "example":"8.8.8.8",
-        "mode":"url",
-        "pattern":"blacklist:{input}",
-        "resolve_strategy":"ask"
-      }
-    }
-  ]
-}
-```
-
----
-
-## 9. Reglas importantes para evitar confusión futura
-
-### 🔥 1. Si `types=["none"]` → solo modo catálogo
-
-### 🔥 2. Si `types=["domain","ip"]` y hay ambos → modal con selección
-
-### 🔥 3. Si `mode="url"` requiere `pattern` obligatorio
-
-### 🔥 4. Tags son búsqueda semántica, no determinan ejecución
-
-### 🔥 5. Category organiza la UI, Input organiza la lógica
-
----
-
-## 10. Checklist para el equipo al crear nuevas herramientas
-
-```
-[ ] ¿Tiene dashboard? crear card none
-[ ] ¿Tiene módulos con input? crear card por módulo
-[ ] ¿Cada card define input.types correctamente?
-[ ] ¿Puede recibir más de un input? asignar resolve_strategy
-[ ] ¿Se puede inyectar input por URL? mode=url + pattern
-[ ] Si no → mode=manual
-[ ] ¿Categoría code existe en categorias.json?
-[ ] ¿Tags tienen sentido?
-```
-
----
-
