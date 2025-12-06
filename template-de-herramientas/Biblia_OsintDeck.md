@@ -1393,95 +1393,50 @@ url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
 ---
 
 
+
+```markdown
+```mermaid
 flowchart TD
 
-    %% =========================
-    %% NODO INICIAL
-    %% =========================
-    A[Usuario escribe en el buscador] --> B[Parser de texto]
+A[Usuario escribe en el buscador] --> B[Parser de texto]
+B --> C{¿Se detectan\nindicadores OSINT?}
 
-    %% =========================
-    %% DETECCIÓN DE INPUTS
-    %% =========================
-    B --> C{¿Se detectan\nindicadores OSINT?}
+C -- No --> D[Modo CATÁLOGO]
+C -- Sí --> E[Modo INVESTIGACIÓN]
 
-    C -- No --> D[Modo CATÁLOGO]
-    C -- Sí --> E[Modo INVESTIGACIÓN]
+D --> D1[Buscar Tools por:\n- name\n- tags_global\n- osint_context]
+D1 --> D2[Mostrar Tools coincidentes]
+D2 --> D3[Mostrar solo Cards con input none]
+D3 --> Z[Fin]
 
-    %% =========================
-    %% MODO CATÁLOGO
-    %% =========================
-    D --> D1[Buscar Tools por:\n- name\n- tags_global\n- osint_context]
-    D1 --> D2[Mostrar Tools coincidentes]
-    D2 --> D3[Mostrar sólo Cards con:\ninput.types = ['none']]
-    D3 --> Z[Fin]
+E --> F[Obtener inputs_detectados]
+F --> G[Recorrer Tools y Cards]
 
-    %% =========================
-    %% MODO INVESTIGACIÓN
-    %% =========================
-    E --> F[Obtener inputs_detectados\n(domain, ip, email, hash...)]
-    F --> G[Recorrer Tools y sus Cards]
+G --> H{Card soporta input encontrado?}
+H -- No --> G
+H -- Sí --> I[Agregar a candidatas]
 
-    G --> H{Card.input.types\nincluye algún tipo\nde input detectado?}
-    H -- No --> G  %% descartar card y seguir
-    H -- Sí --> I[Agregar a cards_candidatas]
+I --> J{¿Lista vacía?}
+J -- Sí --> J1[Mensaje: No hay tools para este input] --> Z
+J -- No --> K[Resolver input y ejecutar]
 
-    I --> J{¿cards_candidatas vacía?}
-    J -- Sí --> J1[No hay cards\ncompatibles con el input] --> Z
-    J -- No --> K[Para cada card candidata\nresolver input y ejecutar]
+K --> L{¿Hay más de un input compatible?}
+L -- 1 --> M[Elegir y ejecutar]
+L -- >1 --> N{resolve_strategy}
 
-    %% =========================
-    %% RESOLUCIÓN POR CARD
-    %% =========================
-    K --> L{¿Cuántos inputs\ncompatibles tiene la card?}
+N -- ask --> N1[Mostrar modal para elegir input] --> M
+N -- prefer-domain --> N2[Tomar dominio si existe] --> M
+N -- prefer-ip --> N3[Tomar IP si existe] --> M
+N -- auto --> N4[Elegir por categoría lógica] --> M
 
-    L -- 1 --> M[Elegir ese input directamente]
-    L -- >1 --> N{resolve_strategy}
+M --> O{input.mode}
+O -- manual --> O1[Abrir Tool (input se escribe en la web)]
+O -- url --> O2[Generar URL con {input}]
+O -- api --> O3[Llamada API y mostrar resultado]
+O -- none --> O4[Sólo abre página principal]
 
-    %% resolve_strategy = ask
-    N -- ask --> N1[Mostrar modal:\n- listar inputs compatibles\n- usuario elige uno]
-    N1 --> M
-
-    %% resolve_strategy = prefer-domain
-    N -- prefer-domain --> N2[Si hay domain usar domain,\nsi no, usar otro tipo compatible]
-    N2 --> M
-
-    %% resolve_strategy = prefer-ip
-    N -- prefer-ip --> N3[Si hay ip usar ip,\nsi no, usar otro tipo compatible]
-    N3 --> M
-
-    %% resolve_strategy = auto
-    N -- auto --> N4[Aplicar reglas globales\nsegún category.code\n(p.ej. SEC_BLACKLIST → ip)]
-    N4 --> M
-
-    %% =========================
-    %% EJECUCIÓN SEGÚN MODE
-    %% =========================
-    M --> O{card.input.mode}
-
-    O -- "manual" --> O1[Abrir card.url\n(el usuario escribe el dato en la web)]
-    O -- "url" --> O2[Construir URL final:\npattern.replace('{input}', valor_normalizado)]
-    O -- "api" --> O3[Llamar API con input\nRenderizar resultado en OSINT Deck]
-    O -- "none" --> O4[Acción informativa\n(no usa input)]
-
-    O1 --> P[Registrar stats.clicks / likes / etc.]
-    O2 --> P
-    O3 --> P
-    O4 --> P
-
-    P --> Z[Fin]
-
-    %% =========================
-    %% NOTAS
-    %% =========================
-    classDef mode fill:#0f766e,stroke:#0f172a,color:#ffffff;
-    classDef decision fill:#0f172a,stroke:#000,color:#ffffff;
-    classDef action fill:#1e293b,stroke:#000,color:#ffffff;
-    classDef end fill:#111827,stroke:#000,color:#ffffff;
-
-    class A,B,D,E,F,G,I,K,M,O,P mode;
-    class C,H,J,L,N decision;
-    class D1,D2,D3,J1,N1,N2,N3,N4,O1,O2,O3,O4 action;
-    class Z end;
-
+O1 --> Z
+O2 --> Z
+O3 --> Z
+O4 --> Z
 
