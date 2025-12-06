@@ -291,3 +291,1197 @@ Esto resuelve **todas las situaciones posibles** del usuario.
 📌 *Escalabilidad > improvisación.*
 
 ---
+
+
+
+Esta seccion define estándares **para evitar ambigüedad futura**, facilitar catalogación masiva y permitir integración automática.
+
+---
+
+# 📘 **OSINT Deck — Biblia de Inputs y Uso Operativo**
+
+---
+
+## 1. Rol del input en el sistema
+
+El *input* es la señal que activa **modo investigación**, habilita análisis y filtra herramientas específicas.
+
+```
+Sin input → Catálogo/Exploración
+Con input → Investigación/Acción
+```
+
+El input determina:
+
+| Área impactada | Función                                            |
+| -------------- | -------------------------------------------------- |
+| Parser         | Detecta el tipo de dato ingresado                  |
+| Motor          | Decide qué cards habilitar                         |
+| UI             | Decide si mostrar búsqueda simple o flujos guiados |
+| Integración    | Construcción de URL/API/pattern                    |
+| Resultados     | Cómo se visualiza el output                        |
+
+---
+
+## 2. **Input Types disponibles**
+
+Listado oficial del sistema (estándar interno, extensible):
+
+```
+domain      → example.com
+ip          → 8.8.8.8
+url         → https://site.com
+email       → user@mail.com
+hash        → sha256:..., md5:...
+asn         → AS15169
+host        → hostname.ej
+headers     → Raw email header
+phone       → +54 911...
+username    → handle en redes
+wallet      → dirección cripto
+tx_hash     → hash de transacción
+image       → jpeg/png con EXIF
+file        → binario subido
+none        → dashboard/landing
+```
+
+Cada herramienta soportará **uno o varios**, pero cada card decidirá **exactamente cuáles acepta.**
+
+---
+
+## 3. **Reglas de visualización según input**
+
+### 📌 En el **MAZO/Herramienta principal**
+
+(Modo exploración)
+
+| Input                        | Se muestra en Mazo | Cuándo                                  |
+| ---------------------------- | ------------------ | --------------------------------------- |
+| none                         | ✔ SIEMPRE          | Landing, overview, docs                 |
+| domain/ip/url/email/hash/etc | ❌ NO               | No mostrar inputs analíticos en el mazo |
+
+> El MAZO **no realiza análisis directo**, solo presenta la herramienta.
+
+**Destino del Mazo:**
+Dashboard → info general, documentación, enlaces, logo, features.
+
+---
+
+### 📌 En **CARDS**
+
+(Modo acción)
+
+| Input                       | Se muestra en Card                       | Uso              |
+| --------------------------- | ---------------------------------------- | ---------------- |
+| domain,ip,url,email,hash... | ✔ SI                                     | Cards operativas |
+| none                        | ✔ Sí, pero solo cards dashboard/manuales | No analíticas    |
+| file,image,username,phone   | ✔ Si aplica la herramienta               | Soporte opcional |
+
+📍 **Todas las operaciones se realizan en cards.**
+
+---
+
+## 4. Política de detección de inputs en búsqueda
+
+### 1 input detectado → ejecutar directo
+
+### 2+ inputs detectados → aplicar `resolve_strategy`
+
+Ejemplo:
+
+```
+usuario escribe: osint.com.ar 8.8.8.8
+
+→ detecta domain + ip
+→ si card soporta ambos → modal/auto
+→ si solo soporta 1 → filtra automático
+```
+
+---
+
+## 5. Cómo debe configurarse input dentro del JSON
+
+### A nivel herramienta (Mazo)
+
+```
+types=["none"]     → No acción automática
+mode="manual"      → siempre
+```
+
+### A nivel cards
+
+```
+Debes definir:
+✔ qué input acepta
+✔ cómo se ejecuta (manual/url/api)
+✔ si existe ambigüedad o auto-resolución
+```
+
+---
+
+## 6. Tipos de ejecución y su contexto
+
+| mode   | Se muestra input UI | Se usa URL con pattern | Se usa API | Caso típico                                      |
+| ------ | ------------------- | ---------------------- | ---------- | ------------------------------------------------ |
+| manual | Sí                  | No                     | No         | Page tools donde el usuario escribe internamente |
+| url    | Sí                  | ✔                      | No         | Lookups web automáticos                          |
+| api    | Sí                  | No                     | ✔          | VirusTotal, Shodan, Censys…                      |
+| none   | No                  | No                     | No         | Dashboards                                       |
+
+---
+
+## 7. Reglas generales para evitar confusión futura
+
+### 🔥 INPUT SOLO ES VISIBLE EN CARDS O ACCIONES
+
+**Nunca en mazo** (solo descripción)
+
+### 🔥 Si `types=["none"]` la card es informativa
+
+### 🔥 Cards que aceptan múltiples tipos deben definir estrategia
+
+```
+resolve_strategy: ask | auto | prefer-domain | prefer-ip
+```
+
+### 🔥 Un input solo dispara cards relacionadas
+
+No se deben mostrar herramientas sin soporte para ese input.
+
+---
+
+## 8. Casos complejos contemplados
+
+| Caso                                         | Resultado                             |
+| -------------------------------------------- | ------------------------------------- |
+| Usuario ingresa dominio e IP                 | Modal si soporta ambos                |
+| Card soporta dominio pero usuario puso email | No se muestra esa card                |
+| Mazo se abre desde búsqueda con input        | NO analiza → muestra panel general    |
+| Herramienta tiene URL diferente por input    | Se usan patterns específicos por tipo |
+
+Esto permite hacer:
+
+```
+"pattern_domain": "...{domain}"
+"pattern_ip": "...{ip}"
+```
+
+Si querés, lo extendemos.
+
+---
+
+## 9. Reglas de diseño visual para UI
+
+### MAZO:
+
+```
+Logo + descripción
+Botón "Abrir"
+Documentación
+Tags globales / fase OSINT
+```
+
+### CARD:
+
+```
+Título de acción
+Descripción clara
+Campo input (si aplica)
+Botón Ejecutar
+Estado, resultados, logs futuros
+```
+
+---
+
+# 🧾 Resumen mental del sistema
+
+```
+MAZO = catálogo
+CARD = acción
+INPUT = llave del motor
+strategy = evita ambigüedad
+mode = define ejecución
+```
+
+---
+
+Si querés, puedo crear **el documento en PDF/Markdown completo** para el repositorio interno.
+
+## Próximo paso sugerido
+
+📌 Crear **tabla de soporte por input para cada categoría**
+📌 Definir `pattern_by_type` en JSON para casos mixtos
+📌 Armar UI del modal selector
+
+---
+
+
+# 📘 OSINT Deck – Biblia del JSON (con interpretación y lógica automática)
+
+---
+
+## 1. `metadata` — Versión, verificación y procedencia
+
+Ejemplo base:
+
+```jsonc
+"metadata": {
+  "version": "v1.0",
+  "last_update": "2025-01-20",
+  "verified": false,
+  "source": "Carga manual"
+}
+```
+
+### 1.1. `version`
+
+* **Quién lo escribe:**
+
+  * Inicialmente: la persona que carga el mazo.
+  * Después: el **admin** o un proceso de sincronización con la fuente (si hay).
+
+* **Cómo lo interpreta el sistema:**
+
+  * Texto opaco: no se parsea (no se asume semver, solo se muestra).
+  * Puede usarse para:
+
+    * Mostrar en la ficha avanzada del mazo.
+    * Comparar con `admin.revision` para saber si la definición JSON está atrasada respecto a la versión “real”.
+
+* **Cuándo se modifica automáticamente:**
+
+  * **Nunca automáticamente** (por diseño).
+  * Si querés automatizarlo, se requeriría un sincronizador que lea de la fuente (ej: GitHub tag), no del runtime de OSINT Deck.
+
+➡️ **Regla de Biblia:**
+Si `version` está vacío, el sistema no muestra versión.
+Si está presente, se muestra solo a modo informativo, NO afecta lógica.
+
+---
+
+### 1.2. `last_update`
+
+* **Quién lo escribe:**
+
+  * Cuando se edita el mazo en el panel admin → el backend debe setear `last_update` con la fecha y hora actual.
+
+* **Cómo lo interpreta el sistema:**
+
+  * Para:
+
+    * Ordenar herramientas por “recientes”.
+    * Mostrar “Actualizado hace X días”.
+    * Desactivar el badge `new` pasado cierto tiempo.
+
+* **Actualización automática:**
+
+  * **Sí, debería actualizarse siempre que se modifica el JSON** de ese mazo:
+
+    * Cambio en cards.
+    * Cambio en info.
+    * Cambio en tags, etc.
+  * No depende de la salud técnica de la herramienta, solo de la metadata interna.
+
+➡️ **Regla de Biblia:**
+`last_update` es **propiedad del catálogo**, no del sitio externo.
+Cada vez que se cambia algo del JSON → el backend pisa `last_update`.
+
+---
+
+### 1.3. `verified`
+
+* **Quién lo escribe:**
+
+  * Inicialmente: `false`.
+  * Después:
+
+    * Automáticamente por un “health checker” (ping a URL / comprobación básica).
+    * O manualmente por un moderador (“esta herramienta funciona bien y fue revisada”).
+
+* **Cómo lo interpreta el sistema:**
+
+  * Filtrado:
+
+    * Mostrar solo herramientas `verified=true` si el usuario activa un filtro tipo “Solo verificadas”.
+  * UI:
+
+    * Badge tipo “Verificada” o “Calidad confirmada”.
+
+* **Actualización automática:**
+
+  * Health-check programado:
+
+    * Si el checker detecta que la URL 200 + responde razonable → puede marcar `verified=true`.
+    * Si falla N veces seguidas → puede marcar `verified=false` y aumentar `stats.reports` auto.
+
+➡️ **Regla de Biblia:**
+`verified` es **un semáforo de confianza**, nunca debe ser seteado “a mano” por el código de UI; es cosa del checker o del moderador.
+
+---
+
+### 1.4. `source`
+
+* **Quién lo escribe:**
+
+  * Únicamente la capa que **crea** el mazo:
+
+    * “Carga manual”
+    * “Import GitHub”
+    * “Script de migración v1”
+    * “OSINT Deck Core”
+
+* **Cómo lo interpreta el sistema:**
+
+  * No afecta lógica.
+  * Se puede usar en el panel admin para entender de dónde salió ese mazo.
+
+* **Actualización automática:**
+
+  * **Nunca.**
+  * Una vez seteado, queda como historial de origen (como “autoría”).
+
+➡️ **Regla de Biblia:**
+`source` es puramente forense / documental. No se usa para filtros ni ejecución.
+
+---
+
+## 2. `status` — Estado técnico de la herramienta
+
+```jsonc
+"status": {
+  "state": "up",
+  "http_code": 200,
+  "last_check": "2025-01-20 10:35"
+}
+```
+
+### 2.1. `state` (`up | down | maintenance`)
+
+* **Quién lo escribe:**
+
+  * Un proceso de **monitor** que intenta acceder a `cards[0].url` o a una URL específica de status.
+
+* **Interpretación:**
+
+  * `up` → se puede usar normalmente.
+  * `down` → mostrar aviso “Esta herramienta parece caída” o bajarla en el ranking.
+  * `maintenance` → configuración manual para indicar mantenimiento conocido.
+
+* **Uso en UI:**
+
+  * Badge con color.
+  * Tooltip “Última vez verificada hace X minutos”.
+
+---
+
+### 2.2. `http_code` y `last_check`
+
+* Se actualizan **solo** cuando el health-check corre:
+
+  * `http_code`: último código HTTP.
+  * `last_check`: timestamp de ese test.
+
+* **Interpretación:**
+
+  * Si `http_code >= 500` o timeout → se puede marcar `state = "down"`.
+  * Si `http_code` es 200/302 → `up`.
+
+➡️ **Regla:**
+`status` no condiciona qué cards se muestran, pero sí puede afectar si las mostramos con alerta o bajar prioridad.
+
+---
+
+## 3. `stats` — Uso y feedback
+
+```jsonc
+"stats": {
+  "clicks": 0,
+  "likes": 0,
+  "reports": 0
+}
+```
+
+### 3.1. `clicks`
+
+* Incrementa **automáticamente** cada vez que:
+
+  * El usuario abre una card.
+  * O abre el portal principal desde OSINT Deck.
+
+* Se usa para:
+
+  * Ordenar por popularidad.
+  * Activar `badges.popular` cuando supere cierto umbral.
+
+---
+
+### 3.2. `likes`
+
+* Cambia cuando el usuario marca “me gusta” o “favorito”:
+
+  * Puede ser por usuario logueado o de forma agregada.
+
+* Use cases:
+
+  * Ranking “Mejor valoradas”.
+  * Badge `recommended` (si likes altos + pocos reports + verified).
+
+---
+
+### 3.3. `reports`
+
+* Se incrementa cuando:
+
+  * Un usuario reporta: “No funciona / obsoleta / mal link”.
+
+* Efectos:
+
+  * UI puede mostrar un warning.
+  * Moderador puede revisar mazo.
+  * Podés decidir ocultarla por encima de cierto umbral.
+
+---
+
+## 4. `admin` — Ciclo de vida interno
+
+```jsonc
+"admin": {
+  "created_at": "",
+  "updated_at": "",
+  "revision": 0
+}
+```
+
+* **`created_at`**: set una vez, al crear el mazo.
+* **`updated_at`**: se pisa SIEMPRE que se guarda cambios desde el panel admin.
+* **`revision`**: entero que se incrementa +1 cada vez que se modifica algo del JSON.
+
+**Interpretación:**
+
+* Se puede usar para:
+
+  * Saber si un mazo está “viejo” (mucha distancia entre created y updated).
+  * Mostrar historial de cambios.
+  * Forzar el reseteo de cachés: si `revision` cambia, se recarga el mazo completo.
+
+---
+
+## 5. `badges` — Derivados de estado y stats
+
+```jsonc
+"badges": {
+  "popular": false,
+  "new": false,
+  "reported": false,
+  "recommended": false
+}
+```
+
+Estos **NO deberían ser llenados a mano**.
+La Biblia propone reglas:
+
+* `popular = true` si:
+
+  * `clicks >= X` y `likes >= Y` y `reports == 0`
+
+* `new = true` si:
+
+  * `today - admin.created_at <= 30 días`
+
+* `reported = true` si:
+
+  * `reports > 0`
+
+* `recommended = true` si:
+
+  * `verified == true`
+  * `likes ≥ umbral`
+  * `reports == 0`
+
+➡️ El motor puede recalcular estos badges en un cron y pisarlos automáticamente.
+
+---
+
+## 6. `tags_global` — Cómo se interpretan
+
+```jsonc
+"tags_global": ["dns","correo","infraestructura","dominio"]
+```
+
+* Son **palabras clave macro** a nivel Tool:
+
+  * Para filtrar herramientas en el catálogo.
+  * Para mostrar chips tipo “DNS / Infraestructura”.
+
+* **No afectan lógica de ejecución** (no deciden qué card usar).
+
+* No se modifican automáticamente (salvo una futura normalización).
+
+---
+
+## 7. `osint_context` — Interpretación operativa
+
+```jsonc
+"osint_context": {
+  "uso_principal": "Recolección de infraestructura y análisis de correo",
+  "fase_osint": ["Footprinting","Discovery"],
+  "nivel_tecnico": "Básico / Intermedio"
+}
+```
+
+* **Uso en UI:**
+
+  * Mostrar en ficha avanzada del mazo.
+  * Permitir filtros del tipo:
+
+    * “Mostrar herramientas para Footprinting”.
+    * “Mostrar solo básico”.
+
+* **No se modifica automáticamente**.
+
+* Es parte de la documentación conceptual.
+
+---
+
+## 8. `cards` e `input` — Cómo se modifican en runtime
+
+Esta es la parte donde entra lo que preguntabas:
+
+> “¿Cómo vamos a interpretar/modificar automáticamente los input?”
+
+Ejemplo:
+
+```jsonc
+"input": {
+  "types": ["domain","ip"],
+  "example": "example.com",
+  "mode": "url",
+  "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+  "resolve_strategy": "ask"
+}
+```
+
+### 8.1. `types`
+
+* Lista de tipos de indicadores que esa card acepta.
+* El motor:
+
+  * Detecta los tipos presentes en el texto del usuario (domain, ip, etc.).
+  * Cruza con `types` para saber si la card es relevante.
+
+**No se modifica en runtime.**
+Es el contrato de la card.
+
+---
+
+### 8.2. `mode`
+
+* Decide cómo el sistema **ejecuta** la acción:
+
+| mode     | Acción del sistema                                                    |
+| -------- | --------------------------------------------------------------------- |
+| `manual` | Solo abre la URL base, el usuario escribe todo.                       |
+| `url`    | Reemplaza `{input}` en `pattern` y abre esa URL.                      |
+| `api`    | Llama a un endpoint configurado y muestra el resultado en OSINT Deck. |
+
+Tampoco se modifica solo, pero:
+
+* Si en el futuro detectás que una tool pasa de web manual a API, se puede cambiar a `api` en una revisión del mazo.
+
+---
+
+### 8.3. `pattern` + `{input}`
+
+* El motor:
+
+  1. Recibe el input elegido (ej. `osint.com.ar`).
+  2. Lo normaliza por tipo (sin espacios, sin protocolo si es dominio).
+  3. Reemplaza `{input}` dentro de `pattern`.
+  4. Abre la URL resultante.
+
+Ejemplo:
+
+```
+pattern = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}"
+input detectado = "8.8.8.8"
+→ URL final = https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8
+```
+
+**No se modifica solo**; pero el motor **usa** el valor dinámicamente para construir la URL.
+
+---
+
+### 8.4. `resolve_strategy`
+
+Es donde el motor realmente toma decisiones automáticas:
+
+| Estrategia      | Comportamiento                                                               |
+| --------------- | ---------------------------------------------------------------------------- |
+| `ask`           | Abre modal y deja elegir al usuario qué input usar (dominio/IP/etc.).        |
+| `auto`          | El motor decide según reglas globales (DNS → domain, Reputación → ip, etc.). |
+| `prefer-domain` | Si hay dominio, se usa ese aunque también exista IP.                         |
+| `prefer-ip`     | Si hay IP, se usa ese aunque también exista dominio.                         |
+
+Acá sí hay lógica:
+
+* El valor de `resolve_strategy` es fijo en el JSON, pero
+* Las decisiones que toma el motor varían según:
+
+  * Cuántos inputs detectó el parser.
+  * De qué tipo.
+  * Qué `types` soporta la card.
+
+No se modifica el JSON, pero **la ejecución cambia** dependiendo de los inputs detectados en cada consulta.
+
+---
+
+## 9. ¿Qué sí se va a cambiar automáticamente?
+
+Para cerrar, resumen de los campos que el sistema va a pisar / recalcular:
+
+### Se modifican automáticamente:
+
+* `metadata.last_update` → al editar mazo.
+* `status.state`, `status.http_code`, `status.last_check` → health-check.
+* `stats.clicks`, `stats.likes`, `stats.reports` → interacción usuario.
+* `admin.updated_at`, `admin.revision` → cambios desde admin.
+* `badges.*` → proceso que corre reglas en base a stats + admin + metadata.verified.
+
+### Nunca se modifican automáticamente (solo humanos/scripts de carga):
+
+* `metadata.version`
+* `metadata.source`
+* `info.*`
+* `tags_global`
+* `osint_context`
+* `cards[*].input.*` (contratos de comportamiento)
+
+---
+
+# 📑 Anexo – Reglas del Motor de OSINT Deck
+
+**(Detección de input, selección de cards, resolución de ambigüedad y construcción de acciones)**
+
+---
+
+## 1. Flujo general del motor
+
+Mentalmente, el motor hace siempre esto:
+
+1. Recibe **texto del usuario** (desde buscador o desde un campo input).
+2. **Detecta indicadores OSINT** (domain, ip, email, hash, etc.).
+3. Decide si está en:
+
+   * MODO CATÁLOGO (sin input válido)
+   * MODO INVESTIGACIÓN (con uno o más inputs válidos)
+4. Según el modo:
+
+   * Filtra **Tools** y/o **Cards**.
+   * Aplica reglas de `input.types`, `mode`, `pattern`, `resolve_strategy`.
+5. Ejecuta:
+
+   * Abrir dashboard
+   * Abrir URL templada
+   * O llamar a API (futuro)
+
+---
+
+## 2. Paso 1 – Detección de inputs
+
+La entrada del usuario es un string crudo.
+El motor debe intentar detectar todos los indicadores posibles.
+
+### 2.1. Conjunto base de tipos soportados
+
+* `domain`
+* `ip`
+* `url`
+* `email`
+* `hash`
+* `asn`
+* `host`
+* `headers`
+* `phone`
+* `username`
+* `wallet`
+* `tx_hash`
+* `file` / `image` (cuando haya upload)
+* (y `none` → reservado para cards que no usan input)
+
+### 2.2. Resultado esperado
+
+El parser debe devolver algo así (conceptualmente):
+
+```text
+inputs_detectados = [
+  { tipo: "domain", valor: "osintdeck.com" },
+  { tipo: "ip", valor: "8.8.8.8" }
+]
+```
+
+* Si no detecta nada → `inputs_detectados` está vacío.
+* Si detecta múltiples (dominio + ip + hash…) → se almacenan todos.
+
+---
+
+## 3. Paso 2 – Elegir modo: Catálogo vs Investigación
+
+### 3.1. Regla
+
+```pseudo
+si inputs_detectados está vacío:
+    modo = "CATALOGO"
+sino:
+    modo = "INVESTIGACION"
+```
+
+---
+
+## 4. Paso 3 – Selección de herramientas y cards
+
+### 4.1. Si MODO = CATÁLOGO
+
+Objetivo: **explorar herramientas, no analizarlas aún.**
+
+* Mostrar:
+
+  * Lista de **Tools** filtrados por:
+
+    * `name`
+    * `tags_global`
+    * `osint_context.uso_principal`
+    * `osint_context.fase_osint`
+  * **Cards** que tengan:
+
+    ```json
+    "input": { "types": ["none"] }
+    ```
+
+* NO mostrar cards con `types` que requieran inputs (domain/ip/etc).
+
+#### Pseudoregla:
+
+```pseudo
+para cada tool en catalogo:
+    si coincide con búsqueda semántica:
+        incluir en resultados
+
+    para cada card del tool:
+        si card.input.types contiene "none":
+            mostrar como acción de acceso (dashboard, docs, portal)
+```
+
+---
+
+### 4.2. Si MODO = INVESTIGACIÓN
+
+Objetivo: **usar el input como combustible.**
+
+* Para cada `card` de cada `tool`:
+
+  1. Ver si **algún** tipo en `inputs_detectados` coincide con `card.input.types`.
+  2. Si **no coincide ninguno** → la card se descarta.
+  3. Si **coincide al menos uno** → la card es candidata.
+
+#### Pseudoregla:
+
+```pseudo
+cards_candidatas = []
+
+para cada tool:
+    para cada card en tool.cards:
+        si "none" en card.input.types:
+            continuar (esta card no se usa en modo investigación)
+
+        tipos_soportados = card.input.types
+        tipos_detectados = [ tipos en inputs_detectados ]
+
+        si intersección(tipos_soportados, tipos_detectados) no está vacía:
+            agregar card a cards_candidatas
+```
+
+---
+
+## 5. Paso 4 – Para cada card candidata: resolución de input
+
+Cada card candidata puede tener 3 situaciones:
+
+1. Coincide con **1 solo tipo** de input.
+2. Coincide con **más de un tipo** (ej: domain + ip).
+3. Está mal configurada (no coincide con nada, debería haber sido filtrada antes).
+
+Nos importa la **situación 2**.
+
+---
+
+### 5.1. Caso 1 – Solo 1 input compatible
+
+```pseudo
+si card coincide solo con un tipo de input:
+    input_elegido = ese input
+    (no hay ambigüedad)
+```
+
+No se abre modal, ni se pregunta al usuario.
+
+---
+
+### 5.2. Caso 2 – Varios inputs compatibles
+
+Ejemplo:
+`Blacklist Check` soporta `domain` y `ip`.
+
+Usuario escribe:
+
+```text
+"ver blacklist de osint.com.ar 8.8.8.8"
+```
+
+Parser devuelve:
+
+```text
+inputs_detectados = [domain(osint.com.ar), ip(8.8.8.8)]
+```
+
+La card soporta ambos:
+
+```json
+"input.types": ["domain","ip"]
+```
+
+Entonces entramos en la lógica de `resolve_strategy`.
+
+---
+
+## 6. `resolve_strategy` – Cómo decidir qué input usar
+
+Los valores posibles:
+
+* `"ask"`
+* `"auto"`
+* `"prefer-domain"`
+* `"prefer-ip"`
+
+---
+
+### 6.1. `ask` — Modal obligatorio
+
+```pseudo
+si card.input.resolve_strategy == "ask" y hay >1 input compatible:
+    abrir modal:
+        listar opciones:
+            - Analizar dominio: osint.com.ar
+            - Analizar IP: 8.8.8.8
+    esperar selección del usuario
+    input_elegido = opción elegida
+```
+
+El **modal solo aparece si hay ambigüedad real** (más de un input del tipo soportado).
+
+---
+
+### 6.2. `prefer-domain`
+
+```pseudo
+si "domain" en inputs_detectados compatibles:
+    input_elegido = ese domain
+sino si "ip" en inputs_detectados compatibles:
+    input_elegido = esa ip
+```
+
+No hay modal, es automático.
+
+---
+
+### 6.3. `prefer-ip`
+
+Igual que el anterior, pero al revés.
+
+---
+
+### 6.4. `auto` – Inteligencia futura
+
+`auto` deja que el sistema use reglas globales dependiendo de:
+
+* Código de categoría (`SEC_BLACKLIST`, `INF_DNS`, etc.).
+* Tipo de card.
+
+Ejemplo de reglas globales:
+
+```pseudo
+si card.category.code empieza con "INF_":
+    preferir domain sobre ip
+
+si card.category.code == "SEC_BLACKLIST":
+    preferir ip sobre domain
+
+si card.category.code == "MAIL_MX":
+    solo domain (ya lo filtra input.types)
+```
+
+`auto` es un “modo inteligente” configurable en otro JSON de reglas (por ejemplo `rules.json`).
+
+---
+
+## 7. Paso 5 – Construcción de la acción según `mode`
+
+Una vez elegido `input_elegido`, se ejecuta la card de acuerdo al `mode`.
+
+### 7.1. `mode = "manual"`
+
+* Comportamiento:
+
+  * El sistema **solo abre** `card.url`.
+  * No intenta aplicar `pattern`.
+  * El usuario debe escribir todo a mano en la web de la herramienta.
+
+```pseudo
+si card.input.mode == "manual":
+    abrir card.url en nueva pestaña/iframe
+```
+
+---
+
+### 7.2. `mode = "url"`
+
+* Aquí sí se usa `pattern`.
+
+Regla:
+
+1. Tomar `input_elegido.valor`.
+2. Normalizar (según tipo: quitar `http://` si es dominio, etc., si así se define en las reglas).
+3. Reemplazar `{input}` dentro de `pattern`.
+4. Abrir la URL resultante.
+
+```pseudo
+si card.input.mode == "url":
+    valor = normalizar(input_elegido)
+    url_final = reemplazar("{input}", valor, card.input.pattern)
+    abrir url_final
+```
+
+Ejemplo:
+
+```json
+"pattern": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}"
+input_elegido = ip "8.8.8.8"
+→ "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
+```
+
+---
+
+### 7.3. `mode = "api"` (futuro)
+
+* El motor en lugar de abrir una URL, hace:
+
+```pseudo
+llamar API correspondiente con el input_elegido.valor
+recibir JSON
+renderizar resultado en el panel de resultados de OSINT Deck
+```
+
+* `pattern` podría ser usado como endpoint base:
+
+  * `https://api.ejemplo.com/v1/lookup?value={input}`
+
+---
+
+### 7.4. `mode = "none"`
+
+* Caso especial para cards meramente informativas.
+
+```pseudo
+si card.input.types = ["none"]:
+    card no participa en modo investigación
+    solo se muestra en modo catálogo o detalle del mazo
+```
+
+---
+
+## 8. Lógica del modal (resumen)
+
+El modal solo aparece cuando:
+
+1. Estamos en **Modo Investigación**.
+2. Una card candidata:
+
+   * Soporta más de un tipo de input (`input.types` > 1).
+   * Y hay más de un input detectado compatible.
+   * Y `resolve_strategy == "ask"`.
+
+Contenido del modal:
+
+* Listado de opciones posibles:
+
+```text
+Analizar dominio: osint.com.ar
+Analizar IP: 8.8.8.8
+Analizar email: test@dominio.com (si aplica)
+...
+```
+
+* Una vez elegido:
+
+  * Se ejecuta paso 5 (según mode: manual/url/api).
+
+---
+
+## 9. Ejemplo completo MXToolbox – Blacklist
+
+Usuario escribe:
+
+> “Quiero revisar blacklist de osint.com.ar 8.8.8.8”
+
+1. Parser:
+
+   * `domain` → osint.com.ar
+   * `ip` → 8.8.8.8
+
+2. Modo:
+
+   * inputs_detectados no vacío → MODO INVESTIGACIÓN.
+
+3. Card `Blacklist Check`:
+
+```json
+"input": {
+  "types": ["domain","ip"],
+  "mode": "url",
+  "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+  "resolve_strategy": "ask"
+}
+```
+
+4. Coincidencias:
+
+   * types = domain, ip
+   * detectados = domain, ip → card candidata, con ambigüedad.
+
+5. `resolve_strategy = "ask"` → aparece modal:
+
+```text
+Seleccioná el valor a analizar:
+[ Analizar dominio osint.com.ar ]
+[ Analizar IP 8.8.8.8 ]
+```
+
+6. Usuario elige IP.
+
+7. Motor construye:
+
+```text
+url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
+```
+
+8. Abre esa URL.
+
+---
+
+## 10. Resumen de decisiones importantes
+
+* **Tool/mazo nunca procesa input**, solo describe y enlaza.
+* **Cards son las únicas que tienen lógica de input.**
+* `input.types` decide **qué cards se activan** según lo que escribió el usuario.
+* `resolve_strategy` decide **qué hacer con múltiples inputs válidos**.
+* `mode` decide **cómo ejecutar** (manual / url / api).
+* `pattern` se usa **solo** si `mode="url"` (o `api` si se extiende).
+* Modal solo aparece cuando:
+
+  * +1 input compatible
+  * y `resolve_strategy="ask"`.
+
+---
+
+
+flowchart TD
+
+    %% =========================
+    %% NODO INICIAL
+    %% =========================
+    A[Usuario escribe en el buscador] --> B[Parser de texto]
+
+    %% =========================
+    %% DETECCIÓN DE INPUTS
+    %% =========================
+    B --> C{¿Se detectan\nindicadores OSINT?}
+
+    C -- No --> D[Modo CATÁLOGO]
+    C -- Sí --> E[Modo INVESTIGACIÓN]
+
+    %% =========================
+    %% MODO CATÁLOGO
+    %% =========================
+    D --> D1[Buscar Tools por:\n- name\n- tags_global\n- osint_context]
+    D1 --> D2[Mostrar Tools coincidentes]
+    D2 --> D3[Mostrar sólo Cards con:\ninput.types = ['none']]
+    D3 --> Z[Fin]
+
+    %% =========================
+    %% MODO INVESTIGACIÓN
+    %% =========================
+    E --> F[Obtener inputs_detectados\n(domain, ip, email, hash...)]
+    F --> G[Recorrer Tools y sus Cards]
+
+    G --> H{Card.input.types\nincluye algún tipo\nde input detectado?}
+    H -- No --> G  %% descartar card y seguir
+    H -- Sí --> I[Agregar a cards_candidatas]
+
+    I --> J{¿cards_candidatas vacía?}
+    J -- Sí --> J1[No hay cards\ncompatibles con el input] --> Z
+    J -- No --> K[Para cada card candidata\nresolver input y ejecutar]
+
+    %% =========================
+    %% RESOLUCIÓN POR CARD
+    %% =========================
+    K --> L{¿Cuántos inputs\ncompatibles tiene la card?}
+
+    L -- 1 --> M[Elegir ese input directamente]
+    L -- >1 --> N{resolve_strategy}
+
+    %% resolve_strategy = ask
+    N -- ask --> N1[Mostrar modal:\n- listar inputs compatibles\n- usuario elige uno]
+    N1 --> M
+
+    %% resolve_strategy = prefer-domain
+    N -- prefer-domain --> N2[Si hay domain usar domain,\nsi no, usar otro tipo compatible]
+    N2 --> M
+
+    %% resolve_strategy = prefer-ip
+    N -- prefer-ip --> N3[Si hay ip usar ip,\nsi no, usar otro tipo compatible]
+    N3 --> M
+
+    %% resolve_strategy = auto
+    N -- auto --> N4[Aplicar reglas globales\nsegún category.code\n(p.ej. SEC_BLACKLIST → ip)]
+    N4 --> M
+
+    %% =========================
+    %% EJECUCIÓN SEGÚN MODE
+    %% =========================
+    M --> O{card.input.mode}
+
+    O -- "manual" --> O1[Abrir card.url\n(el usuario escribe el dato en la web)]
+    O -- "url" --> O2[Construir URL final:\npattern.replace('{input}', valor_normalizado)]
+    O -- "api" --> O3[Llamar API con input\nRenderizar resultado en OSINT Deck]
+    O -- "none" --> O4[Acción informativa\n(no usa input)]
+
+    O1 --> P[Registrar stats.clicks / likes / etc.]
+    O2 --> P
+    O3 --> P
+    O4 --> P
+
+    P --> Z[Fin]
+
+    %% =========================
+    %% NOTAS
+    %% =========================
+    classDef mode fill:#0f766e,stroke:#0f172a,color:#ffffff;
+    classDef decision fill:#0f172a,stroke:#000,color:#ffffff;
+    classDef action fill:#1e293b,stroke:#000,color:#ffffff;
+    classDef end fill:#111827,stroke:#000,color:#ffffff;
+
+    class A,B,D,E,F,G,I,K,M,O,P mode;
+    class C,H,J,L,N decision;
+    class D1,D2,D3,J1,N1,N2,N3,N4,O1,O2,O3,O4 action;
+    class Z end;
+
+
