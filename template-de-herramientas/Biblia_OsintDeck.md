@@ -1392,55 +1392,60 @@ url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
 
 ---
 
+
+```mermaid
+flowchart TD
 flowchart TD
 
     %% =========================
     %% 1. ENTRADA Y PARSING
     %% =========================
-    A[Usuario escribe en el buscador] --> B[Parser de texto]
-    B --> C{¿Hay indicadores<br/>OSINT válidos?}
+    A["Usuario escribe en el buscador"] --> B["Parser de texto"]
+    B --> C{"¿Hay indicadores<br/>OSINT válidos?"}
 
     %% ---------- MODO CATÁLOGO ----------
-    C -- No --> C1[Modo CATÁLOGO]
-    C1 --> C2[Filtrar Tools por texto,<br/>tags_global, categoría]
-    C2 --> C3[Mostrar solo Cards con<br/>input.types = ['none']]
+    C -- No --> C1["Modo CATÁLOGO"]
+    C1 --> C2["Filtrar Tools por texto,<br/>tags_global, categoría"]
+    
+    %% AQUÍ ESTABA EL ERROR: Los corchetes internos rompen el nodo si no usas comillas
+    C2 --> C3["Mostrar solo Cards con<br/>input.types = ['none']"]
     C3 --> Z[Fin]
 
     %% ---------- MODO INVESTIGACIÓN ----------
-    C -- Sí --> D[Modo INVESTIGACIÓN]
-    D --> D1[Extraer lista de inputs<br/>detectados (domain, ip, url, email...)]
-    D1 --> D2[Recorrer Tools y sus Cards]
+    C -- Sí --> D["Modo INVESTIGACIÓN"]
+    D --> D1["Extraer lista de inputs<br/>detectados (domain, ip, url, email...)"]
+    D1 --> D2["Recorrer Tools y sus Cards"]
 
-    D2 --> D3{card.input.types<br/>coincide con algún tipo<br/>detectado?}
+    D2 --> D3{"card.input.types<br/>coincide con algún tipo<br/>detectado?"}
     D3 -- No --> D2
-    D3 -- Sí --> D4[Añadir card a<br/>cards_candidatas]
+    D3 -- Sí --> D4["Añadir card a<br/>cards_candidatas"]
 
-    D4 --> E{¿cards_candidatas<br/>está vacía?}
-    E -- Sí --> E1[No hay herramientas<br/>compatibles con el input] --> Z
-    E -- No --> F[Procesar cada card<br/>candidata]
+    D4 --> E{"¿cards_candidatas<br/>está vacía?"}
+    E -- Sí --> E1["No hay herramientas<br/>compatibles con el input"] --> Z
+    E -- No --> F["Procesar cada card<br/>candidata"]
 
     %% =========================
     %% 2. RESOLVER INPUT POR CARD
     %% =========================
-    F --> G{¿Cuántos inputs<br/>compatibles tiene<br/>la card?}
+    F --> G{"¿Cuántos inputs<br/>compatibles tiene<br/>la card?"}
 
-    G -- 1 --> H[Elegir ese input<br/>directamente]
+    G -- 1 --> H["Elegir ese input<br/>directamente"]
     G -- >1 --> I{resolve_strategy}
 
     %% resolve_strategy = ask
-    I -- ask --> I1[Mostrar modal para que<br/>el usuario elija el input]
+    I -- ask --> I1["Mostrar modal para que<br/>el usuario elija el input"]
     I1 --> H
 
     %% resolve_strategy = prefer-domain
-    I -- prefer-domain --> I2[Si hay domain usar domain,<br/>si no otro tipo compatible]
+    I -- prefer-domain --> I2["Si hay domain usar domain,<br/>si no otro tipo compatible"]
     I2 --> H
 
     %% resolve_strategy = prefer-ip
-    I -- prefer-ip --> I3[Si hay ip usar ip,<br/>si no otro tipo compatible]
+    I -- prefer-ip --> I3["Si hay ip usar ip,<br/>si no otro tipo compatible"]
     I3 --> H
 
     %% resolve_strategy = auto
-    I -- auto --> I4[Usar reglas globales<br/>(según category.code)]
+    I -- auto --> I4["Usar reglas globales<br/>(según category.code)"]
     I4 --> H
 
     %% =========================
@@ -1448,12 +1453,12 @@ flowchart TD
     %% =========================
     H --> J{card.input.mode}
 
-    J -- manual --> J1[Abrir card.url<br/>el usuario escribe el dato<br/>en la web de la herramienta]
-    J -- url --> J2[Construir URL final<br/>reemplazando {input}<br/>en pattern]
-    J -- api --> J3[Llamar API con el input<br/>y mostrar resultado<br/>en OSINT Deck]
-    J -- none --> J4[Card informativa,<br/>sin uso de input]
+    J -- manual --> J1["Abrir card.url<br/>el usuario escribe el dato<br/>en la web de la herramienta"]
+    J -- url --> J2["Construir URL final<br/>reemplazando {input}<br/>en pattern"]
+    J -- api --> J3["Llamar API con el input<br/>y mostrar resultado<br/>en OSINT Deck"]
+    J -- none --> J4["Card informativa,<br/>sin uso de input"]
 
-    J1 --> K[Actualizar stats<br/>(clicks, last_use...)]
+    J1 --> K["Actualizar stats<br/>(clicks, last_use...)"]
     J2 --> K
     J3 --> K
     J4 --> K
@@ -1469,5 +1474,4 @@ flowchart TD
     style F fill:#e5e7eb,stroke:#333,stroke-width:1px
     style J2 fill:#fff8c2,stroke:#333,stroke-width:1px
     style J3 fill:#ffe4b5,stroke:#333,stroke-width:1px
-
-
+```
