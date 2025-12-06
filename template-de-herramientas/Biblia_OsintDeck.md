@@ -1395,7 +1395,6 @@ url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
 
 ```mermaid
 flowchart TD
-flowchart TD
 
     %% =========================
     %% 1. ENTRADA Y PARSING
