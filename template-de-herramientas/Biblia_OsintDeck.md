@@ -1392,51 +1392,48 @@ url_final = "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:8.8.8.8"
 
 ---
 
+graph TD
 
+%% ===== Inicio =====
+A[🔎 Usuario ingresa búsqueda] --> B{¿Detecta Input OSINT?}
 
-```markdown
-```mermaid
-flowchart TD
+%% --- Rama Catálogo ---
+B -- ❌ No hay input --> C[📁 Modo Catálogo]
+C --> C1[Filtra Tools por nombre/tags/category]
+C --> C2[Muestra solo Cards con input = none]
+C2 --> Z[Fin]
 
-A[Usuario escribe en el buscador] --> B[Parser de texto]
-B --> C{¿Se detectan\nindicadores OSINT?}
+%% --- Rama Investigación ---
+B -- ✔ Sí hay input --> D[🧠 Modo Investigación]
+D --> E[Detectar tipos → domain/ip/url/email/hash/...]
+E --> F[Buscar Cards compatibles según input.types]
 
-C -- No --> D[Modo CATÁLOGO]
-C -- Sí --> E[Modo INVESTIGACIÓN]
+%% Resolver ambigüedad cuando hay más de un dato
+F --> G{¿Múltiples inputs válidos?}
+G -- No --> H[Seleccionar único input]
+G -- Sí --> I{resolve_strategy}
+I -- ask --> I1[Mostrar modal para elegir] --> H
+I -- prefer-domain --> I2[Tomar dominio] --> H
+I -- prefer-ip --> I3[Tomar IP] --> H
+I -- auto --> I4[Selección automática lógica] --> H
 
-D --> D1[Buscar Tools por:\n- name\n- tags_global\n- osint_context]
-D1 --> D2[Mostrar Tools coincidentes]
-D2 --> D3[Mostrar solo Cards con input none]
-D3 --> Z[Fin]
+%% Ejecutar card
+H --> J{input.mode}
+J -- manual --> J1[Abre web → usuario escribe manual]
+J -- url --> J2[Genera URL con patrón {input}]
+J -- api --> J3[Consulta API y muestra resultados]
+J -- none --> J4[Abrir card sin input]
 
-E --> F[Obtener inputs_detectados]
-F --> G[Recorrer Tools y Cards]
+J1 --> Z
+J2 --> Z
+J3 --> Z
+J4 --> Z
 
-G --> H{Card soporta input encontrado?}
-H -- No --> G
-H -- Sí --> I[Agregar a candidatas]
+%% ==== Estilos ====
+style A fill:#ffd700,stroke:#333,stroke-width:2px
+style C fill:#b3d9ff,stroke:#333,stroke-width:1px
+style D fill:#baffc9,stroke:#333,stroke-width:1px
+style J2 fill:#fff2a8,stroke:#333,stroke-width:1px
+style J3 fill:#ffebc2,stroke:#333,stroke-width:1px
 
-I --> J{¿Lista vacía?}
-J -- Sí --> J1[Mensaje: No hay tools para este input] --> Z
-J -- No --> K[Resolver input y ejecutar]
-
-K --> L{¿Hay más de un input compatible?}
-L -- 1 --> M[Elegir y ejecutar]
-L -- >1 --> N{resolve_strategy}
-
-N -- ask --> N1[Mostrar modal para elegir input] --> M
-N -- prefer-domain --> N2[Tomar dominio si existe] --> M
-N -- prefer-ip --> N3[Tomar IP si existe] --> M
-N -- auto --> N4[Elegir por categoría lógica] --> M
-
-M --> O{input.mode}
-O -- manual --> O1[Abrir Tool (input se escribe en la web)]
-O -- url --> O2[Generar URL con {input}]
-O -- api --> O3[Llamada API y mostrar resultado]
-O -- none --> O4[Sólo abre página principal]
-
-O1 --> Z
-O2 --> Z
-O3 --> Z
-O4 --> Z
 
