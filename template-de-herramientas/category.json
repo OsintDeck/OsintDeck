@@ -1,0 +1,240 @@
+[
+  /* ===============================
+     🟦 1. GENERAL / MULTI-USE
+     =============================== */
+  {
+    "code":"GEN_DASH","group":"General","type":"Dashboard","label":"General / Dashboard",
+    "icon":"layout-dashboard","color":"#1e293b",
+    "descripcion":"Paneles de inicio, home o acceso general sin acciones.",
+    "fase_osint":[],"data_types":[]
+  },
+  {
+    "code":"GEN_MULTI","group":"General","type":"Multi-Tool","label":"General / Multi-Tool",
+    "icon":"tool","color":"#0d9488",
+    "descripcion":"Herramientas multifunción: DNS, IP, WHOIS, correo, reputación, etc.",
+    "fase_osint":["Footprinting","Discovery","Analysis"],
+    "data_types":["domain","ip","url","email","host"]
+  },
+
+  /* ===============================
+     📨 2. CORREO & EMAIL SECURITY
+     =============================== */
+  {
+    "code":"MAIL_MX","group":"Correo","type":"MX","label":"Correo / MX",
+    "icon":"mail","color":"#2563eb",
+    "descripcion":"Consulta y prioridad de registros MX.",
+    "fase_osint":["Footprinting"],
+    "data_types":["domain"]
+  },
+  {
+    "code":"MAIL_SPF","group":"Correo","type":"SPF","label":"Correo / SPF",
+    "icon":"shield","color":"#7c3aed",
+    "descripcion":"Validación del registro SPF.",
+    "fase_osint":["Discovery","Analysis"],
+    "data_types":["domain"]
+  },
+  {
+    "code":"MAIL_DMARC","group":"Correo","type":"DMARC","label":"Correo / DMARC",
+    "icon":"shield-check","color":"#9333ea",
+    "descripcion":"Revisión de políticas DMARC.",
+    "fase_osint":["Analysis"],
+    "data_types":["domain"]
+  },
+  {
+    "code":"MAIL_DKIM","group":"Correo","type":"DKIM","label":"Correo / DKIM",
+    "icon":"key","color":"#4f46e5",
+    "descripcion":"Validación de firmas DKIM.",
+    "fase_osint":["Analysis"],
+    "data_types":["domain","headers"]
+  },
+  {
+    "code":"MAIL_SMTP","group":"Correo","type":"SMTP","label":"Correo / SMTP",
+    "icon":"send","color":"#3b82f6",
+    "descripcion":"Pruebas SMTP, conectividad y banners.",
+    "fase_osint":["Discovery"],
+    "data_types":["domain","ip","host"]
+  },
+  {
+    "code":"MAIL_HEADERS","group":"Correo","type":"Headers","label":"Correo / Headers",
+    "icon":"file-search","color":"#0ea5e9",
+    "descripcion":"Análisis de rutas y autenticación en headers.",
+    "fase_osint":["Analysis","Pivoting"],
+    "data_types":["headers","email"]
+  },
+
+  /* ===============================
+     🌐 3. INFRAESTRUCTURA / DNS / IP
+     =============================== */
+  {
+    "code":"INF_DNS","group":"Infraestructura","type":"DNS","label":"Infraestructura / DNS",
+    "icon":"server","color":"#475569",
+    "descripcion":"Lookup de A, AAAA, TXT, NS, CNAME.",
+    "fase_osint":["Footprinting"],
+    "data_types":["domain","host"]
+  },
+  {
+    "code":"INF_WHOIS","group":"Infraestructura","type":"WHOIS","label":"Infraestructura / WHOIS",
+    "icon":"search","color":"#64748b",
+    "descripcion":"Registro del dominio, dueño, fechas y contactos.",
+    "fase_osint":["Footprinting","Infrastructure Mapping"],
+    "data_types":["domain","email","org"]
+  },
+  {
+    "code":"INF_PTR","group":"Infraestructura","type":"PTR","label":"Infraestructura / PTR",
+    "icon":"rotate-ccw","color":"#8b939f",
+    "descripcion":"Reverse DNS desde IP a hostname.",
+    "fase_osint":["Footprinting"],
+    "data_types":["ip"]
+  },
+  {
+    "code":"INF_IPINFO","group":"Infraestructura","type":"IP Info","label":"Infraestructura / IP Info",
+    "icon":"map-pin","color":"#334155",
+    "descripcion":"ASN, ISP, ciudad, rango IP, geolocalización.",
+    "fase_osint":["Footprinting","Analysis"],
+    "data_types":["ip","asn"]
+  },
+  {
+    "code":"INF_BGP","group":"Infraestructura","type":"BGP","label":"Infraestructura / BGP",
+    "icon":"route","color":"#1e293b",
+    "descripcion":"Rutas BGP, prefijos, peers, infraestructura asociada.",
+    "fase_osint":["Mapping","Discovery"],
+    "data_types":["asn","ip","prefix"]
+  },
+
+  /* ===============================
+     🛡 4. SEGURIDAD / THREAT INTEL
+     =============================== */
+  {
+    "code":"SEC_BLACKLIST","group":"Seguridad","type":"Blacklist","label":"Seguridad / Blacklist",
+    "icon":"alert-triangle","color":"#b91c1c",
+    "descripcion":"Chequear reputación o spam listing.",
+    "fase_osint":["Analysis"],
+    "data_types":["ip","domain","email"]
+  },
+  {
+    "code":"SEC_IOC","group":"Seguridad","type":"IOC Lookup","label":"Seguridad / IOC Lookup",
+    "icon":"fingerprint","color":"#dc2626",
+    "descripcion":"Consulta IP/Domain/URL/Hash malicioso.",
+    "fase_osint":["Threat Hunting","Analysis"],
+    "data_types":["ip","domain","url","hash"]
+  },
+  {
+    "code":"SEC_CERT","group":"Seguridad","type":"SSL/TLS","label":"Seguridad / Certificados SSL",
+    "icon":"badge-check","color":"#0f766e",
+    "descripcion":"Certificados válidos, CAs, fingerprint SHA256.",
+    "fase_osint":["Footprinting","Analysis"],
+    "data_types":["domain","ip"]
+  },
+
+  /* ===============================
+     🔐 5. CRIPTOGRAFÍA & HASH
+     =============================== */
+  {
+    "code":"CRYPTO_HASH","group":"Criptografia","type":"Hash","label":"Criptografía / Hash",
+    "icon":"lock","color":"#6b21a8",
+    "descripcion":"SHA1/SHA256/MD5 lookup, cracking y comparación.",
+    "fase_osint":["Analysis"],
+    "data_types":["hash","string"]
+  },
+  {
+    "code":"CRYPTO_DECODE","group":"Criptografia","type":"Encoding","label":"Criptografía / Encoding",
+    "icon":"file-code","color":"#9333ea",
+    "descripcion":"Base64/ROT13/Hex/URL decode.",
+    "fase_osint":["Analysis"],
+    "data_types":["string","text"]
+  },
+
+  /* ===============================
+     🐛 6. MALWARE & ARCHIVOS
+     =============================== */
+  {
+    "code":"MAL_STATIC","group":"Malware","type":"Static Analysis","label":"Malware / Estático",
+    "icon":"code","color":"#7f1d1d",
+    "descripcion":"Strings, headers PE, Yara, metadata PE.",
+    "fase_osint":["Analysis"],
+    "data_types":["hash","file","binary"]
+  },
+  {
+    "code":"MAL_DYNAMIC","group":"Malware","type":"Sandbox","label":"Malware / Sandbox",
+    "icon":"flask","color":"#991b1b",
+    "descripcion":"Ejecución controlada, comportamiento, red.",
+    "fase_osint":["Analysis"],
+    "data_types":["file"]
+  },
+
+  /* ===============================
+     🧑‍💻 7. SOCMINT / HUMINT
+     =============================== */
+  {
+    "code":"SOC_USER","group":"SOCMINT","type":"User Discovery","label":"SOCMINT / Usuarios",
+    "icon":"user-search","color":"#0369a1",
+    "descripcion":"Búsqueda de alias/username",
+    "fase_osint":["Profiling"],
+    "data_types":["username","email"]
+  },
+  {
+    "code":"SOC_PHONE","group":"SOCMINT","type":"Phone Lookup","label":"SOCMINT / Teléfonos",
+    "icon":"phone","color":"#0891b2",
+    "descripcion":"Lookup de números, carrier, país.",
+    "fase_osint":["Profiling"],
+    "data_types":["phone"]
+  },
+
+  /* ===============================
+     📄 8. METADATOS / DOCUMENTOS
+     =============================== */
+  {
+    "code":"META_DOC","group":"Metadatos","type":"Document","label":"Metadatos / Documentos",
+    "icon":"file-text","color":"#94a3b8",
+    "descripcion":"PDF/Office metadata extraction.",
+    "fase_osint":["Discovery","Analysis"],
+    "data_types":["file"]
+  },
+  {
+    "code":"META_EXIF","group":"Metadatos","type":"Imagen","label":"Metadatos / EXIF",
+    "icon":"image","color":"#64748b",
+    "descripcion":"EXIF GPS, cámara, timestamp.",
+    "fase_osint":["Discovery"],
+    "data_types":["image"]
+  },
+
+  /* ===============================
+     🌍 9. WEB RECON / HOSTING
+     =============================== */
+  {
+    "code":"WEB_TECH","group":"Web","type":"Fingerprint","label":"Web / Fingerprinting",
+    "icon":"globe","color":"#0f172a",
+    "descripcion":"Tecnologías detectadas (Wappalyzer).",
+    "fase_osint":["Discovery"],
+    "data_types":["url","domain"]
+  },
+  {
+    "code":"WEB_VULN","group":"Web","type":"Vulnerabilidades","label":"Web / Vulnerabilidades",
+    "icon":"shield-alert","color":"#b91c1c",
+    "descripcion":"Escaneo HTTP/S, CVEs, headers inseguros",
+    "fase_osint":["Analysis"],
+    "data_types":["domain","url"]
+  },
+
+  /* ===============================
+     ⛅ 10. CLOUD / STORAGE
+     =============================== */
+  {
+    "code":"CLOUD_BUCKET","group":"Cloud","type":"Buckets","label":"Cloud / Buckets",
+    "icon":"cloud","color":"#0ea5e9",
+    "descripcion":"AWS S3, Azure, Google Bucket discovery.",
+    "fase_osint":["Discovery"],
+    "data_types":["url","domain"]
+  },
+
+  /* ===============================
+     ₿ 11. BLOCKCHAIN
+     =============================== */
+  {
+    "code":"CHAIN_WALLET","group":"Blockchain","type":"Wallet","label":"Blockchain / Wallet Lookup",
+    "icon":"wallet","color":"#ca8a04",
+    "descripcion":"Saldo, transacciones, historial.",
+    "fase_osint":["Crypto Intel"],
+    "data_types":["wallet","tx_hash"]
+  }
+]
