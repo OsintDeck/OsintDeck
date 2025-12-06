@@ -1,155 +1,251 @@
-[
-  {
+{
     "name": "MxToolBox",
-    "category": "Dominios / DNS",
-    "access": "Libre",
-    "color": "#1e3a8a",
     "favicon": "https://mxtoolbox.com/favicon.ico",
     "info": {
-      "tipo": "Web",
-      "licencia": "Open source",
-      "acceso": "Libre"
+        "tipo": "Web",
+        "licencia": "Free",
+        "acceso": "Libre",
+        "requiere_registro": false,
+        "offline": false,
+        "idiomas": [
+            "en"
+        ],
+        "compatibilidad": [
+            "Web"
+        ],
+        "documentacion": "https://mxtoolbox.com/Help.aspx"
     },
     "metadata": {
-      "version": "",
-      "last_update": "",
-      "added_by": "",
-      "verified": false,
-      "source": ""
-    },
-    "stats": {
-      "clicks": 0,
-      "likes": 0,
-      "reports": 0
-    },
-    "admin": {
-      "created_at": "",
-      "updated_at": "",
-      "revision": 0
+        "version": "",
+        "last_update": "",
+        "verified": false,
+        "source": "Web Discovery"
     },
     "status": {
-      "state": "",
-      "http_code": null,
-      "last_check": ""
+        "state": "up",
+        "http_code": 200,
+        "last_check": ""
+    },
+    "stats": {
+        "clicks": 0,
+        "likes": 0,
+        "reports": 0
+    },
+    "admin": {
+        "created_at": "",
+        "updated_at": "",
+        "revision": 1
     },
     "badges": {
-      "popular": false,
-      "new": false,
-      "reported": false,
-      "recommended": false
+        "popular": false,
+        "new": false,
+        "reported": false,
+        "recommended": false
     },
-    "tags_global": ["dns", "correo", "infraestructura", "osint"],
+    "osint_context": {
+        "uso_principal": "Recolección de infraestructura y análisis de correo",
+        "fase_osint": [
+            "Footprinting",
+            "Discovery"
+        ],
+        "nivel_tecnico": "Básico / Intermedio"
+    },
     "cards": [
-      {
-        "title": "Portal principal",
-        "desc": "Acceso general a MxToolBox para ejecutar pruebas de DNS, correo y reputación.",
-        "url": "https://mxtoolbox.com/",
-        "category": "Dominios / DNS",
-        "tags": ["dns", "correo", "reputación", "infraestructura"],
-        "input": {
-          "types": ["none"],
-          "example": ""
+        {
+            "title": "Portal principal",
+            "desc": "Dashboard general para acceder a todas las utilidades DNS, correo y reputación.",
+            "url": "https://mxtoolbox.com/",
+            "category_code": "GENERAL__PORTAL__DASHBOARD",
+            "tags": [
+                "dns",
+                "correo",
+                "infraestructura"
+            ],
+            "input": {
+                "types": [
+                    "none"
+                ],
+                "mode": "manual"
+            }
+        },
+        {
+            "title": "SuperTool — Diagnóstico integral",
+            "desc": "Consulta global MX, WHOIS, Blacklist, SPF/DMARC, SMTP, DNS y reputación.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action={input}",
+            "category_code": "GENERAL__TOOL__MULTI",
+            "tags": [
+                "dns",
+                "mx",
+                "spf",
+                "dmarc",
+                "smtp",
+                "whois",
+                "blacklist"
+            ],
+            "input": {
+                "types": [
+                    "domain",
+                    "ip",
+                    "host"
+                ],
+                "example": "example.com",
+                "mode": "url",
+                "pattern": "https://mxtoolbox.com/SuperTool.aspx?action={input}",
+                "resolve_strategy": "auto"
+            }
+        },
+        {
+            "title": "MX Lookup",
+            "desc": "Obtiene registros MX y prioridades del dominio.",
+            "url": "https://mxtoolbox.com/MXLookup.aspx?input={input}",
+            "category_code": "MAIL__DNS__MX_LOOKUP",
+            "tags": [
+                "mx",
+                "dns",
+                "correo"
+            ],
+            "input": {
+                "types": [
+                    "domain"
+                ],
+                "example": "example.com",
+                "mode": "url",
+                "pattern": "https://mxtoolbox.com/MXLookup.aspx?input={input}"
+            }
+        },
+        {
+            "title": "SPF Record Lookup",
+            "desc": "Valida el registro SPF del dominio.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action=spf:{input}",
+            "category_code": "MAIL__AUTH__SPF_CHECK",
+            "tags": [
+                "spf",
+                "correo",
+                "email"
+            ],
+            "input": {
+                "types": [
+                    "domain"
+                ],
+                "example": "example.com",
+                "mode": "url",
+                "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=spf:{input}"
+            }
+        },
+        {
+            "title": "Blacklist Check",
+            "desc": "Comprueba si el dominio o IP aparece en listas negras.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+            "category_code": "SECURITY__REPUTATION__BLACKLIST_CHECK",
+            "tags": [
+                "blacklist",
+                "seguridad",
+                "reputacion"
+            ],
+            "input": {
+                "types": [
+                    "domain",
+                    "ip"
+                ],
+                "example": "8.8.8.8",
+                "mode": "url",
+                "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+                "resolve_strategy": "ask"
+            }
+        },
+        {
+            "title": "DMARC Analyzer",
+            "desc": "Revisión del registro DMARC y políticas aplicadas.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action=dmarc:{input}",
+            "category_code": "MAIL__AUTH__DMARC_CHECK",
+            "tags": [
+                "dmarc",
+                "correo",
+                "email",
+                "seguridad"
+            ],
+            "input": {
+                "types": [
+                    "domain"
+                ],
+                "example": "example.com",
+                "mode": "url"
+            }
+        },
+        {
+            "title": "WHOIS Lookup",
+            "desc": "Obtiene datos registrales del dominio.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action=whois:{input}",
+            "category_code": "INFRA__WHOIS__DOMAIN_INFO",
+            "tags": [
+                "whois",
+                "dominios",
+                "infraestructura"
+            ],
+            "input": {
+                "types": [
+                    "domain"
+                ],
+                "example": "example.com",
+                "mode": "url"
+            }
+        },
+        {
+            "title": "Reverse DNS / PTR",
+            "desc": "Lookup PTR desde IP para obtener hostnames asociados.",
+            "url": "https://mxtoolbox.com/SuperTool.aspx?action=ptr:{input}",
+            "category_code": "INFRA__DNS__PTR_LOOKUP",
+            "tags": [
+                "ptr",
+                "dns",
+                "infraestructura"
+            ],
+            "input": {
+                "types": [
+                    "ip"
+                ],
+                "example": "192.0.2.1",
+                "mode": "url"
+            }
+        },
+        {
+            "title": "SMTP Diagnostic",
+            "desc": "Diagnóstico de servidor SMTP, banner y entrega.",
+            "url": "https://mxtoolbox.com/diagnostic.aspx?input={input}",
+            "category_code": "MAIL__PROTO__SMTP_TEST",
+            "tags": [
+                "smtp",
+                "correo",
+                "infraestructura"
+            ],
+            "input": {
+                "types": [
+                    "domain",
+                    "ip",
+                    "host"
+                ],
+                "example": "mail.example.com",
+                "mode": "url",
+                "pattern": "https://mxtoolbox.com/diagnostic.aspx?input={input}"
+            }
+        },
+        {
+            "title": "Email Headers Analyzer",
+            "desc": "Analiza cabeceras para rutas, tiempos y autenticación.",
+            "url": "https://mxtoolbox.com/EmailHeaders.aspx",
+            "category_code": "MAIL__ANALYSIS__HEADERS",
+            "tags": [
+                "headers",
+                "email",
+                "correo"
+            ],
+            "input": {
+                "types": [
+                    "headers"
+                ],
+                "example": "Received: from mail.example.com...",
+                "mode": "manual"
+            }
         }
-      },
-      {
-        "title": "SuperTool — Diagnóstico integral DNS/MX",
-        "desc": "Herramienta unificada para diagnosticar dominios y correo: permite consultar MX, A, TXT, SPF, DMARC, WHOIS, propagación DNS, reputación y realizar pruebas SMTP.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=input",
-        "category": "Dominios / DNS",
-        "tags": ["dns", "mx", "spf", "dmarc", "smtp", "whois", "blacklist"],
-        "input": {
-          "types": ["domain", "ip", "host"],
-          "example": "example.com"
-        }
-      },
-      {
-        "title": "MX Lookup",
-        "desc": "Consulta registros MX y prioridades de un dominio.",
-        "url": "https://mxtoolbox.com/MXLookup.aspx?input=input",
-        "category": "Dominios / DNS",
-        "tags": ["mx", "dns", "correo"],
-        "input": {
-          "types": ["domain"],
-          "example": "example.com"
-        }
-      },
-      {
-        "title": "SPF Record Lookup",
-        "desc": "Valida el registro SPF de un dominio.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=spf:input",
-        "category": "Correo / SPF",
-        "tags": ["correo", "spf", "email"],
-        "input": {
-          "types": ["domain"],
-          "example": "example.com"
-        }
-      },
-      {
-        "title": "Blacklist Check",
-        "desc": "Verifica si una IP o dominio figura en listas negras.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:input",
-        "category": "Reputación / Blacklist",
-        "tags": ["blacklist", "seguridad", "infraestructura"],
-        "input": {
-          "types": ["ip", "domain"],
-          "example": "8.8.8.8"
-        }
-      },
-      {
-        "title": "DMARC Analyzer",
-        "desc": "Analiza el registro DMARC y su política configurada.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=dmarc:input",
-        "category": "Correo / DMARC",
-        "tags": ["dmarc", "correo", "email", "seguridad"],
-        "input": {
-          "types": ["domain"],
-          "example": "example.com"
-        }
-      },
-      {
-        "title": "WHOIS Lookup",
-        "desc": "Consulta información WHOIS de un dominio.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=whois:input",
-        "category": "Dominios / WHOIS",
-        "tags": ["whois", "dominios", "infraestructura"],
-        "input": {
-          "types": ["domain"],
-          "example": "example.com"
-        }
-      },
-      {
-        "title": "Reverse DNS / PTR",
-        "desc": "Realiza búsquedas PTR para obtener nombres asociados a una IP.",
-        "url": "https://mxtoolbox.com/SuperTool.aspx?action=ptr:input",
-        "category": "Dominios / DNS",
-        "tags": ["dns", "infraestructura", "ptr"],
-        "input": {
-          "types": ["ip"],
-          "example": "192.0.2.1"
-        }
-      },
-      {
-        "title": "SMTP Diagnostic",
-        "desc": "Diagnóstico de conectividad y salud del servidor SMTP.",
-        "url": "https://mxtoolbox.com/diagnostic.aspx?input=input",
-        "category": "Correo / SMTP",
-        "tags": ["smtp", "correo", "infraestructura"],
-        "input": {
-          "types": ["domain", "host", "ip"],
-          "example": "mail.example.com"
-        }
-      },
-      {
-        "title": "Email Headers Analyzer",
-        "desc": "Analiza cabeceras de correo para detectar rutas, retrasos y autenticación DKIM/SPF/DMARC.",
-        "url": "https://mxtoolbox.com/EmailHeaders.aspx",
-        "category": "Correo / Headers",
-        "tags": ["correo", "email", "headers"],
-        "input": {
-          "types": ["headers"],
-          "example": "Received: from mail.example.com..."
-        }
-      }
     ]
-  }
-]
+}
