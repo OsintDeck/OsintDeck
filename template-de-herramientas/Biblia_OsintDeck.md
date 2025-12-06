@@ -1,12 +1,3 @@
-Perfecto. Ahora voy a generar **la Biblia interna completa y definitiva**, tal como la pedís:
-📌 **sin código ejecutable**,
-📌 **en texto conceptual + explicativo**,
-📌 **incluyendo TODOS los casos de uso posibles**,
-📌 **explicando cada campo, cómo usarlo y cómo se comporta el sistema ante cualquier acción del usuario**,
-📌 **lista para entregar como documento oficial del proyecto / TFI**.
-
----
-
 # 📘 **OSINT Deck — Biblia Interna del Proyecto (Diseño, Lógica y Funcionamiento del Sistema)**
 
 > *El documento que guía el desarrollo presente y futuro. Ninguna implementación debe hacerse sin respetarlo.*
