@@ -1,0 +1,312 @@
+[
+    {
+        "name": "MxToolBox",
+        "favicon": "https://mxtoolbox.com/favicon.ico",
+        "info": {
+            "tipo": "Web", // Web, API, Software, CLI, Extensión Navegador, OSINT Distro, Repositorio, Librería, App Mobile, Servicio SaaS
+            "licencia": "free",//SaaS, Free, Freemium, Open Source, Comercial, Enterprise, Trial, Pago Único
+            "acceso": "Libre", // Libre, Con registro, Pago, Requiere instalación, Demo, Enterprise
+            "requiere_registro": false, // ¿Necesita cuenta para acceder a funciones avanzadas?
+            "offline": false, // ¿Disponible para uso offline?
+            "idiomas": [
+                "en"
+            ], // Idiomas compatibles del panel o documentación // Usar códigos ISO 639-1 por ejemplo: "es" para español, "en" para inglés
+            "compatibilidad con": [
+                "Windows"
+            ], // Plataformas compatibles // Usar nombres estándar como: Windows, Linux, MacOS, Android, iOS
+            "documentacion": "https://mxtoolbox.com/Help.aspx", // Enlace a la documentación oficial o guía de usuario si existe
+        },
+        "metadata": {
+            "version": "", // Versión actual del recurso si aplica o tiene
+            "last_update": "", // Fecha de la última actualización del recurso en formato dd/mm/aaaa //si el sistema guarda cambios al editar //Por Hacer
+            "verified": false, // se verifico el estado actual del recurso automaticamente // Por Hacer
+            "source": "MxToolBox" // Fuente de donde se obtuvo la información del recurso
+        },
+        "status": {
+            "state": "up", // up, down, maintenance
+            "http_code": 200, // Código HTTP de la última verificación si aplic //por Hacer
+            "last_check": "dd/mm/aaaa hh:mm" // Fecha y hora de la última verificación automática del estado // Por Hacer
+        },
+
+        "stats": {
+            "clicks": 0, // Número de veces que se ha accedido al recurso desde esta plataforma // Por Hacer y automatizar
+            "likes": 0, // Número de "me gusta" recibidos en esta plataforma // Por Hacer y automatizar
+            "reports": 0 // Número de reportes o incidencias registradas en esta plataforma // Por Hacer y automatizar
+        },
+        "admin": {
+            "created_at": "", // Fecha en la que se registró por primera vez el recurso en OSINT Deck (dd/mm/aaaa) | automatizable al cargar la herramienta // por Hacer
+            "updated_at": "", // Última fecha en que se modificó la información del recurso (dd/mm/aaaa hh:mm) | Se puede automatizar con script/checker
+            "revision": 0 // Número de edición/revisión del elemento dentro del catálogo | Aumenta cada vez que se actualiza el recurso | Automatizable
+        },
+        "badges": {
+            "popular": false, // true cuando la herramienta tiene alto uso (clicks/likes) y buena aceptación. Ej: clicks >= 50, likes >= 5, sin reports.
+            "new": false, // true durante un periodo desde su creación (p.ej. primeros 30 días desde admin.created_at). Luego pasa a false automáticamente.
+            "reported": false, // true si existen reportes de fallos u obsolescencia (stats.reports > 0). Útil para revisar o despriorizar la herramienta.
+            "recommended": false // true si es una herramienta destacada. Puede definirse manualmente o por regla (verificada, muy usada y bien valorada).
+        },
+        "tags_global": [
+            "dns",
+            "correo",
+            "infraestructura",
+            "dominio"
+        ],
+        // =======================================================================
+        // Lista sugerida de tags estandarizados para usar en OSINT Deck
+        // * No se cargan en este objeto, solo sirven de referencia documental *
+        // =======================================================================
+        //
+        // 🔹 Infraestructura y Redes
+        // dns, dominio, ip, subdominio, whois, ptr, nslookup, mx, cname,
+        // registro, resolucion, alojamiento, cdn, cloudflare, hosting,
+        // puerto, escaneo, red, routing, traceroute, ping
+        //
+        // 🔹 Correo y Seguridad de Email
+        // correo, email, smtp, imap, pop3, mx, spf, dmarc, dkim, headers,
+        // filtrado, reputacion, deliverability, blacklist, anti-spam
+        //
+        // 🔹 Seguridad Web y Vulnerabilidades
+        // seguridad, vulnerabilidad, exploit, ssl, tls, cve, malware,
+        // escaneo-web, fingerprinting, waf
+        //
+        // 🔹 OSINT humano / SOCMINT
+        // personas, identidad, redes-sociales, username, perfil, metadatos,
+        // foto, leaks, brechas, phone, geolocalizacion
+        //
+        // 🔹 Malware / Archivos
+        // hash, virustotal, yara, analisis-binario, sandbox, comportamiento
+        //
+        // 🔹 Automatización y APIs
+        // api, automation, scripting, integracion, export, json
+        //
+        // 🔹 Inteligencia y análisis
+        // informes, datos, recopilacion, correlacion, enrichment, visualization,
+        // contexto, mitre, indicadores, threat-intel
+        //
+        // 🔹 Otros útiles
+        // repositorio, documentacion, open-source, analisis, reporte,
+        // herramientas-web, utilidad, monitoreo
+        //
+        // =======================================================================
+        // Objetivo: estandarizar tags para mejorar búsquedas, filtros y categorías
+        // =======================================================================
+        // Reglas recomendadas para uso:
+        // - tags deben ser cortos, en minúsculas y sin espacios
+        // - usar palabras que representen funcionalidad, no nombre comercial
+        // - no saturar: máximo 4-7 tags por card
+        // - todos los tags deben existir en esta lista o ser incorporados a ella
+        // =======================================================================
+        //
+        // En el futuro se puede automatizar autocompletado desde esta librería
+        // para evitar tags duplicados o inconsistentes.
+        // =======================================================================
+        "osint_context": {
+            "uso_principal": "Recolección de infraestructura y análisis de correo", // ¿Para qué se usa esta herramienta en OSINT?
+            "fase_osint": [
+                "Footprinting", // Identificación temprana del objetivo
+                "Discovery" // Descubrimiento de superficie expuesta
+            ],
+            "nivel_tecnico": "Básico / Intermedio" // Nivel recomendado para usarla // Básico, Intermedio, Avanzado
+        },
+        "cards": [
+            {
+                "title": "Portal principal",
+                // Nombre visible de la card en OSINT Deck
+                "desc": "Entrada principal a MxToolBox. Desde aquí se accede al panel general para ejecutar diagnósticos de DNS, correo, reputación y otros módulos especializados.",
+                // Descripción clara del propósito de esta card:
+                // Qué hace, para qué sirve y por qué el usuario debería abrirla.
+                "url": "https://mxtoolbox.com/",
+                // Enlace directo al sitio principal
+                "category": {
+                    "group": "General",
+                    "type": "Dashboard",
+                    "code": "GEN_DASH"
+                },
+                // classification = Qué tipo de herramienta es dentro del Deck
+                // group  = macro área funcional
+                // type   = subcategoría dentro del grupo
+                // code   = identificador único útil para filtrado/estilo/íconos
+                "tags": [
+                    "dns",
+                    "correo",
+                    "reputacion",
+                    "infraestructura"
+                ],
+                // tags = palabras clave para búsquedas internas
+                // A diferencia de category, tags describe conceptos técnicos asociados
+                "input": {
+                    "types": [
+                        "dominio"
+                    ],
+                    // none → No requiere dato inicial para funcionar.
+                    // Esta card abre el panel visual general y no ejecuta una consulta específica.
+                    "example": ""
+                    // No aplica ejemplo porque no solicita input.
+                    // Las tools que sí reciben domain/ip/email/hash mostrarán un ejemplo automático.
+                }
+            },
+            {
+                "title": "SuperTool — Diagnóstico integral DNS/MX",
+                "desc": "Consulta global para dominios, MX, WHOIS, listas negras, registros SPF/DMARC y SMTP.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=input",
+                "category": "Dominios / DNS",
+                "tags": [
+                    "dns",
+                    "mx",
+                    "spf",
+                    "dmarc",
+                    "smtp",
+                    "whois",
+                    "blacklist"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip",
+                        "host"
+                    ],
+                    "example": "example.com"
+                }
+            },
+            {
+                "title": "MX Lookup",
+                "desc": "Obtiene registros MX y su prioridad para tu dominio.",
+                "url": "https://mxtoolbox.com/MXLookup.aspx?input=input",
+                "category": "Correo / MX",
+                "tags": [
+                    "mx",
+                    "dns",
+                    "correo"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com"
+                }
+            },
+            {
+                "title": "SPF Record Lookup",
+                "desc": "Verifica registro SPF para validación de envío de correo.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=spf:input",
+                "category": "Correo / SPF",
+                "tags": [
+                    "correo",
+                    "spf",
+                    "email"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com"
+                }
+            },
+            {
+                "title": "Blacklist Check",
+                "desc": "Verifica reputación en listas negras por IP o dominio.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:input",
+                "category": "Reputación / Blacklist",
+                "tags": [
+                    "blacklist",
+                    "seguridad",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "ip",
+                        "domain"
+                    ],
+                    "example": "8.8.8.8"
+                }
+            },
+            {
+                "title": "DMARC Analyzer",
+                "desc": "Analiza registro DMARC y su política configurada.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=dmarc:input",
+                "category": "Correo / DMARC",
+                "tags": [
+                    "dmarc",
+                    "correo",
+                    "email",
+                    "seguridad"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com"
+                }
+            },
+            {
+                "title": "WHOIS Lookup",
+                "desc": "Obtiene datos registrales y expiración del dominio.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=whois:input",
+                "category": "Dominios / WHOIS",
+                "tags": [
+                    "whois",
+                    "dominios",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com"
+                }
+            },
+            {
+                "title": "Reverse DNS / PTR",
+                "desc": "Realiza PTR para detectar nombre asociado a IP.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=ptr:input",
+                "category": "DNS / IP Mapping",
+                "tags": [
+                    "dns",
+                    "infraestructura",
+                    "ptr"
+                ],
+                "input": {
+                    "types": [
+                        "ip"
+                    ],
+                    "example": "192.0.2.1"
+                }
+            },
+            {
+                "title": "SMTP Diagnostic",
+                "desc": "Prueba entrega SMTP, conectividad y banner del servidor.",
+                "url": "https://mxtoolbox.com/diagnostic.aspx?input=input",
+                "category": "Correo / SMTP",
+                "tags": [
+                    "smtp",
+                    "correo",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip",
+                        "host"
+                    ],
+                    "example": "mail.example.com"
+                }
+            },
+            {
+                "title": "Email Headers Analyzer",
+                "desc": "Analiza cabeceras para rastrear rutas, retrasos y autenticaciones.",
+                "url": "https://mxtoolbox.com/EmailHeaders.aspx",
+                "category": "Correo / Headers",
+                "tags": [
+                    "correo",
+                    "email",
+                    "headers"
+                ],
+                "input": {
+                    "types": [
+                        "headers"
+                    ],
+                    "example": "Received: from mail.example.com..."
+                }
+            }
+        ]
+    }
+]
