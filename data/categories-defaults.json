@@ -1,0 +1,449 @@
+[
+  {
+    "code": "GENERAL__PORTAL__DASHBOARD",
+    "group": "General",
+    "type": "Dashboard",
+    "label": "General / Dashboard",
+    "icon": "layout-dashboard",
+    "color": "#1e293b",
+    "descripcion": "Vistas de inicio, paneles generales o portales sin análisis directo.",
+    "fase_osint": [],
+    "data_types": []
+  },
+  {
+    "code": "GENERAL__TOOL__MULTI",
+    "group": "General",
+    "type": "Multi-Tool",
+    "label": "General / Multi-Tool",
+    "icon": "tool",
+    "color": "#0d9488",
+    "descripcion": "Herramientas multifunción que combinan DNS, IP, WHOIS, correo, reputación y otros en una sola interfaz.",
+    "fase_osint": ["Footprinting", "Discovery", "Analysis"],
+    "data_types": ["domain", "ip", "url", "email", "host"]
+  },
+
+  {
+    "code": "MAIL__DNS__MX_LOOKUP",
+    "group": "Correo",
+    "type": "MX Lookup",
+    "label": "Correo / MX",
+    "icon": "mail",
+    "color": "#2563eb",
+    "descripcion": "Consulta registros MX y prioridades de servidores de correo asociados a un dominio.",
+    "fase_osint": ["Footprinting"],
+    "data_types": ["domain"]
+  },
+  {
+    "code": "MAIL__AUTH__SPF_CHECK",
+    "group": "Correo",
+    "type": "SPF Check",
+    "label": "Correo / SPF",
+    "icon": "shield",
+    "color": "#7c3aed",
+    "descripcion": "Validación de registros SPF para verificar qué servidores están autorizados a enviar correo en nombre de un dominio.",
+    "fase_osint": ["Discovery", "Analysis"],
+    "data_types": ["domain"]
+  },
+  {
+    "code": "MAIL__AUTH__DMARC_CHECK",
+    "group": "Correo",
+    "type": "DMARC Check",
+    "label": "Correo / DMARC",
+    "icon": "shield-check",
+    "color": "#9333ea",
+    "descripcion": "Revisión de políticas DMARC, alineamiento de SPF/DKIM y acciones de protección de dominio frente a suplantación.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["domain"]
+  },
+  {
+    "code": "MAIL__AUTH__DKIM_CHECK",
+    "group": "Correo",
+    "type": "DKIM Check",
+    "label": "Correo / DKIM",
+    "icon": "key",
+    "color": "#4f46e5",
+    "descripcion": "Validación de firmas DKIM y claves públicas usadas en los mensajes de correo.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["domain", "headers"]
+  },
+  {
+    "code": "MAIL__PROTO__SMTP_TEST",
+    "group": "Correo",
+    "type": "SMTP Test",
+    "label": "Correo / SMTP",
+    "icon": "send",
+    "color": "#3b82f6",
+    "descripcion": "Pruebas de conectividad SMTP, banner del servidor y respuesta del servicio de correo.",
+    "fase_osint": ["Discovery"],
+    "data_types": ["domain", "ip", "host"]
+  },
+  {
+    "code": "MAIL__ANALYSIS__HEADERS",
+    "group": "Correo",
+    "type": "Headers Analysis",
+    "label": "Correo / Headers",
+    "icon": "file-search",
+    "color": "#0ea5e9",
+    "descripcion": "Análisis de cabeceras de correo para reconstruir rutas, detectar retrasos, saltos de servidores y autenticación.",
+    "fase_osint": ["Analysis", "Pivoting"],
+    "data_types": ["headers", "email"]
+  },
+
+  {
+    "code": "INFRA__DNS__LOOKUP",
+    "group": "Infraestructura",
+    "type": "DNS Lookup",
+    "label": "Infraestructura / DNS",
+    "icon": "server",
+    "color": "#475569",
+    "descripcion": "Consultas de registros DNS (A, AAAA, TXT, NS, CNAME) para mapear la infraestructura asociada a un dominio o host.",
+    "fase_osint": ["Footprinting"],
+    "data_types": ["domain", "host"]
+  },
+  {
+    "code": "INFRA__WHOIS__DOMAIN_INFO",
+    "group": "Infraestructura",
+    "type": "WHOIS Domain",
+    "label": "Infraestructura / WHOIS",
+    "icon": "search",
+    "color": "#64748b",
+    "descripcion": "Información WHOIS de dominios: titulares, contactos, fechas de creación/expiración y registradores.",
+    "fase_osint": ["Footprinting", "Infrastructure Mapping"],
+    "data_types": ["domain", "email", "org"]
+  },
+  {
+    "code": "INFRA__DNS__PTR_LOOKUP",
+    "group": "Infraestructura",
+    "type": "PTR Lookup",
+    "label": "Infraestructura / PTR",
+    "icon": "rotate-ccw",
+    "color": "#8b939f",
+    "descripcion": "Consultas de PTR (Reverse DNS) para obtener hostnames asociados a una dirección IP.",
+    "fase_osint": ["Footprinting"],
+    "data_types": ["ip"]
+  },
+  {
+    "code": "INFRA__IP__GEOINFO",
+    "group": "Infraestructura",
+    "type": "IP Information",
+    "label": "Infraestructura / IP Info",
+    "icon": "map-pin",
+    "color": "#334155",
+    "descripcion": "Información de IP: ASN, ISP, ubicación aproximada, rangos y bloques asociados.",
+    "fase_osint": ["Footprinting", "Analysis"],
+    "data_types": ["ip", "asn"]
+  },
+  {
+    "code": "INFRA__BGP__ROUTES",
+    "group": "Infraestructura",
+    "type": "BGP Routes",
+    "label": "Infraestructura / BGP",
+    "icon": "route",
+    "color": "#1e293b",
+    "descripcion": "Consulta de rutas BGP, prefijos, peers y topología de red relacionada a un ASN o rango IP.",
+    "fase_osint": ["Mapping", "Discovery"],
+    "data_types": ["asn", "ip", "prefix"]
+  },
+
+  {
+    "code": "SECURITY__REPUTATION__BLACKLIST_CHECK",
+    "group": "Seguridad",
+    "type": "Blacklist Check",
+    "label": "Seguridad / Blacklist",
+    "icon": "alert-triangle",
+    "color": "#b91c1c",
+    "descripcion": "Verificación de reputación e inclusión en listas negras para IP, dominios o correos.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["ip", "domain", "email"]
+  },
+  {
+    "code": "SECURITY__IOC__LOOKUP",
+    "group": "Seguridad",
+    "type": "IOC Lookup",
+    "label": "Seguridad / IOC Lookup",
+    "icon": "fingerprint",
+    "color": "#dc2626",
+    "descripcion": "Búsqueda de indicadores de compromiso (IP, dominio, URL, hash) en fuentes de threat intel.",
+    "fase_osint": ["Threat Hunting", "Analysis"],
+    "data_types": ["ip", "domain", "url", "hash"]
+  },
+  {
+    "code": "SECURITY__TLS__CERT_ANALYSIS",
+    "group": "Seguridad",
+    "type": "SSL/TLS Certificates",
+    "label": "Seguridad / Certificados SSL",
+    "icon": "badge-check",
+    "color": "#0f766e",
+    "descripcion": "Análisis de certificados SSL/TLS, CAs emisoras, fechas de validez y huellas digitales.",
+    "fase_osint": ["Footprinting", "Analysis"],
+    "data_types": ["domain", "ip"]
+  },
+
+  {
+    "code": "CRYPTO__HASH__LOOKUP",
+    "group": "Criptografía",
+    "type": "Hash Lookup",
+    "label": "Criptografía / Hash",
+    "icon": "lock",
+    "color": "#6b21a8",
+    "descripcion": "Resolución, búsqueda o comparación de hashes (MD5, SHA1, SHA256) en motores de reputación o cracking.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["hash", "string"]
+  },
+  {
+    "code": "CRYPTO__ENCODING__DECODE",
+    "group": "Criptografía",
+    "type": "Encoding/Decoding",
+    "label": "Criptografía / Encoding",
+    "icon": "file-code",
+    "color": "#9333ea",
+    "descripcion": "Transformación y decodificación de datos (Base64, ROT13, Hex, URL encoding y similares).",
+    "fase_osint": ["Analysis"],
+    "data_types": ["string", "text"]
+  },
+
+  {
+    "code": "MALWARE__ANALYSIS__STATIC",
+    "group": "Malware",
+    "type": "Static Analysis",
+    "label": "Malware / Estático",
+    "icon": "code",
+    "color": "#7f1d1d",
+    "descripcion": "Análisis estático de archivos: strings, cabeceras, secciones, firmas y reglas YARA.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["hash", "file", "binary"]
+  },
+  {
+    "code": "MALWARE__ANALYSIS__SANDBOX",
+    "group": "Malware",
+    "type": "Sandbox / Dynamic",
+    "label": "Malware / Sandbox",
+    "icon": "flask",
+    "color": "#991b1b",
+    "descripcion": "Ejecución controlada de muestras en sandbox para observar comportamiento, red e indicadores generados.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["file"]
+  },
+
+  {
+    "code": "SOCMINT__USER__DISCOVERY",
+    "group": "SOCMINT",
+    "type": "User Discovery",
+    "label": "SOCMINT / Usuarios",
+    "icon": "user-search",
+    "color": "#0369a1",
+    "descripcion": "Búsqueda y correlación de aliases, usernames o manejos de usuario en distintas plataformas.",
+    "fase_osint": ["Profiling"],
+    "data_types": ["username", "email"]
+  },
+  {
+    "code": "SOCMINT__PHONE__LOOKUP",
+    "group": "SOCMINT",
+    "type": "Phone Lookup",
+    "label": "SOCMINT / Teléfonos",
+    "icon": "phone",
+    "color": "#0891b2",
+    "descripcion": "Lookup de números telefónicos: país, carrier, tipo de línea y posibles asociaciones.",
+    "fase_osint": ["Profiling"],
+    "data_types": ["phone"]
+  },
+
+  {
+    "code": "METADATA__DOC__ANALYSIS",
+    "group": "Metadatos",
+    "type": "Document Metadata",
+    "label": "Metadatos / Documentos",
+    "icon": "file-text",
+    "color": "#94a3b8",
+    "descripcion": "Extracción de metadatos de documentos (PDF, Office, etc.): autoría, software, timestamps.",
+    "fase_osint": ["Discovery", "Analysis"],
+    "data_types": ["file"]
+  },
+  {
+    "code": "METADATA__IMAGE__EXIF",
+    "group": "Metadatos",
+    "type": "Image EXIF",
+    "label": "Metadatos / EXIF",
+    "icon": "image",
+    "color": "#64748b",
+    "descripcion": "Extracción de metadatos EXIF en imágenes: GPS, dispositivo, modelo de cámara y fechas.",
+    "fase_osint": ["Discovery"],
+    "data_types": ["image"]
+  },
+
+  {
+    "code": "WEB__TECH__FINGERPRINT",
+    "group": "Web",
+    "type": "Fingerprinting",
+    "label": "Web / Fingerprinting",
+    "icon": "globe",
+    "color": "#0f172a",
+    "descripcion": "Identificación de tecnologías web: frameworks, CMS, servidores, librerías y servicios asociados.",
+    "fase_osint": ["Discovery"],
+    "data_types": ["url", "domain"]
+  },
+  {
+    "code": "WEB__VULN__SCANNER",
+    "group": "Web",
+    "type": "Vulnerability Scan",
+    "label": "Web / Vulnerabilidades",
+    "icon": "shield-alert",
+    "color": "#b91c1c",
+    "descripcion": "Escaneo de vulnerabilidades HTTP/HTTPS, headers inseguros, CVEs comunes y malas configuraciones.",
+    "fase_osint": ["Analysis"],
+    "data_types": ["domain", "url"]
+  },
+
+  {
+    "code": "CLOUD__STORAGE__BUCKET_DISCOVERY",
+    "group": "Cloud",
+    "type": "Bucket Discovery",
+    "label": "Cloud / Buckets",
+    "icon": "cloud",
+    "color": "#0ea5e9",
+    "descripcion": "Descubrimiento y comprobación de buckets o almacenamiento en la nube (AWS S3, Azure, GCP).",
+    "fase_osint": ["Discovery"],
+    "data_types": ["url", "domain"]
+  },
+
+  {
+    "code": "BLOCKCHAIN__WALLET__LOOKUP",
+    "group": "Blockchain",
+    "type": "Wallet Lookup",
+    "label": "Blockchain / Wallet Lookup",
+    "icon": "wallet",
+    "color": "#ca8a04",
+    "descripcion": "Análisis de wallets: saldo, transacciones históricas y relaciones entre direcciones.",
+    "fase_osint": ["Crypto Intel"],
+    "data_types": ["wallet", "tx_hash"]
+  },
+
+  {
+    "code": "SEARCH__ENGINE__GENERAL",
+    "group": "Search",
+    "type": "Search Engine",
+    "label": "Search / Motores",
+    "icon": "search",
+    "color": "#3b82f6",
+    "descripcion": "Motores de búsqueda generales (Google, Bing, DuckDuckGo) y sus capacidades de filtrado.",
+    "fase_osint": ["Discovery", "Footprinting"],
+    "data_types": ["text", "domain", "ip"]
+  },
+  {
+    "code": "SEARCH__ENGINE__DORKS",
+    "group": "Search",
+    "type": "Dorking",
+    "label": "Search / Dorks",
+    "icon": "terminal",
+    "color": "#1d4ed8",
+    "descripcion": "Herramientas de dorking avanzado para encontrar archivos, configuraciones y paneles expuestos.",
+    "fase_osint": ["Discovery", "Vulnerability Assessment"],
+    "data_types": ["domain", "text"]
+  },
+
+  {
+    "code": "INFRA__IOT__SEARCH",
+    "group": "IoT",
+    "type": "IoT Search",
+    "label": "IoT / Dispositivos",
+    "icon": "radio",
+    "color": "#b91c1c",
+    "descripcion": "Búsqueda de dispositivos conectados a internet (cámaras, servidores, SCADA, IoT).",
+    "fase_osint": ["Discovery", "Enumeration"],
+    "data_types": ["ip", "port", "org"]
+  },
+
+  {
+    "code": "DEV__CODE__REPOSITORY",
+    "group": "Dev",
+    "type": "Code Search",
+    "label": "Dev / Repositorios",
+    "icon": "git-branch",
+    "color": "#171717",
+    "descripcion": "Búsqueda en repositorios de código (GitHub, GitLab) para encontrar secretos, keys o código fuente.",
+    "fase_osint": ["Discovery", "Analysis"],
+    "data_types": ["text", "org", "domain"]
+  },
+  {
+    "code": "DEV__CODE__SECRETS",
+    "group": "Dev",
+    "type": "Secret Scanning",
+    "label": "Dev / Secretos",
+    "icon": "key",
+    "color": "#dc2626",
+    "descripcion": "Identificación de credenciales, tokens y claves API expuestas en código público.",
+    "fase_osint": ["Analysis", "Vulnerability Assessment"],
+    "data_types": ["text", "domain"]
+  },
+
+  {
+    "code": "MEDIA__IMAGE__REVERSE",
+    "group": "Media",
+    "type": "Reverse Image",
+    "label": "Media / Reverse Search",
+    "icon": "image",
+    "color": "#be185d",
+    "descripcion": "Búsqueda inversa de imágenes para encontrar perfiles, ubicaciones o fuentes originales.",
+    "fase_osint": ["Analysis", "Geolocation"],
+    "data_types": ["url", "image"]
+  },
+
+  {
+    "code": "WEB__HISTORY__ARCHIVE",
+    "group": "Web",
+    "type": "Web Archive",
+    "label": "Web / Historial",
+    "icon": "history",
+    "color": "#475569",
+    "descripcion": "Consultas a archivos históricos de la web (Wayback Machine, Archive.today).",
+    "fase_osint": ["Analysis", "History"],
+    "data_types": ["url", "domain"]
+  },
+
+  {
+    "code": "SOCMINT__BREACH__CHECK",
+    "group": "SOCMINT",
+    "type": "Breach Check",
+    "label": "SOCMINT / Brechas",
+    "icon": "shield-alert",
+    "color": "#ef4444",
+    "descripcion": "Verificación de correos o usuarios en bases de datos filtradas (Leaks).",
+    "fase_osint": ["Analysis", "Reputation"],
+    "data_types": ["email", "username", "phone"]
+  },
+  {
+    "code": "SOCMINT__MEDIA__SEARCH",
+    "group": "SOCMINT",
+    "type": "Social Search",
+    "label": "SOCMINT / Redes",
+    "icon": "share-2",
+    "color": "#0ea5e9",
+    "descripcion": "Búsqueda de menciones, usuarios y actividad en redes sociales.",
+    "fase_osint": ["Profiling", "Discovery"],
+    "data_types": ["username", "text"]
+  },
+
+  {
+    "code": "DATA__LEAK__SEARCH",
+    "group": "Data Leaks",
+    "type": "Leak Search",
+    "label": "Leaks / Búsqueda",
+    "icon": "database-off",
+    "color": "#b91c1c",
+    "descripcion": "Búsqueda de información filtrada en brechas de datos, pastebins y dark web indexes.",
+    "fase_osint": ["Discovery", "Analysis"],
+    "data_types": ["email", "domain", "text"]
+  },
+
+  {
+    "code": "SECURITY__THREAT__INTEL",
+    "group": "Threat Intel",
+    "type": "Threat Feeds",
+    "label": "Threat Intel / Feeds",
+    "icon": "radar",
+    "color": "#7f1d1d",
+    "descripcion": "Consultas a fuentes de inteligencia de amenazas para correlacionar indicadores (IOCs) y ruido de internet.",
+    "fase_osint": ["Analysis", "Threat Hunting"],
+    "data_types": ["ip", "hash", "domain"]
+  }
+]

@@ -1,0 +1,394 @@
+/* OSINT Deck - CSS Fixes for Card Layout */
+
+/* Override card grid for better layout - NO STRETCH */
+.osint-grid {
+    margin: 2rem auto 2rem !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 320px)) !important;
+    gap: 1.5rem !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    padding-bottom: 2rem !important;
+}
+
+/* Fix deck container - CONTAIN the stack effect */
+.osint-deck {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    min-height: auto !important;
+    height: auto !important;
+    display: flex !important;
+    padding: 10px !important;
+    margin: 0 auto !important;
+}
+
+/* Fix card to be flexible height */
+.osint-card {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 400px !important;
+    max-height: none !important;
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+/* CORRECT stack effect - visible right edges with depth - UP TO 5 LAYERS */
+.osint-card.layer-0 {
+    position: relative !important;
+    z-index: 6 !important;
+    pointer-events: auto !important;
+}
+
+.osint-card.layer-1 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    transform: translateX(2px) translateY(1px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.97) !important;
+    z-index: 5 !important;
+    pointer-events: none !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: inherit !important;
+}
+
+.osint-card.layer-2 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    transform: translateX(4px) translateY(2px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.94) !important;
+    z-index: 4 !important;
+    pointer-events: none !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: inherit !important;
+}
+
+.osint-card.layer-3 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    transform: translateX(6px) translateY(3px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.91) !important;
+    z-index: 3 !important;
+    pointer-events: none !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: inherit !important;
+}
+
+.osint-card.layer-4 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    transform: translateX(8px) translateY(4px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.88) !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: inherit !important;
+}
+
+.osint-card.layer-5 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    margin: 10px !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    transform: translateX(10px) translateY(5px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.85) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: inherit !important;
+}
+
+/* Hide edge effect - using proper stack instead */
+.osint-edge {
+    display: none !important;
+}
+
+/* Better title visibility */
+.osint-ttl {
+    font-size: 1.15rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
+    word-break: break-word !important;
+    color: var(--osint-text) !important;
+}
+
+/* Better description visibility */
+.osint-sub {
+    font-size: 0.92rem !important;
+    line-height: 1.5 !important;
+    -webkit-line-clamp: 5 !important;
+    margin-top: 10px !important;
+}
+
+/* Larger favicon */
+.osint-fav {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+}
+
+.osint-fav img {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Better spacing for card header */
+.osint-card-hdr {
+    gap: 14px !important;
+    margin-bottom: 14px !important;
+}
+
+/* Better badge visibility */
+.osd-chip {
+    font-size: 0.82rem !important;
+    padding: 5px 10px !important;
+}
+
+/* Better meta badges */
+.osd-meta-badges {
+    margin: 12px 0 10px !important;
+    padding-top: 8px !important;
+}
+
+.osd-badge {
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+}
+
+/* Better button with sliding fill effect */
+.osint-btn-animated {
+    height: 40px !important;
+    min-width: 150px !important;
+    font-size: 0.95rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Sliding fill effect - like battery charging */
+.osint-btn-animated::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    transition: left 0.5s ease !important;
+    z-index: 0 !important;
+}
+
+/* Light mode - white fill */
+.osint-wrap[data-theme="light"] .osint-btn-animated::before,
+html:not([data-site-skin="dark"]) .osint-btn-animated::before {
+    background: #fff !important;
+}
+
+/* Dark mode - gray fill */
+.osint-wrap[data-theme="dark"] .osint-btn-animated::before,
+html[data-site-skin="dark"] .osint-btn-animated::before {
+    background: #444 !important;
+}
+
+/* Hover - slide the fill from left to right */
+.osint-btn-animated:hover::before {
+    left: 0 !important;
+}
+
+/* Make text and icon relative so they appear above the fill */
+.osint-btn-animated .text,
+.osint-btn-animated .icon {
+    position: relative !important;
+    z-index: 1 !important;
+    transition: color 0.3s ease !important;
+}
+
+/* Icon rotation on hover - smooth like battery effect */
+.osint-btn-animated .icon {
+    transition: color 0.3s ease, transform 0.5s ease !important;
+}
+
+.osint-btn-animated:hover .icon {
+    transform: rotate(45deg) !important;
+}
+
+/* Button icon color - adapts to theme - LIGHT MODE */
+.osint-wrap[data-theme="light"] .osint-btn-animated .icon,
+html:not([data-site-skin="dark"]) .osint-btn-animated .icon {
+    color: #000 !important;
+}
+
+/* Button icon color - adapts to theme - DARK MODE */
+.osint-wrap[data-theme="dark"] .osint-btn-animated .icon,
+html[data-site-skin="dark"] .osint-btn-animated .icon {
+    color: #fff !important;
+}
+
+/* Button hover effect - LIGHT MODE */
+.osint-wrap[data-theme="light"] .osint-btn-animated:hover,
+html:not([data-site-skin="dark"]) .osint-btn-animated:hover {
+    border-color: #000 !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-btn-animated:hover .text,
+html:not([data-site-skin="dark"]) .osint-btn-animated:hover .text,
+.osint-wrap[data-theme="light"] .osint-btn-animated:hover .icon,
+html:not([data-site-skin="dark"]) .osint-btn-animated:hover .icon {
+    color: #000 !important;
+}
+
+/* Button hover effect - DARK MODE */
+.osint-wrap[data-theme="dark"] .osint-btn-animated:hover,
+html[data-site-skin="dark"] .osint-btn-animated:hover {
+    border-color: #fff !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-btn-animated:hover .text,
+html[data-site-skin="dark"] .osint-btn-animated:hover .text,
+.osint-wrap[data-theme="dark"] .osint-btn-animated:hover .icon,
+html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
+    color: #fff !important;
+}
+
+/* Tablet responsive - prevent stretch */
+@media (max-width: 1024px) {
+    .osint-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 320px)) !important;
+        justify-content: center !important;
+    }
+
+    /* Smaller offset on tablet */
+    .osint-card.layer-1 {
+        transform: translateX(3px) translateY(1.5px) !important;
+    }
+
+    .osint-card.layer-2 {
+        transform: translateX(6px) translateY(3px) !important;
+    }
+
+    .osint-card.layer-3 {
+        transform: translateX(9px) translateY(4.5px) !important;
+    }
+
+    .osint-card.layer-4 {
+        transform: translateX(12px) translateY(6px) !important;
+    }
+
+    .osint-card.layer-5 {
+        transform: translateX(15px) translateY(7.5px) !important;
+    }
+}
+
+/* Mobile responsive - prevent stretch */
+@media (max-width: 768px) {
+    .osint-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 300px)) !important;
+        gap: 2rem !important;
+        justify-content: center !important;
+        margin-top: 2.5rem !important;
+    }
+
+    .osint-deck {
+        max-width: 300px !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .osint-card {
+        min-height: 380px !important;
+        padding: 18px !important;
+    }
+
+    /* Minimal offset on mobile */
+    .osint-card.layer-1 {
+        transform: translateX(2px) translateY(1px) !important;
+    }
+
+    .osint-card.layer-2 {
+        transform: translateX(4px) translateY(2px) !important;
+    }
+
+    .osint-card.layer-3 {
+        transform: translateX(6px) translateY(3px) !important;
+    }
+
+    .osint-card.layer-4 {
+        transform: translateX(8px) translateY(4px) !important;
+    }
+
+    .osint-card.layer-5 {
+        transform: translateX(10px) translateY(5px) !important;
+    }
+}
+
+/* Small mobile - single column centered, NO STACK */
+@media (max-width: 480px) {
+    .osint-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 320px !important;
+        margin: 3rem auto 2rem !important;
+        gap: 2.5rem !important;
+    }
+
+    .osint-deck {
+        max-width: 100% !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .osint-card {
+        min-height: 360px !important;
+    }
+
+    /* CRITICAL: Disable card stacking effect on mobile */
+    .osint-card.layer-1,
+    .osint-card.layer-2,
+    .osint-card.layer-3,
+    .osint-card.layer-4,
+    .osint-card.layer-5 {
+        display: none !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .osint-grid {
+        max-width: 280px !important;
+        gap: 2rem !important;
+        margin-top: 2.5rem !important;
+    }
+
+    .osint-card {
+        padding: 16px !important;
+    }
+}

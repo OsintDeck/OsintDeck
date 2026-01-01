@@ -1,0 +1,206 @@
+[
+    {
+        "category": "Google - Archivos Sensibles",
+        "platform": "Google",
+        "dorks": [
+            {
+                "title": "Directory Listing",
+                "query": "site:{target} intitle:index.of",
+                "desc": "Busca directorios abiertos que listan archivos.",
+                "engine": "google"
+            },
+            {
+                "title": "Config Files",
+                "query": "site:{target} ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini",
+                "desc": "Busca archivos de configuración expuestos públicamente.",
+                "engine": "google"
+            },
+            {
+                "title": "Database Files",
+                "query": "site:{target} ext:sql | ext:dbf | ext:mdb",
+                "desc": "Busca volcados o archivos de base de datos.",
+                "engine": "google"
+            },
+            {
+                "title": "Log Files",
+                "query": "site:{target} ext:log",
+                "desc": "Busca archivos de registro (logs).",
+                "engine": "google"
+            },
+            {
+                "title": "Backup Files",
+                "query": "site:{target} ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup",
+                "desc": "Busca archivos de respaldo antiguos.",
+                "engine": "google"
+            }
+        ]
+    },
+    {
+        "category": "Google - Login & Admin",
+        "platform": "Google",
+        "dorks": [
+            {
+                "title": "Login Pages",
+                "query": "site:{target} inurl:login | inurl:signin | intitle:Login | intitle:\"sign in\" | inurl:auth",
+                "desc": "Busca páginas de inicio de sesión.",
+                "engine": "google"
+            },
+            {
+                "title": "Admin Portals",
+                "query": "site:{target} inurl:admin | inurl:administrator | intitle:\"admin login\" | intitle:\"administrator login\"",
+                "desc": "Busca paneles de administración.",
+                "engine": "google"
+            }
+        ]
+    },
+    {
+        "category": "Bing - Reconocimiento",
+        "platform": "Bing",
+        "dorks": [
+            {
+                "title": "IP Search",
+                "query": "ip:{target}",
+                "desc": "Busca sitios alojados en una IP específica (Bing Only).",
+                "engine": "bing"
+            },
+            {
+                "title": "Public Documents",
+                "query": "site:{target} filetype:pdf | filetype:doc | filetype:xls | filetype:ppt",
+                "desc": "Busca documentos públicos indexados por Bing.",
+                "engine": "bing"
+            },
+            {
+                "title": "Subdomains (No WWW)",
+                "query": "site:{target} -www",
+                "desc": "Intenta encontrar subdominios excluyendo el principal.",
+                "engine": "bing"
+            }
+        ]
+    },
+    {
+        "category": "GitHub - Código & Secretos",
+        "platform": "GitHub",
+        "dorks": [
+            {
+                "title": "Secrets Search",
+                "query": "{target} AND (password OR secret OR key OR token) type:Code",
+                "desc": "Busca secretos asociados al target en código.",
+                "engine": "github"
+            },
+            {
+                "title": "Dotfiles",
+                "query": "{target} filename:.env OR filename:.npmrc OR filename:.bash_history type:Code",
+                "desc": "Busca archivos de configuración ocultos expuestos.",
+                "engine": "github"
+            },
+            {
+                "title": "AWS Keys",
+                "query": "{target} AND (AKIA OR A3T OR AGPA OR AIDA OR AROA OR AIPA OR ANPA OR ANVA OR ASIA) type:Code",
+                "desc": "Busca claves de AWS asociadas al target.",
+                "engine": "github"
+            }
+        ]
+    },
+    {
+        "category": "DuckDuckGo - Privacidad",
+        "platform": "DuckDuckGo",
+        "dorks": [
+            {
+                "title": "Site Search",
+                "query": "site:{target}",
+                "desc": "Búsqueda estándar de sitio en DDG.",
+                "engine": "duckduckgo"
+            },
+            {
+                "title": "Files Search",
+                "query": "site:{target} filetype:pdf",
+                "desc": "Búsqueda de archivos PDF en DDG.",
+                "engine": "duckduckgo"
+            }
+        ]
+    },
+    {
+        "category": "Twitter/X - Social",
+        "platform": "Twitter",
+        "dorks": [
+            {
+                "title": "Mentions Search",
+                "query": "{target}",
+                "desc": "Busca menciones del dominio o marca en Twitter.",
+                "engine": "twitter"
+            },
+             {
+                "title": "Leaked/Hacked",
+                "query": "{target} (hacked OR leaked OR database OR breach)",
+                "desc": "Busca reportes de hackeos o filtraciones en Twitter.",
+                "engine": "twitter"
+            }
+        ]
+    },
+    {
+        "category": "Shodan - Infraestructura",
+        "platform": "Shodan",
+        "dorks": [
+            {
+                "title": "Hostname Search",
+                "query": "hostname:{target}",
+                "desc": "Busca dispositivos con el hostname especificado.",
+                "engine": "shodan"
+            },
+            {
+                "title": "Organization Search",
+                "query": "org:\"{target}\"",
+                "desc": "Busca dispositivos pertenecientes a la organización.",
+                "engine": "shodan"
+            },
+            {
+                "title": "SSL Certificate",
+                "query": "ssl:\"{target}\"",
+                "desc": "Busca certificados SSL asociados al dominio.",
+                "engine": "shodan"
+            }
+        ]
+    },
+    {
+        "category": "Yandex - RU/CIS",
+        "platform": "Yandex",
+        "dorks": [
+            {
+                "title": "Site Search",
+                "query": "site:{target}",
+                "desc": "Búsqueda en Yandex (útil para targets en región CIS).",
+                "engine": "yandex"
+            },
+             {
+                "title": "Public Files",
+                "query": "site:{target} mime:pdf | mime:doc | mime:xls",
+                "desc": "Busca documentos públicos en Yandex.",
+                "engine": "yandex"
+            }
+        ]
+    },
+    {
+        "category": "VirusTotal - Inteligencia",
+        "platform": "VirusTotal",
+        "dorks": [
+            {
+                "title": "Domain Search",
+                "query": "domain:{target}",
+                "desc": "Busca información sobre un dominio en VT.",
+                "engine": "virustotal"
+            },
+            {
+                "title": "IP Search",
+                "query": "ip_address:{target}",
+                "desc": "Busca información sobre una IP en VT.",
+                "engine": "virustotal"
+            },
+             {
+                "title": "URL Search",
+                "query": "url:{target}",
+                "desc": "Busca reportes sobre una URL específica.",
+                "engine": "virustotal"
+            }
+        ]
+    }
+]

@@ -1,0 +1,63 @@
+[
+    {
+        "name": "Multi-Engine Dorks Generator",
+        "favicon": "https://www.google.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "es"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://www.exploit-db.com/google-hacking-database"
+        },
+        "metadata": {
+            "version": "2.0",
+            "last_update": "2025-01-01",
+            "verified": true,
+            "source": "OSINT Deck"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-01-01",
+            "updated_at": "",
+            "revision": 2
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Generación de consultas avanzadas para múltiples motores (Google, Bing, GitHub, etc.)",
+            "fase_osint": ["Discovery", "Footprinting"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Dorks Generator",
+                "desc": "Generador interactivo de consultas avanzadas para Google, Bing, GitHub, Shodan, VirusTotal y más.",
+                "url": "osint-deck:dorks?target={input}",
+                "category_code": "GENERAL__TOOL__MULTI",
+                "tags": ["dorks", "google", "bing", "github", "shodan", "virustotal", "search", "hacking"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "target.com",
+                    "mode": "custom",
+                    "pattern": ""
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,2247 @@
+[
+    {
+        "name": "MxToolBox",
+        "favicon": "https://mxtoolbox.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": [
+                "en"
+            ],
+            "compatibilidad": [
+                "Web"
+            ],
+            "documentacion": "https://mxtoolbox.com/Help.aspx"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": false,
+            "source": "Web Discovery"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": false,
+            "new": false,
+            "reported": false,
+            "recommended": false
+        },
+        "osint_context": {
+            "uso_principal": "Recolección de infraestructura y análisis de correo",
+            "fase_osint": [
+                "Footprinting",
+                "Discovery"
+            ],
+            "nivel_tecnico": "Básico / Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Portal principal",
+                "desc": "Dashboard general para acceder a todas las utilidades DNS, correo y reputación.",
+                "url": "https://mxtoolbox.com/",
+                "category_code": "GENERAL__PORTAL__DASHBOARD",
+                "tags": [
+                    "dns",
+                    "correo",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "none"
+                    ],
+                    "mode": "manual"
+                }
+            },
+            {
+                "title": "SuperTool — Diagnóstico integral",
+                "desc": "Consulta global MX, WHOIS, Blacklist, SPF/DMARC, SMTP, DNS y reputación.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action={input}",
+                "category_code": "GENERAL__TOOL__MULTI",
+                "tags": [
+                    "dns",
+                    "mx",
+                    "spf",
+                    "dmarc",
+                    "smtp",
+                    "whois",
+                    "blacklist"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip",
+                        "host"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://mxtoolbox.com/SuperTool.aspx?action={input}",
+                    "resolve_strategy": "auto"
+                }
+            },
+            {
+                "title": "MX Lookup",
+                "desc": "Obtiene registros MX y prioridades del dominio.",
+                "url": "https://mxtoolbox.com/MXLookup.aspx?input={input}",
+                "category_code": "MAIL__DNS__MX_LOOKUP",
+                "tags": [
+                    "mx",
+                    "dns",
+                    "correo"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://mxtoolbox.com/MXLookup.aspx?input={input}"
+                }
+            },
+            {
+                "title": "SPF Record Lookup",
+                "desc": "Valida el registro SPF del dominio.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=spf:{input}",
+                "category_code": "MAIL__AUTH__SPF_CHECK",
+                "tags": [
+                    "spf",
+                    "correo",
+                    "email"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=spf:{input}"
+                }
+            },
+            {
+                "title": "Blacklist Check",
+                "desc": "Comprueba si el dominio o IP aparece en listas negras.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+                "category_code": "SECURITY__REPUTATION__BLACKLIST_CHECK",
+                "tags": [
+                    "blacklist",
+                    "seguridad",
+                    "reputacion"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip"
+                    ],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://mxtoolbox.com/SuperTool.aspx?action=blacklist:{input}",
+                    "resolve_strategy": "ask"
+                }
+            },
+            {
+                "title": "DMARC Analyzer",
+                "desc": "Revisión del registro DMARC y políticas aplicadas.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=dmarc:{input}",
+                "category_code": "MAIL__AUTH__DMARC_CHECK",
+                "tags": [
+                    "dmarc",
+                    "correo",
+                    "email",
+                    "seguridad"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com",
+                    "mode": "url"
+                }
+            },
+            {
+                "title": "WHOIS Lookup",
+                "desc": "Obtiene datos registrales del dominio.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=whois:{input}",
+                "category_code": "INFRA__WHOIS__DOMAIN_INFO",
+                "tags": [
+                    "whois",
+                    "dominios",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com",
+                    "mode": "url"
+                }
+            },
+            {
+                "title": "Reverse DNS / PTR",
+                "desc": "Lookup PTR desde IP para obtener hostnames asociados.",
+                "url": "https://mxtoolbox.com/SuperTool.aspx?action=ptr:{input}",
+                "category_code": "INFRA__DNS__PTR_LOOKUP",
+                "tags": [
+                    "ptr",
+                    "dns",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "ip"
+                    ],
+                    "example": "192.0.2.1",
+                    "mode": "url"
+                }
+            },
+            {
+                "title": "SMTP Diagnostic",
+                "desc": "Diagnóstico de servidor SMTP, banner y entrega.",
+                "url": "https://mxtoolbox.com/diagnostic.aspx?input={input}",
+                "category_code": "MAIL__PROTO__SMTP_TEST",
+                "tags": [
+                    "smtp",
+                    "correo",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip",
+                        "host"
+                    ],
+                    "example": "mail.example.com",
+                    "mode": "url",
+                    "pattern": "https://mxtoolbox.com/diagnostic.aspx?input={input}"
+                }
+            },
+            {
+                "title": "Email Headers Analyzer",
+                "desc": "Analiza cabeceras para rutas, tiempos y autenticación.",
+                "url": "https://mxtoolbox.com/EmailHeaders.aspx",
+                "category_code": "MAIL__ANALYSIS__HEADERS",
+                "tags": [
+                    "headers",
+                    "email",
+                    "correo"
+                ],
+                "input": {
+                    "types": [
+                        "headers"
+                    ],
+                    "example": "Received: from mail.example.com...",
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "VirusTotal",
+        "favicon": "https://www.virustotal.com/gui/images/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": [
+                "en"
+            ],
+            "compatibilidad": [
+                "Web"
+            ],
+            "documentacion": "https://developers.virustotal.com/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Análisis de malware y reputación de dominios/IPs/URLs",
+            "fase_osint": [
+                "Discovery",
+                "Analysis"
+            ],
+            "nivel_tecnico": "Básico / Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Search & Analysis",
+                "desc": "Busca o analiza URL, IP, dominio o hash de archivo.",
+                "url": "https://www.virustotal.com/gui/search/{input}",
+                "category_code": "SECURITY__ANALYSIS__MALWARE",
+                "tags": [
+                    "malware",
+                    "reputation",
+                    "virus",
+                    "analysis"
+                ],
+                "input": {
+                    "types": [
+                        "url",
+                        "ip",
+                        "domain",
+                        "hash"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.virustotal.com/gui/search/{input}"
+                }
+            },
+            {
+                "title": "URL Scanner",
+                "desc": "Escanea una URL específica para detectar amenazas.",
+                "url": "https://www.virustotal.com/gui/home/url",
+                "category_code": "SECURITY__SCANNER__URL",
+                "tags": [
+                    "scanner",
+                    "url",
+                    "phishing"
+                ],
+                "input": {
+                    "types": [
+                        "none"
+                    ],
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "urlscan.io",
+        "favicon": "https://urlscan.io/img/favicon.png",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": [
+                "en"
+            ],
+            "compatibilidad": [
+                "Web"
+            ],
+            "documentacion": "https://urlscan.io/about/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Escaneo y análisis de sitios web",
+            "fase_osint": [
+                "Footprinting",
+                "Analysis"
+            ],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Search Scans",
+                "desc": "Busca escaneos previos de un dominio o IP.",
+                "url": "https://urlscan.io/search/#{input}",
+                "category_code": "WEB__SCANNER__SEARCH",
+                "tags": [
+                    "scanner",
+                    "web",
+                    "history"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip",
+                        "url"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://urlscan.io/search/#{input}"
+                }
+            },
+            {
+                "title": "Web Scanner",
+                "desc": "Inicia un nuevo escaneo de un sitio web.",
+                "url": "https://urlscan.io/",
+                "category_code": "WEB__SCANNER__NEW",
+                "tags": [
+                    "scanner",
+                    "web",
+                    "screenshot"
+                ],
+                "input": {
+                    "types": [
+                        "none"
+                    ],
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "ViewDNS.info",
+        "favicon": "https://viewdns.info/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": [
+                "en"
+            ],
+            "compatibilidad": [
+                "Web"
+            ],
+            "documentacion": "https://viewdns.info/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": false,
+            "new": true,
+            "reported": false,
+            "recommended": false
+        },
+        "osint_context": {
+            "uso_principal": "Herramientas de investigación DNS e IP",
+            "fase_osint": [
+                "Footprinting",
+                "Discovery"
+            ],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Reverse IP Lookup",
+                "desc": "Encuentra otros sitios alojados en el mismo servidor.",
+                "url": "https://viewdns.info/reverseip/?host={input}&t=1",
+                "category_code": "INFRA__IP__REVERSE_LOOKUP",
+                "tags": [
+                    "reverse-ip",
+                    "shared-hosting",
+                    "infraestructura"
+                ],
+                "input": {
+                    "types": [
+                        "domain",
+                        "ip"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://viewdns.info/reverseip/?host={input}&t=1"
+                }
+            },
+            {
+                "title": "DNS Report",
+                "desc": "Informe completo de configuración DNS.",
+                "url": "https://viewdns.info/dnsreport/?domain={input}",
+                "category_code": "INFRA__DNS__REPORT",
+                "tags": [
+                    "dns",
+                    "report",
+                    "audit"
+                ],
+                "input": {
+                    "types": [
+                        "domain"
+                    ],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://viewdns.info/dnsreport/?domain={input}"
+                }
+            },
+             {
+                "title": "IP Location",
+                "desc": "Geolocalización de la dirección IP.",
+                "url": "https://viewdns.info/iplocation/?ip={input}",
+                "category_code": "INFRA__IP__GEOLOCATION",
+                "tags": [
+                    "ip",
+                    "geo",
+                    "location"
+                ],
+                "input": {
+                    "types": [
+                        "ip"
+                    ],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://viewdns.info/iplocation/?ip={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Shodan",
+        "favicon": "https://www.shodan.io/static/img/favicon.png",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": true,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://help.shodan.io/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Motor de búsqueda para dispositivos conectados a Internet",
+            "fase_osint": ["Discovery", "Enumeration"],
+            "nivel_tecnico": "Avanzado"
+        },
+        "cards": [
+            {
+                "title": "Host Search",
+                "desc": "Información detallada sobre una IP (puertos, servicios, vulnerabilidades).",
+                "url": "https://www.shodan.io/host/{input}",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["iot", "ports", "services", "vulns"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/host/{input}"
+                }
+            },
+            {
+                "title": "General Search",
+                "desc": "Búsqueda general en la base de datos de Shodan.",
+                "url": "https://www.shodan.io/search?query={input}",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "query"],
+                "input": {
+                    "types": ["domain", "host", "org", "text"],
+                    "example": "apache",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query={input}"
+                }
+            },
+            {
+                "title": "Network Search",
+                "desc": "Busca todos los hosts dentro de un rango IP (CIDR).",
+                "url": "https://www.shodan.io/search?query=net:{input}",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "net", "cidr"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "8.8.8.0/24",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query=net:{input}"
+                }
+            },
+            {
+                "title": "Organization Search",
+                "desc": "Busca hosts pertenecientes a una organización específica.",
+                "url": "https://www.shodan.io/search?query=org:\"{input}\"",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "org"],
+                "input": {
+                    "types": ["org", "text"],
+                    "example": "Google",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query=org:\"{input}\""
+                }
+            },
+            {
+                "title": "Port Search",
+                "desc": "Busca hosts con un puerto específico abierto.",
+                "url": "https://www.shodan.io/search?query=port:{input}",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "port"],
+                "input": {
+                    "types": ["port", "number"],
+                    "example": "21",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query=port:{input}"
+                }
+            },
+            {
+                "title": "Hostname Search",
+                "desc": "Busca hosts que contengan un hostname específico.",
+                "url": "https://www.shodan.io/search?query=hostname:\"{input}\"",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "hostname", "subdomain"],
+                "input": {
+                    "types": ["domain", "text"],
+                    "example": "test.example.com",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query=hostname:\"{input}\""
+                }
+            },
+            {
+                "title": "OS Search",
+                "desc": "Busca hosts corriendo un Sistema Operativo específico.",
+                "url": "https://www.shodan.io/search?query=os:\"{input}\"",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "os"],
+                "input": {
+                    "types": ["text"],
+                    "example": "Windows",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query=os:\"{input}\""
+                }
+            },
+            {
+                "title": "Shodan Dorks (Custom)",
+                "desc": "Búsqueda avanzada manual (ej: port:21 org:'Google').",
+                "url": "https://www.shodan.io/search?query={input}",
+                "category_code": "INFRA__IOT__SEARCH",
+                "tags": ["search", "iot", "dorks", "advanced"],
+                "input": {
+                    "types": ["text"],
+                    "example": "port:21 country:US",
+                    "mode": "url",
+                    "pattern": "https://www.shodan.io/search?query={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Censys",
+        "favicon": "https://search.censys.io/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": true,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://support.censys.io/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Descubrimiento y análisis de hosts y certificados en Internet",
+            "fase_osint": ["Discovery", "Enumeration"],
+            "nivel_tecnico": "Avanzado"
+        },
+        "cards": [
+            {
+                "title": "Host Search",
+                "desc": "Analiza servicios y certificados de una IP.",
+                "url": "https://search.censys.io/hosts/{input}",
+                "category_code": "INFRA__SCAN__HOST_DETAILS",
+                "tags": ["host", "services", "certificates"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "1.1.1.1",
+                    "mode": "url",
+                    "pattern": "https://search.censys.io/hosts/{input}"
+                }
+            },
+            {
+                "title": "Certificate Search",
+                "desc": "Busca certificados SSL/TLS relacionados con un dominio.",
+                "url": "https://search.censys.io/certificates?q={input}",
+                "category_code": "INFRA__SSL__CERT_SEARCH",
+                "tags": ["ssl", "certificates", "search"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://search.censys.io/certificates?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "AbuseIPDB",
+        "favicon": "https://www.abuseipdb.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://www.abuseipdb.com/api"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Verificación de reputación de direcciones IP",
+            "fase_osint": ["Analysis", "Reputation"],
+            "nivel_tecnico": "Básico"
+        },
+        "cards": [
+            {
+                "title": "Check IP Reputation",
+                "desc": "Consulta si una IP ha sido reportada por actividades maliciosas.",
+                "url": "https://www.abuseipdb.com/check/{input}",
+                "category_code": "SECURITY__REPUTATION__IP_CHECK",
+                "tags": ["reputation", "abuse", "malware"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "1.2.3.4",
+                    "mode": "url",
+                    "pattern": "https://www.abuseipdb.com/check/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "SecurityTrails",
+        "favicon": "https://securitytrails.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://docs.securitytrails.com/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Historial DNS y descubrimiento de subdominios",
+            "fase_osint": ["Footprinting", "Discovery"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "DNS History & Subdomains",
+                "desc": "Historial de registros DNS y subdominios asociados.",
+                "url": "https://securitytrails.com/domain/{input}/dns",
+                "category_code": "INFRA__DNS__HISTORY",
+                "tags": ["dns", "history", "subdomains"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://securitytrails.com/domain/{input}/dns"
+                }
+            },
+             {
+                "title": "IP Neighbors",
+                "desc": "Dominios alojados en la misma IP.",
+                "url": "https://securitytrails.com/list/ip/{input}",
+                "category_code": "INFRA__IP__NEIGHBORS",
+                "tags": ["ip", "neighbors", "shared-hosting"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://securitytrails.com/list/ip/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Wayback Machine",
+        "favicon": "https://archive.org/images/glogo.jpg",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://archive.org/about/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Visualización de versiones históricas de sitios web",
+            "fase_osint": ["Analysis", "History"],
+            "nivel_tecnico": "Básico"
+        },
+        "cards": [
+            {
+                "title": "Web Archive Search",
+                "desc": "Busca instantáneas históricas de una URL o dominio.",
+                "url": "https://web.archive.org/web/*/{input}",
+                "category_code": "WEB__HISTORY__ARCHIVE",
+                "tags": ["history", "archive", "snapshot"],
+                "input": {
+                    "types": ["url", "domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://web.archive.org/web/*/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "BuiltWith",
+        "favicon": "https://builtwith.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://builtwith.com/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Identificación de tecnologías web",
+            "fase_osint": ["Footprinting", "Enumeration"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Tech Stack Lookup",
+                "desc": "Identifica tecnologías, servidores y frameworks usados por el sitio.",
+                "url": "https://builtwith.com/{input}",
+                "category_code": "WEB__TECH__FINGERPRINT",
+                "tags": ["tech", "framework", "cms", "analytics"],
+                "input": {
+                    "types": ["domain", "url"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://builtwith.com/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "crt.sh",
+        "favicon": "https://crt.sh/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Búsqueda en registros de Transparencia de Certificados (CT)",
+            "fase_osint": ["Discovery", "Enumeration"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Certificate Search",
+                "desc": "Encuentra subdominios y certificados históricos.",
+                "url": "https://crt.sh/?q={input}",
+                "category_code": "SECURITY__TLS__CERT_ANALYSIS",
+                "tags": ["ssl", "certificates", "subdomains"],
+                "input": {
+                    "types": ["domain", "org"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://crt.sh/?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Have I Been Pwned",
+        "favicon": "https://haveibeenpwned.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://haveibeenpwned.com/API/v3"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Verificación de correos en filtraciones de datos",
+            "fase_osint": ["Discovery", "Reputation"],
+            "nivel_tecnico": "Básico"
+        },
+        "cards": [
+            {
+                "title": "Breach Check",
+                "desc": "Verifica si un email o teléfono ha aparecido en filtraciones de datos.",
+                "url": "https://haveibeenpwned.com/",
+                "category_code": "SOCMINT__BREACH__CHECK",
+                "tags": ["leaks", "email", "breach"],
+                "input": {
+                    "types": ["none"],
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "GreyNoise",
+        "favicon": "https://viz.greynoise.io/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://docs.greynoise.io/"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Análisis de ruido de Internet y escáneres masivos",
+            "fase_osint": ["Analysis", "Reputation"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "IP Noise Analysis",
+                "desc": "Determina si una IP es un escáner masivo o una amenaza dirigida.",
+                "url": "https://viz.greynoise.io/ip/{input}",
+                "category_code": "SECURITY__THREAT__INTEL",
+                "tags": ["scanner", "noise", "threat"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "1.1.1.1",
+                    "mode": "url",
+                    "pattern": "https://viz.greynoise.io/ip/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Hunter.io",
+        "favicon": "https://hunter.io/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": true,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://hunter.io/api"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Búsqueda y verificación de correos electrónicos corporativos",
+            "fase_osint": ["Discovery", "Enumeration"],
+            "nivel_tecnico": "Básico"
+        },
+        "cards": [
+            {
+                "title": "Domain Search",
+                "desc": "Encuentra direcciones de correo asociadas a un dominio.",
+                "url": "https://hunter.io/search/{input}",
+                "category_code": "SOCMINT__USER__DISCOVERY",
+                "tags": ["email", "corporate", "contacts"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://hunter.io/search/{input}"
+                }
+            },
+            {
+                "title": "Email Verifier",
+                "desc": "Verifica la validez de una dirección de correo electrónico.",
+                "url": "https://hunter.io/verify/{input}",
+                "category_code": "SOCMINT__USER__DISCOVERY",
+                "tags": ["email", "verification", "check"],
+                "input": {
+                    "types": ["email"],
+                    "example": "john@example.com",
+                    "mode": "url",
+                    "pattern": "https://hunter.io/verify/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "AlienVault OTX",
+        "favicon": "https://otx.alienvault.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://otx.alienvault.com/api"
+        },
+        "metadata": {
+            "version": "",
+            "last_update": "",
+            "verified": true,
+            "source": "OSINT Expansion"
+        },
+        "status": {
+            "state": "up",
+            "http_code": 200,
+            "last_check": ""
+        },
+        "stats": {
+            "clicks": 0,
+            "likes": 0,
+            "reports": 0
+        },
+        "admin": {
+            "created_at": "2025-12-29",
+            "updated_at": "",
+            "revision": 1
+        },
+        "badges": {
+            "popular": true,
+            "new": true,
+            "reported": false,
+            "recommended": true
+        },
+        "osint_context": {
+            "uso_principal": "Inteligencia de amenazas colaborativa",
+            "fase_osint": ["Analysis", "Threat Intel"],
+            "nivel_tecnico": "Intermedio"
+        },
+        "cards": [
+            {
+                "title": "Indicator Search",
+                "desc": "Busca indicadores de compromiso (IoC) en OTX.",
+                "url": "https://otx.alienvault.com/indicator/domain/{input}",
+                "category_code": "SECURITY__THREAT__INTEL",
+                "tags": ["threat", "ioc", "malware"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://otx.alienvault.com/indicator/domain/{input}"
+                }
+            },
+            {
+                "title": "IP Indicator",
+                "desc": "Busca indicadores de compromiso para una IP.",
+                "url": "https://otx.alienvault.com/indicator/ip/{input}",
+                "category_code": "SECURITY__THREAT__INTEL",
+                "tags": ["threat", "ioc", "ip"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://otx.alienvault.com/indicator/ip/{input}"
+                }
+            },
+             {
+                "title": "Hash Indicator",
+                "desc": "Busca indicadores de compromiso para un hash de archivo.",
+                "url": "https://otx.alienvault.com/indicator/file/{input}",
+                "category_code": "SECURITY__THREAT__INTEL",
+                "tags": ["threat", "ioc", "file", "hash"],
+                "input": {
+                    "types": ["hash"],
+                    "example": "d41d8cd98f00b204e9800998ecf8427e",
+                    "mode": "url",
+                    "pattern": "https://otx.alienvault.com/indicator/file/{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Google Dorks",
+        "favicon": "https://www.google.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "es", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://www.exploit-db.com/google-hacking-database"
+        },
+        "cards": [
+            {
+                "title": "Google Search",
+                "desc": "Búsqueda estándar en Google para dorking.",
+                "url": "https://www.google.com/search?q={input}",
+                "category_code": "SEARCH__ENGINE__GENERAL",
+                "tags": ["search", "google", "dorks"],
+                "input": {
+                    "types": ["text", "domain", "ip"],
+                    "example": "site:example.com filetype:pdf",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q={input}"
+                }
+            },
+            {
+                "title": "Public Documents",
+                "desc": "Busca documentos públicos (PDF, DOC, XLS, PPT, CSV) en el sitio.",
+                "url": "https://www.google.com/search?q=site:{input}+ext:doc+|+ext:docx+|+ext:odt+|+ext:pdf+|+ext:rtf+|+ext:sxw+|+ext:psw+|+ext:ppt+|+ext:pptx+|+ext:pps+|+ext:csv",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "documents", "pdf", "office"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+ext:doc+|+ext:docx+|+ext:odt+|+ext:pdf+|+ext:rtf+|+ext:sxw+|+ext:psw+|+ext:ppt+|+ext:pptx+|+ext:pps+|+ext:csv"
+                }
+            },
+            {
+                "title": "Directory Listing",
+                "desc": "Busca directorios abiertos (Index of /) para encontrar archivos expuestos.",
+                "url": "https://www.google.com/search?q=site:{input}+intitle:\"index of\"",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "directories", "indexing"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+intitle:\"index of\""
+                }
+            },
+            {
+                "title": "Config & Backup Files",
+                "desc": "Busca archivos de configuración (xml, conf, env) y backups (bak, old, sql).",
+                "url": "https://www.google.com/search?q=site:{input}+ext:xml+|+ext:conf+|+ext:cnf+|+ext:reg+|+ext:inf+|+ext:rdp+|+ext:cfg+|+ext:txt+|+ext:ora+|+ext:ini+|+ext:env+|+ext:bak+|+ext:old+|+ext:sql",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "configs", "backups", "database"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+ext:xml+|+ext:conf+|+ext:cnf+|+ext:reg+|+ext:inf+|+ext:rdp+|+ext:cfg+|+ext:txt+|+ext:ora+|+ext:ini+|+ext:env+|+ext:bak+|+ext:old+|+ext:sql"
+                }
+            },
+            {
+                "title": "Login Pages",
+                "desc": "Busca páginas de inicio de sesión o administración.",
+                "url": "https://www.google.com/search?q=site:{input}+inurl:login+|+inurl:admin+|+intitle:\"login\"+|+intitle:\"admin\"+|+inurl:wp-login.php",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "login", "admin"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+inurl:login+|+inurl:admin+|+intitle:\"login\"+|+intitle:\"admin\"+|+inurl:wp-login.php"
+                }
+            },
+            {
+                "title": "Exposed Git",
+                "desc": "Busca carpetas .git expuestas públicamente.",
+                "url": "https://www.google.com/search?q=site:{input}+inurl:.git",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "git", "vcs"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+inurl:.git"
+                }
+            },
+            {
+                "title": "PHP Errors",
+                "desc": "Busca mensajes de error de PHP expuestos (Warning, Parse error).",
+                "url": "https://www.google.com/search?q=site:{input}+\"PHP Parse error\"+|+\"PHP Warning\"+|+\"PHP Error\"",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "errors", "php"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:{input}+\"PHP Parse error\"+|+\"PHP Warning\"+|+\"PHP Error\""
+                }
+            },
+            {
+                "title": "Cloud Buckets",
+                "desc": "Busca buckets S3 o Azure blobs relacionados con el dominio.",
+                "url": "https://www.google.com/search?q=site:s3.amazonaws.com+\"{input}\"+|+site:blob.core.windows.net+\"{input}\"",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "google", "cloud", "s3", "azure"],
+                "input": {
+                    "types": ["domain", "text"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:s3.amazonaws.com+\"{input}\"+|+site:blob.core.windows.net+\"{input}\""
+                }
+            }
+        ]
+    },
+    {
+        "name": "Intelx",
+        "favicon": "https://intelx.io/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://blog.intelx.io/"
+        },
+        "cards": [
+            {
+                "title": "Intelligence X Search",
+                "desc": "Busca en la darknet, fugas de datos y registros públicos.",
+                "url": "https://intelx.io/?s={input}",
+                "category_code": "DATA__LEAK__SEARCH",
+                "tags": ["darknet", "leaks", "email", "domain"],
+                "input": {
+                    "types": ["email", "domain", "ip", "hash", "url"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://intelx.io/?s={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Epieos",
+        "favicon": "https://epieos.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://epieos.com/"
+        },
+        "cards": [
+            {
+                "title": "Email & Phone Search",
+                "desc": "Investiga correos electrónicos y números de teléfono (Google Account, Skype, etc.).",
+                "url": "https://epieos.com/?q={input}",
+                "category_code": "SOCMINT__PHONE__LOOKUP",
+                "tags": ["email", "phone", "google", "skype"],
+                "input": {
+                    "types": ["email", "phone"],
+                    "example": "test@gmail.com",
+                    "mode": "url",
+                    "pattern": "https://epieos.com/?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "WhatsMyName",
+        "favicon": "https://whatsmyname.app/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://github.com/WebBreacher/WhatsMyName"
+        },
+        "cards": [
+            {
+                "title": "Username Enumeration",
+                "desc": "Verifica la existencia de un nombre de usuario en cientos de sitios.",
+                "url": "https://whatsmyname.app/",
+                "category_code": "SOCMINT__USER__DISCOVERY",
+                "tags": ["username", "social", "profiles"],
+                "input": {
+                    "types": ["none"],
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "TinEye",
+        "favicon": "https://tineye.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://tineye.com/faq"
+        },
+        "cards": [
+            {
+                "title": "Reverse Image Search",
+                "desc": "Busca dónde aparece una imagen en la web.",
+                "url": "https://tineye.com/search?url={input}",
+                "category_code": "MEDIA__IMAGE__REVERSE",
+                "tags": ["image", "reverse_search"],
+                "input": {
+                    "types": ["url"],
+                    "example": "https://example.com/image.jpg",
+                    "mode": "url",
+                    "pattern": "https://tineye.com/search?url={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Yandex Images",
+        "favicon": "https://yandex.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "ru"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://yandex.com/support/images/"
+        },
+        "cards": [
+            {
+                "title": "Visual Search",
+                "desc": "Potente motor de búsqueda inversa de imágenes (excelente para rostros y lugares).",
+                "url": "https://yandex.com/images/search?rpt=imageview&url={input}",
+                "category_code": "MEDIA__IMAGE__REVERSE",
+                "tags": ["image", "reverse_search", "facial_recognition"],
+                "input": {
+                    "types": ["url"],
+                    "example": "https://example.com/image.jpg",
+                    "mode": "url",
+                    "pattern": "https://yandex.com/images/search?rpt=imageview&url={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "DNSDumpster",
+        "favicon": "https://dnsdumpster.com/static/images/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://dnsdumpster.com/"
+        },
+        "cards": [
+            {
+                "title": "DNS Recon",
+                "desc": "Descubre hosts y mapea la superficie de ataque de un dominio.",
+                "url": "https://dnsdumpster.com/",
+                "category_code": "INFRA__DNS__LOOKUP",
+                "tags": ["dns", "recon", "mapping"],
+                "input": {
+                    "types": ["none"],
+                    "mode": "manual"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Social Searcher",
+        "favicon": "https://www.social-searcher.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://www.social-searcher.com/"
+        },
+        "cards": [
+            {
+                "title": "Social Media Search",
+                "desc": "Busca menciones públicas de usuarios o tópicos en redes sociales.",
+                "url": "https://www.social-searcher.com/social-buzz/?q5={input}",
+                "category_code": "SOCMINT__MEDIA__SEARCH",
+                "tags": ["social", "mentions", "search"],
+                "input": {
+                    "types": ["text", "username"],
+                    "example": "username",
+                    "mode": "url",
+                    "pattern": "https://www.social-searcher.com/social-buzz/?q5={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Bing Dorks",
+        "favicon": "https://www.bing.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://help.bing.microsoft.com/"
+        },
+        "cards": [
+            {
+                "title": "Bing Search",
+                "desc": "Búsqueda estándar en Bing.",
+                "url": "https://www.bing.com/search?q={input}",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing"],
+                "input": {
+                    "types": ["text", "domain"],
+                    "example": "site:example.com",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q={input}"
+                }
+            },
+            {
+                "title": "IP Search",
+                "desc": "Busca sitios alojados en una IP específica (unique to Bing: ip:x.x.x.x).",
+                "url": "https://www.bing.com/search?q=ip:{input}",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing", "ip"],
+                "input": {
+                    "types": ["ip"],
+                    "example": "8.8.8.8",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q=ip:{input}"
+                }
+            },
+            {
+                "title": "Subdomain Search",
+                "desc": "Busca subdominios indexados excluyendo 'www'.",
+                "url": "https://www.bing.com/search?q=site:{input}+-www",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing", "subdomains"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q=site:{input}+-www"
+                }
+            },
+            {
+                "title": "Public Documents",
+                "desc": "Busca documentos públicos (PDF, DOC, XLS) en el sitio.",
+                "url": "https://www.bing.com/search?q=site:{input}+filetype:pdf+|+filetype:doc+|+filetype:xls+|+filetype:ppt",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing", "documents"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q=site:{input}+filetype:pdf+|+filetype:doc+|+filetype:xls+|+filetype:ppt"
+                }
+            },
+            {
+                "title": "Config Files",
+                "desc": "Busca archivos de configuración expuestos (xml, conf, ini, etc).",
+                "url": "https://www.bing.com/search?q=site:{input}+ext:xml+|+ext:conf+|+ext:cnf+|+ext:reg+|+ext:inf+|+ext:rdp+|+ext:cfg+|+ext:txt+|+ext:ini+|+ext:env",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing", "configs", "leaks"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q=site:{input}+ext:xml+|+ext:conf+|+ext:cnf+|+ext:reg+|+ext:inf+|+ext:rdp+|+ext:cfg+|+ext:txt+|+ext:ini+|+ext:env"
+                }
+            },
+            {
+                "title": "Login Pages",
+                "desc": "Busca páginas de inicio de sesión o portales administrativos.",
+                "url": "https://www.bing.com/search?q=site:{input}+(login+|+sign-in+|+auth+|+access+|+portal+|+admin)",
+                "category_code": "SEARCH__ENGINE__DORKS",
+                "tags": ["search", "bing", "login", "admin"],
+                "input": {
+                    "types": ["domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.bing.com/search?q=site:{input}+(login+|+sign-in+|+auth+|+access+|+portal+|+admin)"
+                }
+            }
+        ]
+    },
+    {
+        "name": "GitHub Dorks",
+        "favicon": "https://github.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://github.com/search/advanced"
+        },
+        "cards": [
+            {
+                "title": "GitHub Search",
+                "desc": "Búsqueda de código, repositorios y usuarios.",
+                "url": "https://github.com/search?q={input}",
+                "category_code": "DEV__CODE__REPOSITORY",
+                "tags": ["dev", "code", "github"],
+                "input": {
+                    "types": ["text", "domain"],
+                    "example": "password",
+                    "mode": "url",
+                    "pattern": "https://github.com/search?q={input}"
+                }
+            },
+            {
+                "title": "Secrets Search (Keyword)",
+                "desc": "Busca secretos asociados a un dominio o palabra clave.",
+                "url": "https://github.com/search?q={input}+AND+(password+OR+secret+OR+key+OR+token)&type=Code",
+                "category_code": "DEV__CODE__SECRETS",
+                "tags": ["dev", "code", "secrets"],
+                "input": {
+                    "types": ["domain", "text"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://github.com/search?q={input}+AND+(password+OR+secret+OR+key+OR+token)&type=Code"
+                }
+            },
+            {
+                "title": "Org Secrets Search",
+                "desc": "Busca secretos dentro de los repositorios de una organización específica.",
+                "url": "https://github.com/search?q=org:{input}+AND+(password+OR+secret+OR+key+OR+token)&type=Code",
+                "category_code": "DEV__CODE__SECRETS",
+                "tags": ["dev", "code", "secrets", "org"],
+                "input": {
+                    "types": ["org"],
+                    "example": "facebook",
+                    "mode": "url",
+                    "pattern": "https://github.com/search?q=org:{input}+AND+(password+OR+secret+OR+key+OR+token)&type=Code"
+                }
+            },
+            {
+                "title": "Dotfiles Search",
+                "desc": "Busca archivos de configuración ocultos (.env, .npmrc, etc).",
+                "url": "https://github.com/search?q={input}+filename:.env+OR+filename:.npmrc+OR+filename:.bash_history&type=Code",
+                "category_code": "DEV__CODE__SECRETS",
+                "tags": ["dev", "code", "dotfiles", "env"],
+                "input": {
+                    "types": ["domain", "org"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://github.com/search?q={input}+filename:.env+OR+filename:.npmrc+OR+filename:.bash_history&type=Code"
+                }
+            },
+            {
+                "title": "Key File Search",
+                "desc": "Busca archivos de claves privadas (pem, key, id_rsa).",
+                "url": "https://github.com/search?q={input}+filename:pem+OR+filename:key+OR+filename:id_rsa+OR+filename:kdbx&type=Code",
+                "category_code": "DEV__CODE__SECRETS",
+                "tags": ["dev", "code", "keys", "crypto"],
+                "input": {
+                    "types": ["domain", "org"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://github.com/search?q={input}+filename:pem+OR+filename:key+OR+filename:id_rsa+OR+filename:kdbx&type=Code"
+                }
+            }
+        ]
+    },
+    {
+        "name": "LinkedIn Dorks",
+        "favicon": "https://static.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "cards": [
+            {
+                "title": "Employee Search",
+                "desc": "Busca empleados de una empresa en LinkedIn vía Google.",
+                "url": "https://www.google.com/search?q=site:linkedin.com/in/+{input}",
+                "category_code": "SOCMINT__MEDIA__SEARCH",
+                "tags": ["social", "linkedin", "employees"],
+                "input": {
+                    "types": ["text", "org"],
+                    "example": "Company Name",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:linkedin.com/in/+{input}"
+                }
+            },
+            {
+                "title": "Job Postings",
+                "desc": "Busca ofertas de trabajo de una empresa.",
+                "url": "https://www.google.com/search?q=site:linkedin.com/jobs/+{input}",
+                "category_code": "SOCMINT__MEDIA__SEARCH",
+                "tags": ["social", "linkedin", "jobs"],
+                "input": {
+                    "types": ["text", "org"],
+                    "example": "Company Name",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:linkedin.com/jobs/+{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "DuckDuckGo Dorks",
+        "favicon": "https://duckduckgo.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://duckduckgo.com/duckduckgo-help-pages/results/syntax/"
+        },
+        "cards": [
+            {
+                "title": "DuckDuckGo Search",
+                "desc": "Búsqueda privada con sintaxis avanzada.",
+                "url": "https://duckduckgo.com/?q={input}",
+                "category_code": "SEARCH__ENGINE__GENERAL",
+                "tags": ["search", "privacy", "ddg"],
+                "input": {
+                    "types": ["text", "domain"],
+                    "example": "site:example.com",
+                    "mode": "url",
+                    "pattern": "https://duckduckgo.com/?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Twitter Dorks",
+        "favicon": "https://abs.twimg.com/favicons/twitter.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://developer.twitter.com/en/docs/twitter-api/v1/rules-and-filtering/search-operators"
+        },
+        "cards": [
+            {
+                "title": "Twitter Advanced Search",
+                "desc": "Búsqueda avanzada en Twitter (requiere login para ver todo).",
+                "url": "https://twitter.com/search?q={input}&src=typed_query",
+                "category_code": "SOCMINT__MEDIA__SEARCH",
+                "tags": ["social", "twitter", "search"],
+                "input": {
+                    "types": ["text", "username"],
+                    "example": "from:user since:2023-01-01",
+                    "mode": "url",
+                    "pattern": "https://twitter.com/search?q={input}&src=typed_query"
+                }
+            },
+            {
+                "title": "Nitter Search",
+                "desc": "Búsqueda en Twitter vía Nitter (sin login, privacidad).",
+                "url": "https://nitter.net/search?f=tweets&q={input}",
+                "category_code": "SOCMINT__MEDIA__SEARCH",
+                "tags": ["social", "twitter", "nitter", "privacy"],
+                "input": {
+                    "types": ["text", "username"],
+                    "example": "from:user",
+                    "mode": "url",
+                    "pattern": "https://nitter.net/search?f=tweets&q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Pastebin Dorks",
+        "favicon": "https://pastebin.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "cards": [
+            {
+                "title": "Pastebin Search",
+                "desc": "Busca filtraciones o código en Pastebin vía Google.",
+                "url": "https://www.google.com/search?q=site:pastebin.com+{input}",
+                "category_code": "DATA__LEAK__SEARCH",
+                "tags": ["leaks", "pastebin", "code"],
+                "input": {
+                    "types": ["text", "domain", "email"],
+                    "example": "password",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:pastebin.com+{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "StackOverflow Dorks",
+        "favicon": "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "cards": [
+            {
+                "title": "StackOverflow Search",
+                "desc": "Busca discusiones técnicas o errores específicos.",
+                "url": "https://www.google.com/search?q=site:stackoverflow.com+{input}",
+                "category_code": "DEV__CODE__REPOSITORY",
+                "tags": ["dev", "code", "stackoverflow"],
+                "input": {
+                    "types": ["text", "error"],
+                    "example": "error code 500",
+                    "mode": "url",
+                    "pattern": "https://www.google.com/search?q=site:stackoverflow.com+{input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "BGP.he.net",
+        "favicon": "https://bgp.he.net/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://bgp.he.net/"
+        },
+        "cards": [
+            {
+                "title": "BGP Search",
+                "desc": "Información de routing, ASN y prefijos IP.",
+                "url": "https://bgp.he.net/search?search%5Bsearch%5D={input}",
+                "category_code": "INFRA__BGP__ROUTES",
+                "tags": ["bgp", "asn", "ip", "routing"],
+                "input": {
+                    "types": ["ip", "asn", "org"],
+                    "example": "Google",
+                    "mode": "url",
+                    "pattern": "https://bgp.he.net/search?search%5Bsearch%5D={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Archive.today",
+        "favicon": "https://archive.today/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en", "multi"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://archive.today/faq"
+        },
+        "cards": [
+            {
+                "title": "Webpage Capture",
+                "desc": "Busca snapshots de páginas web (alternativa a Wayback Machine).",
+                "url": "https://archive.today/search/?q={input}",
+                "category_code": "WEB__HISTORY__ARCHIVE",
+                "tags": ["history", "archive", "snapshot"],
+                "input": {
+                    "types": ["url", "domain"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://archive.today/search/?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Blockchain Explorer",
+        "favicon": "https://www.blockchain.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "cards": [
+            {
+                "title": "Crypto Search",
+                "desc": "Busca direcciones, transacciones o bloques (Bitcoin, Ethereum).",
+                "url": "https://www.blockchain.com/explorer/search?search={input}",
+                "category_code": "BLOCKCHAIN__WALLET__LOOKUP",
+                "tags": ["crypto", "bitcoin", "ethereum", "money"],
+                "input": {
+                    "types": ["text", "hash"],
+                    "example": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+                    "mode": "url",
+                    "pattern": "https://www.blockchain.com/explorer/search?search={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "LeakIX",
+        "favicon": "https://leakix.net/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://docs.leakix.net/"
+        },
+        "cards": [
+            {
+                "title": "Leak Search",
+                "desc": "Busca servicios expuestos y configuraciones erróneas indexadas.",
+                "url": "https://leakix.net/search?q={input}",
+                "category_code": "DATA__LEAK__SEARCH",
+                "tags": ["leak", "misconfiguration", "exposed"],
+                "input": {
+                    "types": ["ip", "domain", "text"],
+                    "example": "country:US",
+                    "mode": "url",
+                    "pattern": "https://leakix.net/search?q={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "PublicWWW",
+        "favicon": "https://publicwww.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre (Limitado)",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://publicwww.com/"
+        },
+        "cards": [
+            {
+                "title": "Source Code Search",
+                "desc": "Busca fragmentos de código HTML/JS/CSS en millones de sitios web.",
+                "url": "https://publicwww.com/websites/{input}/",
+                "category_code": "DEV__CODE__REPOSITORY",
+                "tags": ["code", "source", "html", "css", "js"],
+                "input": {
+                    "types": ["text", "code"],
+                    "example": "\"UA-12345678\"",
+                    "mode": "url",
+                    "pattern": "https://publicwww.com/websites/{input}/"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Jeffrey's Image Metadata",
+        "favicon": "http://exif.regex.info/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Free",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": ""
+        },
+        "cards": [
+            {
+                "title": "Exif Viewer",
+                "desc": "Analiza metadatos (EXIF) de una imagen online.",
+                "url": "http://exif.regex.info/exif.cgi?url={input}",
+                "category_code": "METADATA__IMAGE__EXIF",
+                "tags": ["image", "exif", "metadata"],
+                "input": {
+                    "types": ["url"],
+                    "example": "https://example.com/image.jpg",
+                    "mode": "url",
+                    "pattern": "http://exif.regex.info/exif.cgi?url={input}"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Wappalyzer",
+        "favicon": "https://www.wappalyzer.com/favicon.ico",
+        "info": {
+            "tipo": "Web",
+            "licencia": "Freemium",
+            "acceso": "Libre",
+            "requiere_registro": false,
+            "offline": false,
+            "idiomas": ["en"],
+            "compatibilidad": ["Web"],
+            "documentacion": "https://www.wappalyzer.com/docs/"
+        },
+        "cards": [
+            {
+                "title": "Tech Stack Lookup",
+                "desc": "Identifica tecnologías usadas en un sitio web.",
+                "url": "https://www.wappalyzer.com/lookup/{input}",
+                "category_code": "WEB__TECH__FINGERPRINT",
+                "tags": ["tech", "stack", "framework"],
+                "input": {
+                    "types": ["domain", "url"],
+                    "example": "example.com",
+                    "mode": "url",
+                    "pattern": "https://www.wappalyzer.com/lookup/{input}"
+                }
+            }
+        ]
+    }
+]

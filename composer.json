@@ -1,0 +1,23 @@
+{
+    "name": "osint-deck/osint-deck",
+    "description": "Plugin WordPress para centralizar y gestionar herramientas OSINT de forma inteligente",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Equipo OSINT Deck",
+            "homepage": "https://github.com/OsintDeck"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "OsintDeck\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

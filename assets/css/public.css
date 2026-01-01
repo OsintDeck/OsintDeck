@@ -1,0 +1,184 @@
+/* Public Styles for OSINT Deck */
+
+.osint-deck-search-bar {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.osint-deck-search-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.osint-deck-search-input:focus {
+    outline: none;
+    border-color: #2271b1;
+}
+
+.osint-deck-search-hints {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.osint-input-detected {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #e7f3ff;
+    border: 1px solid #2271b1;
+    border-radius: 4px;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+/* Card Grid */
+.osint-deck-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.osint-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.osint-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.osint-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.osint-card-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 4px;
+}
+
+.osint-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.osint-card-description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.osint-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.osint-card-tag {
+    padding: 4px 10px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #555;
+}
+
+.osint-card-badges {
+    margin-top: 12px;
+}
+
+/* Modal */
+.osint-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.osint-modal-overlay.active {
+    display: flex;
+}
+
+.osint-modal {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.osint-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.osint-modal-options {
+    margin: 20px 0;
+}
+
+.osint-modal-option {
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.osint-modal-option:hover {
+    border-color: #2271b1;
+    background: #f0f6fc;
+}
+
+.osint-modal-option.selected {
+    border-color: #2271b1;
+    background: #e7f3ff;
+}
+
+.osint-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.osint-modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.osint-modal-btn.primary {
+    background: #2271b1;
+    color: white;
+}
+
+.osint-modal-btn.secondary {
+    background: #f0f0f0;
+    color: #333;
+}
