@@ -190,6 +190,39 @@ class Settings {
      * Render Data Tab
      */
     private function render_data_tab() {
+        // Handle seed submission
+        if ( isset( $_POST['osint_deck_seed_data'] ) ) {
+            check_admin_referer( 'osint_deck_seed_data' );
+            
+            $cat_result = array( 'imported' => 0, 'skipped' => 0 );
+            if ( method_exists( $this->category_repository, 'seed_defaults' ) ) {
+                $cat_result = $this->category_repository->seed_defaults();
+            }
+            
+            $tool_result = array( 'imported' => 0, 'skipped' => 0, 'errors' => array() );
+            if ( method_exists( $this->tool_repository, 'seed_defaults' ) ) {
+                $tool_result = $this->tool_repository->seed_defaults();
+            }
+
+            $message = sprintf( 
+                __( 'Importación completada. Categorías: %d importadas, %d saltadas. Herramientas: %d importadas, %d saltadas.', 'osint-deck' ),
+                $cat_result['imported'],
+                $cat_result['skipped'],
+                $tool_result['imported'],
+                $tool_result['skipped']
+            );
+            
+            if ( ! empty( $tool_result['errors'] ) ) {
+                $message .= '<br>' . __( 'Errores:', 'osint-deck' ) . ' ' . implode( ', ', $tool_result['errors'] );
+                add_settings_error( 'osint_deck', 'seed_error', $message, 'warning' );
+            } else {
+                add_settings_error( 'osint_deck', 'seed_success', $message, 'success' );
+            }
+            
+            // Show messages immediately
+            settings_errors( 'osint_deck' );
+        }
+
         // Import/Export section
         $this->import_export_manager->render();
 
