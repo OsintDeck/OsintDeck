@@ -239,6 +239,20 @@ class Settings {
                 <input type="submit" name="osint_deck_seed_data" class="button button-secondary" value="<?php _e( 'Importar Datos por Defecto', 'osint-deck' ); ?>">
             </p>
         </form>
+
+        <hr>
+
+        <h2><?php _e( 'Reinstalar Base de Datos', 'osint-deck' ); ?></h2>
+        <p class="description" style="color: #b32d2e;">
+            <?php _e( '¡CUIDADO! Esta acción eliminará TODOS los datos actuales (herramientas y categorías personalizadas) y volverá a cargar los datos por defecto.', 'osint-deck' ); ?>
+        </p>
+        
+        <form method="post" action="" onsubmit="return confirm('<?php _e( '¿Estás SEGURO? Esto eliminará todos tus datos personalizados y no se puede deshacer.', 'osint-deck' ); ?>');">
+            <?php wp_nonce_field( 'osint_deck_reset_db' ); ?>
+            <p class="submit">
+                <input type="submit" name="osint_deck_reset_db" class="button button-secondary" style="color: #b32d2e; border-color: #b32d2e;" value="<?php _e( 'Reinstalar Base de Datos', 'osint-deck' ); ?>">
+            </p>
+        </form>
         <?php
     }
 

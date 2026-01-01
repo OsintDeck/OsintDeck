@@ -77,7 +77,17 @@ class CategoriesTable {
         update_option( 'osint_deck_categories_table_version', '1.0' );
     }
 
-
+    /**
+     * Drop table (for uninstall/reset)
+     *
+     * @return void
+     */
+    public static function drop_table() {
+        global $wpdb;
+        $table_name = self::get_table_name();
+        $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );
+        delete_option( 'osint_deck_categories_table_version' );
+    }
 
     /**
      * Insert category
