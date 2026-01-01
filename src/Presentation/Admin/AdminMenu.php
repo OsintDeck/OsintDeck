@@ -113,23 +113,25 @@ class AdminMenu {
 
         // TLDs (Legacy Redirect)
         add_submenu_page(
-            null,
+            'osint-deck',
             __( 'TLDs', 'osint-deck' ),
             __( 'TLDs', 'osint-deck' ),
             'manage_options',
             'osint-deck-tlds',
             array( $this, 'render_tlds' )
         );
+        remove_submenu_page( 'osint-deck', 'osint-deck-tlds' );
 
         // Import/Export (Legacy Redirect)
         add_submenu_page(
-            null,
+            'osint-deck',
             __( 'Importar/Exportar', 'osint-deck' ),
             __( 'Importar/Exportar', 'osint-deck' ),
             'manage_options',
             'osint-deck-import-export',
             array( $this, 'render_import_export' )
         );
+        remove_submenu_page( 'osint-deck', 'osint-deck-import-export' );
 
         // Settings
         add_submenu_page(
