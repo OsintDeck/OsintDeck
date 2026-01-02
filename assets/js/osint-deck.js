@@ -1216,11 +1216,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function attachActionEvents(card, urlTemplate, tool, detection) {
     const inputVal = (q.value || "").trim();
+    // Si no hay input, reemplazamos {input} por vacío para que la URL sea funcional (aunque sea genérica)
     const builtUrl = () =>
-      inputVal ? build(urlTemplate, inputVal) : urlTemplate;
+      inputVal ? build(urlTemplate, inputVal) : build(urlTemplate, "");
+      
     const needsInput = (urlTemplate || "").includes("{input}");
     const hasInput = !!inputVal;
-    const disableActions = needsInput && !hasInput;
+    
+    // Modificado: Ya no ocultamos si falta input. Solo si no hay URL.
+    // El usuario quiere poder ir a la "url primaria" si no hay búsqueda.
+    const disableActions = !urlTemplate || urlTemplate === "#"; 
+    
+    // Modo Manual: Hay input (busqueda), pero la herramienta no tiene template (no soporta {input})
+    const isManualMode = hasInput && !needsInput;
 
     const actionsWrap = card.querySelector(".osint-actions");
     const goBtn = card.querySelector(".osint-act-go");
@@ -1233,8 +1241,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (goBtn) {
       const textSpan = goBtn.querySelector(".text");
-      if (textSpan && inputVal) {
-        textSpan.textContent = `Analizar ${inputVal}`;
+      
+      // Actualización de texto del botón
+      if (textSpan) {
+        if (hasInput) {
+            if (isManualMode) {
+                // Caso: Buscando algo, pero la herramienta es manual
+                textSpan.textContent = "Uso Manual";
+                goBtn.title = "Esta herramienta requiere uso manual. No admite consulta directa.";
+            } else {
+                // Caso: Buscando algo y la herramienta lo soporta
+                textSpan.textContent = `Analizar ${inputVal}`;
+                goBtn.title = `Analizar ${inputVal} con esta herramienta`;
+            }
+        } else {
+            // Caso: Sin búsqueda (estado inicial)
+            textSpan.textContent = "Analizar"; // O "Ir a la herramienta"
+            goBtn.title = "Abrir herramienta";
+        }
       }
 
       // Set href directly (like legacy code) instead of using event listener
