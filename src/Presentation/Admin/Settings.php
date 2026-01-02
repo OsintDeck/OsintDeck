@@ -210,42 +210,11 @@ class Settings {
                 $this->tool_repository->install();
             }
 
-            // 3. Seed data
-            $cat_result = array( 'imported' => 0, 'skipped' => 0 );
-            if ( method_exists( $this->category_repository, 'seed_defaults' ) ) {
-                $cat_result = $this->category_repository->seed_defaults();
-            }
+            // 3. DO NOT Seed data (User wants empty DB)
             
-            $tool_result = array( 'imported' => 0, 'skipped' => 0, 'errors' => array() );
-            if ( method_exists( $this->tool_repository, 'seed_defaults' ) ) {
-                $tool_result = $this->tool_repository->seed_defaults();
-            }
-
-            $message = sprintf( 
-                __( 'Base de datos reinstalada correctamente (Borrado + Creación). Se han restaurado los datos por defecto: %d categorías y %d herramientas.', 'osint-deck' ),
-                $cat_result['imported'],
-                $tool_result['imported']
-            );
+            $message = __( 'Base de datos reinstalada correctamente. Las tablas han sido vaciadas y recreadas desde cero. No hay datos cargados.', 'osint-deck' );
             
-            // Add note about skipped items if any (shouldn't be any on fresh install unless duplicates in JSON)
-            if ( $cat_result['skipped'] > 0 || $tool_result['skipped'] > 0 ) {
-                 $message .= sprintf( ' (Nota: %d ítems saltados por duplicidad interna en los datos por defecto)', $cat_result['skipped'] + $tool_result['skipped'] );
-            }
-            
-            $errors = array();
-            if ( ! empty( $cat_result['errors'] ) ) {
-                $errors = array_merge( $errors, $cat_result['errors'] );
-            }
-            if ( ! empty( $tool_result['errors'] ) ) {
-                $errors = array_merge( $errors, $tool_result['errors'] );
-            }
-
-            if ( ! empty( $errors ) ) {
-                $message .= '<br>' . __( 'Errores:', 'osint-deck' ) . ' ' . implode( ', ', $errors );
-                add_settings_error( 'osint_deck', 'reset_error', $message, 'warning' );
-            } else {
-                add_settings_error( 'osint_deck', 'reset_success', $message, 'success' );
-            }
+            add_settings_error( 'osint_deck', 'reset_success', $message, 'success' );
             
             // Show messages immediately
             settings_errors( 'osint_deck' );
