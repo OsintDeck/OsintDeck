@@ -65,7 +65,7 @@ class CategoriesTable {
             data_types TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
+            PRIMARY KEY  (id),
             UNIQUE KEY code (code),
             KEY idx_group (group_name),
             KEY idx_type (type)

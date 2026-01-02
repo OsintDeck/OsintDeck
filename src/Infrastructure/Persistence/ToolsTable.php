@@ -58,7 +58,7 @@ class ToolsTable {
             data LONGTEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
+            PRIMARY KEY  (id),
             UNIQUE KEY name (name),
             UNIQUE KEY slug (slug),
             KEY idx_created (created_at),

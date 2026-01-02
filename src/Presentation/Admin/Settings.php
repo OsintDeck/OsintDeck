@@ -190,6 +190,64 @@ class Settings {
      * Render Data Tab
      */
     private function render_data_tab() {
+        // Handle reset submission
+        if ( isset( $_POST['osint_deck_reset_db'] ) ) {
+            check_admin_referer( 'osint_deck_reset_db' );
+            
+            // 1. Drop tables
+            if ( method_exists( $this->category_repository, 'drop_table' ) ) {
+                $this->category_repository->drop_table();
+            }
+            if ( method_exists( $this->tool_repository, 'drop_table' ) ) {
+                $this->tool_repository->drop_table();
+            }
+
+            // 2. Re-install tables
+            if ( method_exists( $this->category_repository, 'install' ) ) {
+                $this->category_repository->install();
+            }
+            if ( method_exists( $this->tool_repository, 'install' ) ) {
+                $this->tool_repository->install();
+            }
+
+            // 3. Seed data
+            $cat_result = array( 'imported' => 0, 'skipped' => 0 );
+            if ( method_exists( $this->category_repository, 'seed_defaults' ) ) {
+                $cat_result = $this->category_repository->seed_defaults();
+            }
+            
+            $tool_result = array( 'imported' => 0, 'skipped' => 0, 'errors' => array() );
+            if ( method_exists( $this->tool_repository, 'seed_defaults' ) ) {
+                $tool_result = $this->tool_repository->seed_defaults();
+            }
+
+            $message = sprintf( 
+                __( 'Base de datos reinstalada correctamente. Categorías: %d importadas, %d saltadas. Herramientas: %d importadas, %d saltadas.', 'osint-deck' ),
+                $cat_result['imported'],
+                $cat_result['skipped'],
+                $tool_result['imported'],
+                $tool_result['skipped']
+            );
+            
+            $errors = array();
+            if ( ! empty( $cat_result['errors'] ) ) {
+                $errors = array_merge( $errors, $cat_result['errors'] );
+            }
+            if ( ! empty( $tool_result['errors'] ) ) {
+                $errors = array_merge( $errors, $tool_result['errors'] );
+            }
+
+            if ( ! empty( $errors ) ) {
+                $message .= '<br>' . __( 'Errores:', 'osint-deck' ) . ' ' . implode( ', ', $errors );
+                add_settings_error( 'osint_deck', 'reset_error', $message, 'warning' );
+            } else {
+                add_settings_error( 'osint_deck', 'reset_success', $message, 'success' );
+            }
+            
+            // Show messages immediately
+            settings_errors( 'osint_deck' );
+        }
+
         // Handle seed submission
         if ( isset( $_POST['osint_deck_seed_data'] ) ) {
             check_admin_referer( 'osint_deck_seed_data' );

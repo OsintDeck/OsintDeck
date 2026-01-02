@@ -129,6 +129,15 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
     }
 
     /**
+     * Uninstall repository storage (drop tables)
+     *
+     * @return void
+     */
+    public function drop_table() {
+        ToolsTable::drop_table();
+    }
+
+    /**
      * Import tool from JSON data
      *
      * @param array $data Tool data from JSON.

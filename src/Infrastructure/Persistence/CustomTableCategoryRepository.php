@@ -74,6 +74,15 @@ class CustomTableCategoryRepository implements CategoryRepositoryInterface {
     }
 
     /**
+     * Uninstall repository storage (drop tables)
+     *
+     * @return void
+     */
+    public function drop_table() {
+        CategoriesTable::drop_table();
+    }
+
+    /**
      * Count categories
      *
      * @return int
