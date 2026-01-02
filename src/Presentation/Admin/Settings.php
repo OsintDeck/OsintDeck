@@ -212,8 +212,16 @@ class Settings {
                 $tool_result['skipped']
             );
             
+            $errors = array();
+            if ( ! empty( $cat_result['errors'] ) ) {
+                $errors = array_merge( $errors, $cat_result['errors'] );
+            }
             if ( ! empty( $tool_result['errors'] ) ) {
-                $message .= '<br>' . __( 'Errores:', 'osint-deck' ) . ' ' . implode( ', ', $tool_result['errors'] );
+                $errors = array_merge( $errors, $tool_result['errors'] );
+            }
+
+            if ( ! empty( $errors ) ) {
+                $message .= '<br>' . __( 'Errores:', 'osint-deck' ) . ' ' . implode( ', ', $errors );
                 add_settings_error( 'osint_deck', 'seed_error', $message, 'warning' );
             } else {
                 add_settings_error( 'osint_deck', 'seed_success', $message, 'success' );

@@ -253,7 +253,8 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
                 if ( $res ) {
                     $results['imported']++;
                 } else {
-                    $results['errors'][] = "Failed to save tool: " . ( $tool['name'] ?? 'Unknown' );
+                    global $wpdb;
+                    $results['errors'][] = "Failed to save tool: " . ( $tool['name'] ?? 'Unknown' ) . " - DB Error: " . $wpdb->last_error;
                 }
             }
         }

@@ -53,8 +53,8 @@ class ToolsTable {
 
         $sql = "CREATE TABLE {$table_name} (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(255) NOT NULL,
-            slug VARCHAR(255) NOT NULL,
+            name VARCHAR(191) NOT NULL,
+            slug VARCHAR(191) NOT NULL,
             data LONGTEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

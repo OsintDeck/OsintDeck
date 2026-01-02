@@ -109,6 +109,7 @@ class CustomTableCategoryRepository implements CategoryRepositoryInterface {
 
         $imported = 0;
         $skipped = 0;
+        $errors = array();
 
         foreach ( $categories as $cat ) {
             if ( empty( $cat['code'] ) ) {
@@ -128,6 +129,9 @@ class CustomTableCategoryRepository implements CategoryRepositoryInterface {
             
             if ( $result ) {
                 $imported++;
+            } else {
+                global $wpdb;
+                $errors[] = "Failed to save category: " . $cat['code'] . " - DB Error: " . $wpdb->last_error;
             }
         }
 
@@ -135,6 +139,7 @@ class CustomTableCategoryRepository implements CategoryRepositoryInterface {
             'success'  => true,
             'imported' => $imported,
             'skipped'  => $skipped,
+            'errors'   => $errors,
             'message'  => sprintf( 'Imported %d categories, skipped %d', $imported, $skipped ),
         );
     }
