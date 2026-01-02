@@ -273,7 +273,7 @@ class AdminMenu {
      * @return void
      */
     public function render_settings() {
-        $settings = new Settings( $this->tool_repository, $this->category_repository, $this->tld_manager );
+        $settings = new Settings( $this->tool_repository, $this->category_repository, $this->tld_manager, $this->classifier );
         $settings->render();
     }
 

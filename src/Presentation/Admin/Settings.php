@@ -9,6 +9,7 @@ namespace OsintDeck\Presentation\Admin;
 
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
+use OsintDeck\Domain\Service\NaiveBayesClassifier;
 
 /**
  * Class Settings
@@ -39,6 +40,13 @@ class Settings {
     private $tld_manager;
 
     /**
+     * Classifier
+     *
+     * @var NaiveBayesClassifier
+     */
+    private $classifier;
+
+    /**
      * Import/Export Manager
      *
      * @var ImportExport
@@ -58,11 +66,13 @@ class Settings {
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
      * @param CategoryRepositoryInterface $category_repository Category Repository.
      * @param mixed $tld_manager TLD Manager (Service).
+     * @param NaiveBayesClassifier $classifier Classifier.
      */
-    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, $tld_manager ) {
+    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, $tld_manager, NaiveBayesClassifier $classifier = null ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
         $this->tld_manager = $tld_manager;
+        $this->classifier = $classifier;
         
         // Initialize sub-components for tabs
         $this->import_export_manager = new ImportExport( $tool_repository, $category_repository );
@@ -222,9 +232,34 @@ class Settings {
                 $this->tool_repository->install();
             }
 
-            // 3. DO NOT Seed data (User wants empty DB)
+            // 3. Seed default data (As promised in UI)
+            $cat_result = array( 'imported' => 0, 'skipped' => 0 );
+            if ( method_exists( $this->category_repository, 'seed_defaults' ) ) {
+                $cat_result = $this->category_repository->seed_defaults();
+            }
             
-            $message = __( 'Base de datos reinstalada correctamente. Las tablas han sido vaciadas y recreadas desde cero. No hay datos cargados.', 'osint-deck' );
+            $tool_result = array( 'imported' => 0, 'skipped' => 0 );
+            if ( method_exists( $this->tool_repository, 'seed_defaults' ) ) {
+                $tool_result = $this->tool_repository->seed_defaults();
+            }
+
+            // 4. Reset AI Model & Load Defaults
+            if ( $this->classifier ) {
+                $this->classifier->clear_all();
+                
+                // Load training data
+                $json_file = OSINT_DECK_PLUGIN_DIR . 'data/training_data.json';
+                $this->classifier->load_defaults_from_json( $json_file );
+                
+                // Train
+                $this->classifier->train();
+            }
+
+            $message = sprintf( 
+                __( 'Base de datos reinstalada y datos por defecto cargados. Categorías: %d, Herramientas: %d. Modelo AI reiniciado y entrenado.', 'osint-deck' ),
+                $cat_result['imported'],
+                $tool_result['imported']
+            );
             
             add_settings_error( 'osint_deck', 'reset_success', $message, 'success' );
             
@@ -311,6 +346,109 @@ class Settings {
      */
     private function render_tlds_tab() {
         $this->tld_manager_admin->render();
+    }
+
+    /**
+     * Render AI Training Tab
+     */
+    private function render_ai_training_tab() {
+        // Handle clear submission
+        if ( isset( $_POST['osint_deck_ai_clear'] ) ) {
+            check_admin_referer( 'osint_deck_ai_clear' );
+            
+            if ( $this->classifier ) {
+                $this->classifier->clear_all();
+                add_settings_error( 'osint_deck', 'ai_cleared', __( 'Modelo y datos de entrenamiento eliminados.', 'osint-deck' ), 'success' );
+            } else {
+                 add_settings_error( 'osint_deck', 'ai_error', __( 'Clasificador no disponible.', 'osint-deck' ), 'error' );
+            }
+        }
+
+        // Handle load defaults submission
+        if ( isset( $_POST['osint_deck_ai_load'] ) ) {
+            check_admin_referer( 'osint_deck_ai_load' );
+            
+            if ( $this->classifier ) {
+                $json_file = OSINT_DECK_PLUGIN_DIR . 'data/training_data.json';
+                $result = $this->classifier->load_defaults_from_json( $json_file );
+                
+                if ( $result['success'] ) {
+                    $message = sprintf( 
+                        __( 'Importación completada. %d muestras importadas, %d saltadas.', 'osint-deck' ), 
+                        $result['imported'], 
+                        $result['skipped'] 
+                    );
+                    add_settings_error( 'osint_deck', 'ai_loaded', $message, 'success' );
+                    
+                    // Retrain
+                    $this->classifier->train();
+                    add_settings_error( 'osint_deck', 'ai_trained', __( 'Modelo re-entrenado con los nuevos datos.', 'osint-deck' ), 'success' );
+                    
+                } else {
+                    add_settings_error( 'osint_deck', 'ai_error', __( 'Error al cargar JSON: ', 'osint-deck' ) . $result['message'], 'error' );
+                }
+            } else {
+                 add_settings_error( 'osint_deck', 'ai_error', __( 'Clasificador no disponible.', 'osint-deck' ), 'error' );
+            }
+        }
+
+        // Display status
+        $samples_count = 0;
+        $model_status = 'No entrenado';
+        
+        if ( $this->classifier ) {
+            $samples = $this->classifier->get_samples();
+            $samples_count = count( $samples );
+            
+            // Check if model option exists
+            $model = get_option( 'osint_deck_nb_model' );
+            if ( ! empty( $model ) ) {
+                $model_status = 'Entrenado';
+            }
+        }
+
+        ?>
+        <h2><?php _e( 'Entrenamiento AI', 'osint-deck' ); ?></h2>
+        <p><?php _e( 'Gestiona los datos de entrenamiento para el clasificador de intenciones.', 'osint-deck' ); ?></p>
+        
+        <table class="form-table">
+            <tr>
+                <th><?php _e( 'Muestras de entrenamiento', 'osint-deck' ); ?></th>
+                <td><?php echo $samples_count; ?></td>
+            </tr>
+            <tr>
+                <th><?php _e( 'Estado del Modelo', 'osint-deck' ); ?></th>
+                <td><?php echo $model_status; ?></td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h3><?php _e( 'Acciones', 'osint-deck' ); ?></h3>
+        
+        <form method="post" action="" style="display:inline-block; margin-right: 10px;">
+            <?php wp_nonce_field( 'osint_deck_ai_load' ); ?>
+            <input type="submit" name="osint_deck_ai_load" class="button button-primary" value="<?php _e( 'Cargar Defaults y Entrenar', 'osint-deck' ); ?>">
+        </form>
+
+        <form method="post" action="" style="display:inline-block;" onsubmit="return confirm('<?php _e( '¿Estás seguro de borrar todos los datos de entrenamiento?', 'osint-deck' ); ?>');">
+            <?php wp_nonce_field( 'osint_deck_ai_clear' ); ?>
+            <input type="submit" name="osint_deck_ai_clear" class="button button-secondary" value="<?php _e( 'Borrar Todo', 'osint-deck' ); ?>">
+        </form>
+
+        <hr>
+
+        <h3><?php _e( 'Datos de Entrenamiento Actuales (DB)', 'osint-deck' ); ?></h3>
+        <p class="description"><?php _e( 'Estos son los datos cargados actualmente en la base de datos que utiliza el modelo.', 'osint-deck' ); ?></p>
+        <?php
+        $json_data = '';
+        if ( $this->classifier ) {
+             $samples = $this->classifier->get_samples();
+             $json_data = json_encode( $samples, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
+        }
+        ?>
+        <textarea style="width:100%; height: 300px; font-family: monospace; background: #f0f0f1;" readonly><?php echo esc_textarea( $json_data ); ?></textarea>
+        <?php
     }
 
     /**

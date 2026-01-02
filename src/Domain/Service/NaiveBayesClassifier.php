@@ -95,6 +95,64 @@ class NaiveBayesClassifier {
     }
 
     /**
+     * Clear all samples and model
+     * 
+     * @return void
+     */
+    public function clear_all() {
+        update_option( self::OPTION_SAMPLES, array() );
+        update_option( self::OPTION_MODEL, null );
+        $this->model = null;
+    }
+
+    /**
+     * Load defaults from JSON file
+     * 
+     * @param string $json_file Path to JSON file
+     * @return array Result array with count of imported and skipped
+     */
+    public function load_defaults_from_json( $json_file ) {
+        if ( ! file_exists( $json_file ) ) {
+            return array( 'success' => false, 'message' => 'File not found' );
+        }
+
+        $content = file_get_contents( $json_file );
+        $data = json_decode( $content, true );
+        
+        if ( ! is_array( $data ) ) {
+            return array( 'success' => false, 'message' => 'Invalid JSON' );
+        }
+
+        $existing_samples = $this->get_samples();
+        $existing_signatures = array();
+        foreach ( $existing_samples as $s ) {
+            $existing_signatures[] = md5( $s['text'] . '|' . $s['category'] );
+        }
+
+        $count = 0;
+        $skipped = 0;
+
+        foreach ( $data as $item ) {
+            if ( isset( $item['text'] ) && isset( $item['category'] ) ) {
+                $sig = md5( $item['text'] . '|' . $item['category'] );
+                if ( ! in_array( $sig, $existing_signatures ) ) {
+                    $this->add_sample( $item['text'], $item['category'] );
+                    $existing_signatures[] = $sig;
+                    $count++;
+                } else {
+                    $skipped++;
+                }
+            }
+        }
+
+        return array(
+            'success' => true,
+            'imported' => $count,
+            'skipped' => $skipped
+        );
+    }
+
+    /**
      * Train the model based on stored samples
      *
      * @return array Statistics of training

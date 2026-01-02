@@ -254,15 +254,15 @@ class DecisionEngine {
         foreach ( $tools as $tool ) {
             // Search in tool name, tags, categories
             if ( $this->matches_search( $tool, $query ) ) {
-                // Get cards with type 'none'
-                $none_cards = $this->filter_none_cards( $tool['cards'] );
+                // Get all cards, not just 'none' type
+                // This ensures we show tool capabilities even if they require input
+                $cards = $tool['cards'] ?? array();
                 
-                if ( ! empty( $none_cards ) || empty( $query ) ) {
-                    $results[] = array(
-                        'tool'  => $tool,
-                        'cards' => $none_cards,
-                    );
-                }
+                // Always include matching tools
+                $results[] = array(
+                    'tool'  => $tool,
+                    'cards' => $cards,
+                );
             }
         }
 
@@ -300,12 +300,112 @@ class DecisionEngine {
             }
         }
 
+        // Check for abstract intents fallback
+        if ( empty( $results ) && ! empty( $input_types ) ) {
+            $primary_type = $input_types[0];
+            $abstract_intents = array('reputation', 'leaks', 'vuln', 'fraud', 'security');
+
+            if ( in_array( $primary_type, $abstract_intents ) ) {
+                // Get synonyms for the intent (e.g. reputation -> reputacion)
+                $synonyms = $this->get_intent_synonyms( $primary_type );
+                $all_results = array();
+                $seen_tools = array();
+
+                foreach ( $synonyms as $term ) {
+                    $catalog_results = $this->process_catalog_mode( $term );
+                    
+                    if ( ! empty( $catalog_results['results'] ) ) {
+                        foreach ( $catalog_results['results'] as $result ) {
+                            $tool_name = $result['tool']['name'];
+                            if ( ! in_array( $tool_name, $seen_tools ) ) {
+                                $all_results[] = $result;
+                                $seen_tools[] = $tool_name;
+                            }
+                        }
+                    }
+                }
+                
+                if ( ! empty( $all_results ) ) {
+                    return array(
+                        'mode'    => self::MODE_CATALOG,
+                        'inputs'  => array(),
+                        'query'   => $query,
+                        'results' => $all_results,
+                    );
+                }
+            }
+        }
+
+        // If no results but we have a valid detection (not just 'generic' or 'none')
+        if ( empty( $results ) && ! empty( $input_types ) ) {
+            $primary_type = $input_types[0];
+            if ( $primary_type !== 'none' && $primary_type !== 'generic' ) {
+                $results[] = array(
+                    'tool' => array(
+                        'name' => 'OSINT Deck AI',
+                        'description' => 'Asistente',
+                        'url' => '#',
+                        'categories' => array('Sistema'),
+                        'tags_global' => array('system'),
+                        'cards' => array(),
+                        'osint_context' => array('uso_principal' => 'Información'),
+                    ),
+                    'cards' => array(
+                        array(
+                            'id' => 'no-tools-found',
+                            'title' => 'Sin herramientas',
+                            'description' => sprintf( 'No hay herramientas disponibles para "%s".', $primary_type ),
+                            'type' => 'info',
+                            'tags' => array('info'),
+                        )
+                    )
+                );
+            }
+        }
+
         return array(
             'mode'    => self::MODE_INVESTIGATION,
             'inputs'  => $inputs,
             'query'   => $query,
             'results' => $results,
         );
+    }
+
+    /**
+     * Get synonyms for abstract intents
+     * 
+     * @param string $intent Intent name.
+     * @return array Array of synonyms including the intent itself.
+     */
+    private function get_intent_synonyms( $intent ) {
+        $synonyms = array( $intent );
+        
+        switch ( $intent ) {
+            case 'reputation':
+                $synonyms[] = 'reputacion';
+                $synonyms[] = 'blacklist';
+                break;
+            case 'vuln':
+                $synonyms[] = 'vulnerabilidad';
+                $synonyms[] = 'exploit';
+                $synonyms[] = 'cve';
+                break;
+            case 'leaks':
+                $synonyms[] = 'breach';
+                $synonyms[] = 'filtracion';
+                $synonyms[] = 'password';
+                break;
+            case 'fraud':
+                $synonyms[] = 'fraude';
+                $synonyms[] = 'scam';
+                break;
+            case 'security':
+                $synonyms[] = 'seguridad';
+                $synonyms[] = 'proteccion';
+                break;
+        }
+        
+        return $synonyms;
     }
 
     /**

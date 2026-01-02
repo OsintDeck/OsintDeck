@@ -126,11 +126,19 @@ class AiTrainingManager {
                     <div>
                          <h3><?php _e( 'Cargar Datos Iniciales', 'osint-deck' ); ?></h3>
                          <p class="description"><?php _e( 'Si la base de datos está vacía, puedes cargar un conjunto de frases predefinidas (JSON).', 'osint-deck' ); ?></p>
-                         <form method="post" action="" style="margin-top: 10px;">
-                            <?php wp_nonce_field( 'osint_ai_load_defaults', 'osint_ai_nonce' ); ?>
-                            <input type="hidden" name="action" value="load_defaults">
-                            <?php submit_button( __( 'Importar Dataset Predeterminado', 'osint-deck' ), 'secondary', 'load_defaults', false ); ?>
-                        </form>
+                         <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                             <form method="post" action="">
+                                <?php wp_nonce_field( 'osint_ai_load_defaults', 'osint_ai_nonce' ); ?>
+                                <input type="hidden" name="action" value="load_defaults">
+                                <?php submit_button( __( 'Importar Dataset Predeterminado', 'osint-deck' ), 'secondary', 'load_defaults', false ); ?>
+                            </form>
+
+                            <form method="post" action="" onsubmit="return confirm('<?php _e( '¿ESTÁS SEGURO? Esto eliminará TODAS las muestras de entrenamiento y el modelo. Esta acción no se puede deshacer.', 'osint-deck' ); ?>');">
+                                <?php wp_nonce_field( 'osint_ai_clear_all', 'osint_ai_nonce' ); ?>
+                                <input type="hidden" name="action" value="clear_all_samples">
+                                <?php submit_button( __( 'Borrar Todo (Reset)', 'osint-deck' ), 'delete', 'clear_all', false ); ?>
+                            </form>
+                         </div>
                     </div>
                 </div>
 
@@ -202,6 +210,11 @@ class AiTrainingManager {
             $idx = intval( $_POST['sample_index'] );
             $this->classifier->delete_sample( $idx );
             echo '<div class="notice notice-success is-dismissible"><p>Muestra eliminada.</p></div>';
+        }
+
+        if ( $_POST['action'] === 'clear_all_samples' && check_admin_referer( 'osint_ai_clear_all', 'osint_ai_nonce' ) ) {
+            $this->classifier->clear_all();
+            echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Se han eliminado todas las muestras y el modelo.', 'osint-deck' ) . '</p></div>';
         }
 
         if ( $_POST['action'] === 'train_model' && check_admin_referer( 'osint_ai_train', 'osint_ai_nonce' ) ) {

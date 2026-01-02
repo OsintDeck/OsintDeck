@@ -624,6 +624,22 @@
         "category": "email"
     },
     {
+        "text": "reputacion mail",
+        "category": "email"
+    },
+    {
+        "text": "ver reputacion de un email",
+        "category": "email"
+    },
+    {
+        "text": "reputacion email",
+        "category": "email"
+    },
+    {
+        "text": "email reputation",
+        "category": "email"
+    },
+    {
         "text": "email trust score",
         "category": "email"
     },
@@ -2149,6 +2165,34 @@
     },
     {
         "text": "buscar filtraciones de datos",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar leaks",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar filtraciones",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar datos expuestos",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar contraseñas",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar breach",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar hackeo",
+        "category": "leaks"
+    },
+    {
+        "text": "leaks",
         "category": "leaks"
     },
     {
@@ -4390,5 +4434,53 @@
     {
         "text": "drogas",
         "category": "toxic"
+    },
+    {
+        "text": "reputacion mail",
+        "category": "reputation"
+    },
+    {
+        "text": "verificar reputacion de correo",
+        "category": "reputation"
+    },
+    {
+        "text": "email reputation",
+        "category": "reputation"
+    },
+    {
+        "text": "check email reputation",
+        "category": "reputation"
+    },
+    {
+        "text": "mail reputation",
+        "category": "reputation"
+    },
+    {
+        "text": "correo spam",
+        "category": "reputation"
+    },
+    {
+        "text": "email blacklist",
+        "category": "reputation"
+    },
+    {
+        "text": "verificar si el correo es seguro",
+        "category": "reputation"
+    },
+    {
+        "text": "reputacion de dominio",
+        "category": "reputation"
+    },
+    {
+        "text": "domain reputation",
+        "category": "reputation"
+    },
+    {
+        "text": "verificar dominio en listas negras",
+        "category": "reputation"
+    },
+    {
+        "text": "reputacion de ip",
+        "category": "reputation"
     }
 ]

@@ -88,6 +88,12 @@ class InputParser {
             self::TYPE_USERNAME => '/@[a-zA-Z0-9_]{1,15}\b/',
             // Bitcoin wallet
             self::TYPE_WALLET => '/\b[13][a-km-zA-HJ-NP-Z1-9]{25,34}\b|bc1[a-z0-9]{39,59}\b/',
+            // Help keywords
+            self::TYPE_HELP   => '/\b(ayuda|help|soporte|asistencia|necesito\s+ayuda|como\s+usar|guia|tutorial)\b/i',
+            // Greetings
+            self::TYPE_GREETING => '/\b(hola|buenos\s+dias|buenas\s+tardes|buenas\s+noches|que\s+tal|como\s+estas|saludos|buen\s+dia)\b/i',
+            // Toxic
+            self::TYPE_TOXIC => '/\b(puto|mierda|idiota|imbecil|estupido|basura|inutil|maldito|cabron|verga|pene|sexo|porno|xxx)\b/i',
         );
     }
 

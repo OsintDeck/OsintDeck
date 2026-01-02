@@ -9,9 +9,251 @@
  * - Grid responsivo con CSS Grid (sin col/row de Bootstrap)
  */
 
-document.addEventListener("DOMContentLoaded", function () {
-  const wrap = document.querySelector(".osint-wrap[id]");
+/* =========================================================
+ * GLOBAL UTILS & STATE
+ * ========================================================= */
+
+// Levenshtein distance for fuzzy matching
+function levenshtein(a, b) {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          Math.min(
+            matrix[i][j - 1] + 1,   // insertion
+            matrix[i - 1][j] + 1    // deletion
+          )
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+// Detección extendida accesible globalmente
+function detectIntent(value) {
+  const v = (value || "").toLowerCase().trim();
+  const tokens = v.split(/[\s,.;!?]+/); // Simple tokenization
+
+  const intents = [
+    { key: "leak", words: ["leak", "breach", "filtr", "dump"], intent: "leaks", msg: "He detectado palabras clave relacionadas con leaks o filtraciones." },
+    { key: "reputation", words: ["reput", "blacklist", "spam"], intent: "reputation", msg: "He detectado intención de reputación / listas negras." },
+    { key: "vuln", words: ["vuln", "cve", "bug", "exploit", "poc"], intent: "vuln", msg: "He detectado palabras clave de vulnerabilidades." },
+    { key: "fraud", words: ["fraud", "scam", "fraude", "tarjeta", "carding"], intent: "fraud", msg: "He detectado contexto de fraude/finanzas." },
+    { key: "help", words: ["ayuda", "necesito", "help", "soporte", "asistencia"], intent: "help", msg: "He detectado una solicitud de ayuda. Te muestro recursos disponibles." },
+    { key: "greeting", words: ["hola", "buenos dias", "buenas tardes", "buenas noches", "que tal", "como estas", "saludos", "buen dia"], intent: "greeting", msg: "¡Hola! Estoy aquí para ayudarte con tus investigaciones OSINT." },
+    { key: "toxic", words: ["puto", "mierda", "idiota", "imbecil", "estupido", "basura", "inutil", "maldito", "cabron", "verga", "pene", "sexo", "porno", "xxx"], intent: "toxic", msg: "Lenguaje no permitido detectado." }
+  ];
+
+  for (const item of intents) {
+    // 1. Exact/Substring match (existing logic)
+    if (item.words.some((w) => v.includes(w))) return item;
+
+    // 2. Fuzzy match (Levenshtein)
+    for (const w of item.words) {
+      // Determine tolerance based on word length
+      // < 4 chars: 0 tolerance (strict) - avoided by optimization check below unless logic changes
+      // 4-6 chars: 1 typo allowed
+      // > 6 chars: 2 typos allowed
+      let tolerance = 1;
+      if (w.length < 4) tolerance = 0;
+      else if (w.length > 6) tolerance = 2;
+
+      if (tolerance === 0) continue; // Skip short words for fuzzy matching to avoid false positives
+
+      for (const token of tokens) {
+        // Optimization: length diff check
+        if (Math.abs(token.length - w.length) > tolerance) continue;
+        
+        if (levenshtein(token, w) <= tolerance) {
+            // Log fuzzy match for debugging
+            console.log(`[OSINT Deck] Fuzzy match: "${token}" ~ "${w}" (dist: ${levenshtein(token, w)})`);
+            return item;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function detectRichInput(value) {
+  const cleanText = (s) => String(s || "").trim();
+  const s = cleanText(value);
+  if (!s) return { type: "none", msg: "" };
+
+  const ret = (type, val, msg) => ({ type, value: val, msg });
+
+  // 1. Extraction (Find entity within string)
+  // URL
+  const urlMatch = s.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i);
+  if (urlMatch) return ret("url", urlMatch[0], `He encontrado una URL: ${urlMatch[0]}.`);
+
+  // Explicit IP prefix handling (Safety net)
+  if (/^ip\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/i.test(s)) {
+      const manualIp = s.match(/^ip\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/i)[1];
+      return ret("ipv4", manualIp, `He encontrado una IP: ${manualIp}.`);
+  }
+
+  // IPv4 - Improved regex for extraction (Robust: finds IP anywhere in string)
+  const ipv4Candidates = s.match(/(?:\d{1,3}\.){3}\d{1,3}/g);
+  if (ipv4Candidates) {
+    for (const cand of ipv4Candidates) {
+      // Validate segments
+      const parts = cand.split('.');
+      if (parts.every(p => {
+        const n = parseInt(p, 10);
+        return n >= 0 && n <= 255;
+      })) {
+        return ret("ipv4", cand, `He encontrado una IP: ${cand}.`);
+      }
+    }
+  }
+
+  // Email
+  const emailMatch = s.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+  if (emailMatch) return ret("email", emailMatch[0], `He encontrado un correo: ${emailMatch[0]}.`);
+
+  // Hash (MD5, SHA1, SHA256)
+  const hashMatch = s.match(/\b([a-fA-F0-9]{32}|[a-fA-F0-9]{40}|[a-fA-F0-9]{64})\b/);
+  if (hashMatch) {
+      const len = hashMatch[0].length;
+      let type = "md5";
+      if (len === 40) type = "sha1";
+      if (len === 64) type = "sha256";
+      return ret(type, hashMatch[0], `He encontrado un hash ${type.toUpperCase()}.`);
+  }
+
+  // Domain (Stricter regex for extraction to avoid false positives)
+  const domainMatch = s.match(/\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\b/i);
+  if (domainMatch && domainMatch[0].includes(".")) {
+     // Validate TLD roughly and avoid common non-domains if needed
+     const tld = domainMatch[0].split('.').pop();
+     if (!/^\d+$/.test(tld) && tld.length >= 2) {
+         return ret("domain", domainMatch[0], `He encontrado un dominio: ${domainMatch[0]}.`);
+     }
+  }
+
+  // 2. Local Intent Detection (Conversational) - ONLY if no entity extracted
+  const intentMatch = detectIntent(s);
+  if (intentMatch) {
+    return { type: "keyword", intent: intentMatch.intent, msg: intentMatch.msg, value: s };
+  }
+
+  // 3. Strict matches (Full string matches) - Fallback for other types not covered by extraction
+  // Note: Extraction logic above covers many of these, but we keep specific ones that are harder to extract reliably without false positives in free text
+
+
+  // 3. Fallback to existing strict checks if extraction failed but strict matched (unlikely but safe)
+  if (/^com\.[a-z0-9_-]+\.[a-z0-9_.-]+$/i.test(s)) {
+    return ret("package", s, `Detecto un paquete de aplicacion ${s}. Te muestro recursos asociados.`);
+  }
+  if (/^((?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,7}:|([0-9A-Fa-f]{1,4}:){1,6}:[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,5}(:[0-9A-Fa-f]{1,4}){1,2}|([0-9A-Fa-f]{1,4}:){1,4}(:[0-9A-Fa-f]{1,4}){1,3}|([0-9A-Fa-f]{1,4}:){1,3}(:[0-9A-Fa-f]{1,4}){1,4}|([0-9A-Fa-f]{1,4}:){1,2}(:[0-9A-Fa-f]{1,4}){1,5}|[0-9A-Fa-f]{1,4}:((:[0-9A-Fa-f]{1,4}){1,6})|:((:[0-9A-Fa-f]{1,4}){1,7}|:))$/i.test(s)) {
+    return ret("ipv6", s, `Detecto la IP ${s}. Aqui tienes utilidades que pueden ayudarte a investigarla.`);
+  }
+  if (/^AS\d{1,10}$/i.test(s)) {
+    return ret("asn", s, `Detecto un ASN: ${s}. Aqui tienes herramientas relacionadas.`);
+  }
+  if (/^[0-9A-Fa-f]{2}([:-][0-9A-Fa-f]{2}){5}$/.test(s)) {
+    return ret("mac", s, `Ingresaste una direccion MAC: ${s}. Estas son las utilidades que pueden ayudarte.`);
+  }
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s)) {
+    return ret("uuid", s, `Has ingresado un UUID: ${s}. Estas son las herramientas que puedes usar.`);
+  }
+  if (/^\d{4,10}$/.test(s)) {
+    return ret("zip", s, `Detecto un codigo postal: ${s}. Te muestro herramientas relacionadas.`);
+  }
+  if (/^\+?[0-9][0-9\s().-]{6,}$/i.test(s)) {
+    return ret("phone", s, `Has ingresado el numero telefonico ${s}. Estas son las herramientas disponibles.`);
+  }
+  if (/^-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+$/.test(s)) {
+    return ret("geo", s, `Detecto coordenadas: ${s}. Aqui tienes recursos que trabajan con este tipo de datos.`);
+  }
+  if (/^0x[a-fA-F0-9]{40}$/.test(s)) {
+    return ret("eth", s, `Detecto una direccion de criptomoneda: ${s}. Aqui tienes las herramientas asociadas.`);
+  }
+  if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(s)) {
+    return ret("btc", s, `Has ingresado una wallet: ${s}. Te muestro recursos para investigarla.`);
+  }
+  if (/(\.zip|\.rar|\.7z|\.pdf|\.docx?|\.xlsx?|\.pptx?|\.exe|\.dll|\.apk|\.ipa|\.jpg|\.jpeg|\.png|\.gif)$/i.test(s)) {
+    return ret("file", s, `Archivo detectado: ${s}. Te muestro utilidades disponibles.`);
+  }
+  if (/BEGIN PGP PUBLIC KEY BLOCK/i.test(s)) {
+    return ret("pgp", s, "Has ingresado una clave PGP. Aqui tienes herramientas compatibles.");
+  }
+  if (/^@[a-z0-9_.-]{2,32}$/i.test(s)) {
+    return ret("username", s, `Detecto un nombre de usuario: ${s}. Estas son las herramientas disponibles.`);
+  }
+
+  const fallbackIntent = detectIntent(s);
+  if (fallbackIntent) {
+    return { type: "keyword", intent: fallbackIntent.intent, msg: fallbackIntent.msg, value: s };
+  }
+
+  if (s.split(" ").length > 2) {
+    return { type: "keyword", msg: `He detectado palabras clave en tu busqueda (${s}). Te muestro herramientas generales asociadas.`, value: s };
+  }
+  return { type: "generic", msg: `He recibido tu busqueda: ${s}. Te muestro herramientas generales que pueden ser utiles. [v2]`, value: s };
+}
+
+/* Toast (Singleton) */
+let toastEl, toastTimer;
+function initToast() {
+    if (document.querySelector('.osint-toast')) {
+        toastEl = document.querySelector('.osint-toast');
+        return;
+    }
+    toastEl = document.createElement("div");
+    toastEl.className = "osint-toast";
+    document.body.appendChild(toastEl);
+}
+
+function toast(text) {
+    if (!text || !toastEl) return;
+    const el = toastEl;
+    el.textContent = text;
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+/* Tooltip detección de entrada (Singleton) */
+let tooltipEl, tooltipTimer;
+function showTooltip(text) {
+    if (!text) return;
+    if (!tooltipEl) {
+        tooltipEl = document.createElement("div");
+        tooltipEl.className = "osd-tooltip";
+        document.body.appendChild(tooltipEl);
+        tooltipEl.onmouseenter = () => clearTimeout(tooltipTimer);
+        tooltipEl.onmouseleave = () => {
+            tooltipTimer = setTimeout(() => tooltipEl.classList.remove("show"), 1000);
+        };
+    }
+    tooltipEl.innerHTML = `<span>${text}</span>`;
+    tooltipEl.classList.add("show");
+    clearTimeout(tooltipTimer);
+    tooltipTimer = setTimeout(() => {
+        if (!tooltipEl.matches(":hover")) tooltipEl.classList.remove("show");
+    }, 3000);
+}
+
+/* =========================================================
+ * INSTANCE INIT
+ * ========================================================= */
+function initOsintDeck(wrap) {
   if (!wrap) return;
+  const uid = wrap.getAttribute("id") || "";
+  const cfg = (window.OSINT_DECK_DATA && window.OSINT_DECK_DATA[uid]) || {};
 
   const FILTER_LABELS = {
     type: "Tipo",
@@ -48,17 +290,19 @@ document.addEventListener("DOMContentLoaded", function () {
     leaks: ["leak", "breach", "password", "credential"],
     reputation: ["reputation", "score", "blacklist", "spam"],
     vuln: ["cve", "exploit", "vuln", "vulnerability"],
-    fraud: ["fraud", "scam", "carding", "finance"]
+    fraud: ["fraud", "scam", "carding", "finance"],
+    help: ["help", "ayuda", "soporte", "asistencia", "support"],
+    greeting: ["greeting", "hola", "saludo", "assistant"],
+    toxic: ["warning", "filter", "security"]
   };
-
-  const uid = wrap.getAttribute("id") || "";
-  const cfg =
-    (window.OSINT_DECK_DATA && window.OSINT_DECK_DATA[uid]) || {};
 
   let tools = [];
   try {
-    tools = JSON.parse(wrap.getAttribute("data-tools") || "[]");
+    const rawTools = wrap.getAttribute("data-tools") || "[]";
+    tools = JSON.parse(rawTools);
+    console.log(`[OSINT Deck] Loaded ${tools.length} tools for ${uid}`);
   } catch (e) {
+    console.error("[OSINT Deck] Error parsing tools JSON:", e);
     tools = [];
   }
 
@@ -205,7 +449,7 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
 
   /* =========================================================
-   * UTILIDADES
+   * UTILIDADES LOCALES
    * ========================================================= */
   const esc = (s) =>
     String(s || "").replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m] || m));
@@ -223,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentDetection = null;
   let filterPopularOnly = false;
 
-  const ajaxCfg = window.OSINT_DECK_AJAX || {};
+  const ajaxCfg = window.osintDeckAjax || window.OSINT_DECK_AJAX || {};
   const fpCache = (() => {
     try {
       const parts = [
@@ -301,7 +545,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* =========================================================
-   * POBLAR MENÚS DE FILTRO (TIPO / ACCESO / LICENCIA / CATEGORÍA)
+   * POBLAR MENÚS DE FILTRO
    * ========================================================= */
   function populateTypeMenu() {
     const menu = wrap.querySelector('.osint-dropdown-menu[data-for="type"]');
@@ -450,45 +694,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let showFilters = false;
 
-  /* Toast */
-  const toastEl = document.createElement("div");
-  toastEl.className = "osint-toast";
-  document.body.appendChild(toastEl);
-  let toastTimer;
-
-  function toast(text) {
-    if (!text) return;
-    const el = toastEl;
-    el.textContent = text;
-    el.classList.remove("show");
-    void el.offsetWidth;
-    el.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
-  }
-
-  /* Tooltip detección de entrada */
-  let tooltipEl, tooltipTimer;
-
-  function showTooltip(text) {
-    if (!text) return;
-    if (!tooltipEl) {
-      tooltipEl = document.createElement("div");
-      tooltipEl.className = "osd-tooltip";
-      document.body.appendChild(tooltipEl);
-    }
-    tooltipEl.innerHTML = `<span>${text}</span>`;
-    tooltipEl.classList.add("show");
-    clearTimeout(tooltipTimer);
-    tooltipTimer = setTimeout(() => {
-      if (!tooltipEl.matches(":hover")) tooltipEl.classList.remove("show");
-    }, 3000);
-    tooltipEl.onmouseenter = () => clearTimeout(tooltipTimer);
-    tooltipEl.onmouseleave = () => {
-      tooltipTimer = setTimeout(() => tooltipEl.classList.remove("show"), 1000);
-    };
-  }
-
   /* =========================================================
    * MOSTRAR / OCULTAR FILTROS
    * ========================================================= */
@@ -503,56 +708,6 @@ document.addEventListener("DOMContentLoaded", function () {
     showFilters = !showFilters;
     filtersBarRef.style.display = showFilters ? "flex" : "none";
   });
-
-  /* =========================================================
-   * DETECCIÓN DE TIPO DE ENTRADA
-   * ========================================================= */
-  function detect(v) {
-    const s = (v || "").trim();
-    if (!s)
-      return {
-        type: "none",
-        msg: ""
-      };
-
-    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s))
-      return {
-        type: "email",
-        msg: "📧 Análisis de correos y correlación disponible."
-      };
-
-    if (
-      /^https?:\/\//i.test(s) ||
-      /^(?=.{1,253}$)(?!-)(?:[a-z0-9-]+\.)+[a-z]{2,}$/i.test(s)
-    )
-      return {
-        type: "domain",
-        msg: "🌐 Herramientas para DNS/WHOIS y vínculos asociados."
-      };
-
-    if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(s))
-      return {
-        type: "ipv4",
-        msg: "🔢 Infraestructura y proveedores."
-      };
-
-    if (/^[a-f0-9]{32,64}$/i.test(s))
-      return {
-        type: "hash",
-        msg: "🧩 Verificación y análisis forense."
-      };
-
-    if (/^@[a-z0-9_.-]{2,32}$/i.test(s))
-      return {
-        type: "username",
-        msg: "👤 Investigación de usuarios."
-      };
-
-    return {
-      type: "none",
-      msg: ""
-    };
-  }
 
   /* =========================================================
    * BOTÓN PEGAR / LIMPIAR
@@ -597,216 +752,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentLicense = "";
   let currentCat = "";
   let currentTag = "";
-
-  /* =========================================================
-   * APLICAR FILTROS
-   * ========================================================= */
-  function applyFilters() {
-    const text = (q.value || "").toLowerCase().trim();
-    const detection = detectRichInput(q.value || "");
-    updateDetectedMessage(detection.msg || "");
-
-    const filtered = tools.filter((t) => {
-      const tipo = (t.info && t.info.tipo
-        ? t.info.tipo
-        : ""
-      )
-        .toLowerCase()
-        .trim();
-      const licencia = (t.info && t.info.licencia
-        ? t.info.licencia
-        : ""
-      )
-        .toLowerCase()
-        .trim();
-      const acceso = (t.info && t.info.acceso
-        ? t.info.acceso
-        : ""
-      )
-        .toLowerCase()
-        .trim();
-
-      if (currentType && !tipo.includes(currentType)) return false;
-      if (currentLicense && !licencia.includes(currentLicense)) return false;
-      if (currentAccess && !acceso.includes(currentAccess)) return false;
-
-      // Categoría: se mira en las cards
-      if (currentCat) {
-        const matchCat = (t.cards || []).some((c) => {
-          const cat = (c.category || "").toLowerCase();
-          if (cat === currentCat) return true;
-          const norm = normalizeCategory(cat.toLowerCase());
-          const curNorm = normalizeCategory(currentCat.toLowerCase());
-          if (norm.parent && norm.parent === curNorm.parent && !curNorm.child)
-            return true;
-          return false;
-        });
-        if (!matchCat) return false;
-      }
-
-      // Tag: se mira en tags del tool + tags de las cards
-      if (currentTag) {
-        const lowTag = currentTag.toLowerCase();
-        const toolTags = (t.tags || []).map((x) => String(x).toLowerCase());
-        const cardTags = (t.cards || []).flatMap((c) =>
-          (c.tags || []).map((x) => String(x).toLowerCase())
-        );
-        const allTags = [...toolTags, ...cardTags];
-        if (!allTags.some((tg) => tg.includes(lowTag))) return false;
-      }
-
-      // Búsqueda libre por texto o filtrado por detección
-      if (detection && detection.type && detection.type !== "none") {
-        const wanted = TYPE_MAP[detection.type] || [];
-        if (wanted.length > 0) {
-            const toolTags = (t.tags || []).map(x => String(x).toLowerCase());
-            // Check cards for tags or category
-            const matchInCards = (t.cards || []).some(c => {
-                 const cTags = (c.tags || []).map(x => String(x).toLowerCase());
-                 const cCat = (c.category || "").toLowerCase();
-                 return cTags.some(tag => wanted.includes(tag)) || wanted.includes(cCat);
-            });
-            // Check tool tags
-            const matchInTool = toolTags.some(tag => wanted.includes(tag));
-            
-            if (!matchInCards && !matchInTool) return false;
-        }
-      } else if (text) {
-        const bagParts = [
-          t.name || "",
-          t.category || "",
-          tipo,
-          licencia,
-          acceso,
-          ...(t.tags || [])
-        ];
-
-        (t.cards || []).forEach((c) => {
-          bagParts.push(c.title || "", c.desc || "", c.category || "");
-        });
-
-        const bag = bagParts.join(" ").toLowerCase();
-        if (!bag.includes(text)) return false;
-      }
-
-      return true;
-    });
-
-    renderDecks(filtered, detection);
-  }
-
-  /* =========================================================
-   * SET FILTER (USADO POR MENÚS Y BADGES)
-   * ========================================================= */
-  function setFilter(key, rawValue, resetAll = false) {
-    // Reset total (por botón limpiar o badge con reset)
-    if (resetAll) {
-      currentType = "";
-      currentAccess = "";
-      currentLicense = "";
-      currentCat = "";
-      currentTag = "";
-      q.value = "";
-
-      wrap
-        .querySelectorAll(".osint-filter-btn")
-        .forEach((btn) => {
-          const f = btn.dataset.filter;
-          if (FILTER_LABELS[f]) {
-            btn.textContent = `${FILTER_LABELS[f]} ▼`;
-            btn.classList.remove("active");
-          }
-        });
-    }
-
-    if (!key) {
-      applyFilters();
-      toggleSmart();
-      return;
-    }
-
-    const value = (rawValue || "").toLowerCase().trim();
-
-    if (key === "type") currentType = value;
-    if (key === "access") currentAccess = value;
-    if (key === "license") currentLicense = value;
-    if (key === "category") currentCat = value;
-    if (key === "tag") currentTag = value;
-
-    const btn = wrap.querySelector(
-      `.osint-filter-btn[data-filter="${key}"]`
-    );
-    if (btn && FILTER_LABELS[key]) {
-      if (value) {
-        btn.textContent = `${FILTER_LABELS[key]}: ${rawValue} ▼`;
-        btn.classList.add("active");
-      } else {
-        btn.textContent = `${FILTER_LABELS[key]} ▼`;
-        btn.classList.remove("active");
-      }
-    }
-
-    ensureFiltersVisible();
-    applyFilters();
-    toggleSmart();
-  }
-
-  /* =========================================================
-   * MENÚS DESPLEGABLES (TIPO / ACCESO / LICENCIA)
-   * ========================================================= */
-  document.addEventListener("click", (e) => {
-    // Cerrar todos los dropdowns si el click es fuera
-    document
-      .querySelectorAll(".osint-dropdown-menu")
-      .forEach((menu) => {
-        if (
-          !menu.contains(e.target) &&
-          !e.target.closest(".osint-filter-btn")
-        ) {
-          menu.classList.remove("active");
-        }
-      });
-
-    // Abrir/cerrar el seleccionado
-    const btn = e.target.closest(".osint-filter-btn");
-    if (btn && btn.dataset.filter) {
-      wrap
-        .querySelectorAll(".osint-dropdown-menu")
-        .forEach((m) => m.classList.remove("active"));
-      const menu = wrap.querySelector(
-        `.osint-dropdown-menu[data-for="${btn.dataset.filter}"]`
-      );
-      if (menu) menu.classList.toggle("active");
-    }
-
-    // Opción clickeada en menú genérico (type/access/license)
-    const itemBtn = e.target.closest(".osint-dropdown-menu button");
-    if (itemBtn) {
-      const menu = itemBtn.closest(".osint-dropdown-menu");
-      const val = itemBtn.dataset.value || "";
-      const forKey = menu.dataset.for || "";
-      setFilter(forKey, val ? itemBtn.textContent.trim() : "", false);
-    }
-  });
-
-  /* =========================================================
-   * CLICK EN CATEGORÍAS (PADRE / SUBCATEGORÍA)
-   * ========================================================= */
-  document.addEventListener("click", function (e) {
-    const item = e.target.closest(
-      ".osint-cat-item, .osint-cat-parent"
-    );
-    if (!item) return;
-
-    const menu = item.closest(
-      '.osint-dropdown-menu[data-for="category"]'
-    );
-    if (!menu) return;
-
-    const rawValue = item.dataset.value || item.textContent.trim();
-    setFilter("category", rawValue, false);
-    menu.classList.remove("active");
-  });
 
   /* =========================================================
    * APLICAR FILTROS
@@ -913,10 +858,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* =========================================================
-   * SET FILTER (USADO POR MENÚS Y BADGES)
+   * SET FILTER
    * ========================================================= */
   function setFilter(key, rawValue, resetAll = false) {
-    // Reset total (por botón limpiar o badge con reset)
     if (resetAll) {
       currentType = "";
       currentAccess = "";
@@ -969,60 +913,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* =========================================================
-   * MENÚS DESPLEGABLES (TIPO / ACCESO / LICENCIA)
+   * GLOBAL LISTENERS (DELEGATED BUT SCOPED TO INSTANCE VIA LOGIC)
    * ========================================================= */
   document.addEventListener("click", (e) => {
-    // Cerrar todos los dropdowns si el click es fuera
-    document
-      .querySelectorAll(".osint-dropdown-menu")
-      .forEach((menu) => {
-        if (
-          !menu.contains(e.target) &&
-          !e.target.closest(".osint-filter-btn")
-        ) {
-          menu.classList.remove("active");
-        }
-      });
+    // Dropdowns de este instance
+    const menus = wrap.querySelectorAll(".osint-dropdown-menu");
+    menus.forEach((menu) => {
+      if (!menu.contains(e.target) && !e.target.closest(".osint-filter-btn")) {
+        menu.classList.remove("active");
+      }
+    });
 
-    // Abrir/cerrar el seleccionado
+    // Toggle menu
     const btn = e.target.closest(".osint-filter-btn");
-    if (btn && btn.dataset.filter) {
-      wrap
-        .querySelectorAll(".osint-dropdown-menu")
-        .forEach((m) => m.classList.remove("active"));
-      const menu = wrap.querySelector(
-        `.osint-dropdown-menu[data-for="${btn.dataset.filter}"]`
-      );
-      if (menu) menu.classList.toggle("active");
+    // Only if button belongs to this wrapper
+    if (btn && wrap.contains(btn) && btn.dataset.filter) {
+       menus.forEach(m => m.classList.remove("active"));
+       const menu = wrap.querySelector(`.osint-dropdown-menu[data-for="${btn.dataset.filter}"]`);
+       if (menu) menu.classList.toggle("active");
     }
 
-    // Opción clickeada en menú genérico (type/access/license)
+    // Select option
     const itemBtn = e.target.closest(".osint-dropdown-menu button");
-    if (itemBtn) {
+    // Only if item belongs to this wrapper
+    if (itemBtn && wrap.contains(itemBtn)) {
       const menu = itemBtn.closest(".osint-dropdown-menu");
       const val = itemBtn.dataset.value || "";
       const forKey = menu.dataset.for || "";
       setFilter(forKey, val ? itemBtn.textContent.trim() : "", false);
     }
-  });
 
-  /* =========================================================
-   * CLICK EN CATEGORÍAS (PADRE / SUBCATEGORÍA)
-   * ========================================================= */
-  document.addEventListener("click", function (e) {
-    const item = e.target.closest(
-      ".osint-cat-item, .osint-cat-parent"
-    );
-    if (!item) return;
-
-    const menu = item.closest(
-      '.osint-dropdown-menu[data-for="category"]'
-    );
-    if (!menu) return;
-
-    const rawValue = item.dataset.value || item.textContent.trim();
-    setFilter("category", rawValue, false);
-    menu.classList.remove("active");
+    // Category click
+    const catItem = e.target.closest(".osint-cat-item, .osint-cat-parent");
+    if (catItem && wrap.contains(catItem)) {
+       const menu = catItem.closest('.osint-dropdown-menu[data-for="category"]');
+       if (menu) {
+           const rawValue = catItem.dataset.value || catItem.textContent.trim();
+           // Only leaf items trigger filter, parents might toggle submenu (CSS handles hover, JS not strictly needed for toggle unless mobile)
+           if (catItem.classList.contains("osint-cat-item")) {
+               setFilter("category", rawValue, false);
+               menu.classList.remove("active");
+           }
+       }
+    }
   });
 
   function renderBadges(tool) {
@@ -1037,25 +970,17 @@ document.addEventListener("DOMContentLoaded", function () {
       tool.meta.last_input_type &&
       tool.meta.last_input_type === detectedType;
 
-    // Logic: Max 1 New, Max 1 Recommended
-    let hasNew = false;
-    let hasRec = false;
-
     if (recent) {
       badges.push('<span class="osint-badge osint-badge-new" title="Nueva"><i class="ri-flashlight-fill"></i></span>');
-      hasNew = true;
     }
 
     if (recommended) {
       badges.push('<span class="osint-badge osint-badge-tip" title="Recomendada"><i class="ri-heart-3-fill"></i></span>');
-      hasRec = true;
     }
 
     if (reported) {
       badges.push('<span class="osint-badge osint-badge-warn" title="Reportada"><i class="ri-alert-fill"></i></span>');
     }
-
-
 
     return badges;
   }
@@ -1084,7 +1009,6 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
     const stackCount = Array.isArray(cards) ? cards.length : 0;
 
-    // Render main card (layer-0)
     const mainCard = orderedCards[0];
     if (mainCard) {
       const card = document.createElement("div");
@@ -1099,11 +1023,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const desc = mainCard.desc || "";
       const url = mainCard.url || "#";
       const cat = (mainCard.category || "").trim();
-
-
-      // Chip Icons Logic
-      const typeIcon = t.info && t.info.tipo ? '<i class="ri-filter-3-line"></i>' : '';
-      const licIcon = t.info && t.info.licencia ? '<i class="ri-shield-check-line"></i>' : '';
 
       let accessIcon = '';
       if (t.info && t.info.acceso) {
@@ -1185,7 +1104,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       `;
 
-      // Filtros por badge
       card.querySelectorAll(".osd-filter").forEach((badge) => {
         badge.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -1200,8 +1118,7 @@ document.addEventListener("DOMContentLoaded", function () {
       deck.appendChild(card);
     }
 
-    // Render edge layers (up to 5 edges for visual stack effect - Option B)
-    const edgeLayers = Math.min(stackCount - 1, 5); // -1 because main card is already rendered
+    const edgeLayers = Math.min(stackCount - 1, 5);
     for (let i = 1; i <= edgeLayers; i++) {
       const edge = document.createElement("div");
       edge.className = `osint-card layer-${i}`;
@@ -1267,19 +1184,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function attachActionEvents(card, urlTemplate, tool, detection) {
-    const inputVal = (q.value || "").trim();
-    // Si no hay input, reemplazamos {input} por vacío para que la URL sea funcional (aunque sea genérica)
+    const inputVal = (detection && detection.value) ? detection.value : (q.value || "").trim();
     const builtUrl = () =>
       inputVal ? build(urlTemplate, inputVal) : build(urlTemplate, "");
       
     const needsInput = (urlTemplate || "").includes("{input}");
     const hasInput = !!inputVal;
-    
-    // Modificado: Ya no ocultamos si falta input. Solo si no hay URL.
-    // El usuario quiere poder ir a la "url primaria" si no hay búsqueda.
     const disableActions = !urlTemplate || urlTemplate === "#"; 
-    
-    // Modo Manual: Hay input (busqueda), pero la herramienta no tiene template (no soporta {input})
     const isManualMode = hasInput && !needsInput;
 
     const actionsWrap = card.querySelector(".osint-actions");
@@ -1294,32 +1205,26 @@ document.addEventListener("DOMContentLoaded", function () {
     if (goBtn) {
       const textSpan = goBtn.querySelector(".text");
       
-      // Actualización de texto del botón
       if (textSpan) {
         if (hasInput) {
             if (isManualMode) {
-                // Caso: Buscando algo, pero la herramienta es manual
                 textSpan.textContent = "Uso Manual";
                 goBtn.title = "Esta herramienta requiere uso manual. No admite consulta directa.";
             } else {
-                // Caso: Buscando algo y la herramienta lo soporta
                 textSpan.textContent = `Analizar ${inputVal}`;
                 goBtn.title = `Analizar ${inputVal} con esta herramienta`;
             }
         } else {
-            // Caso: Sin búsqueda (estado inicial)
-            textSpan.textContent = "Analizar"; // O "Ir a la herramienta"
+            textSpan.textContent = "Analizar";
             goBtn.title = "Abrir herramienta";
         }
       }
 
-      // Set href directly (like legacy code) instead of using event listener
       const url = builtUrl();
       if (url && url !== "#") {
         goBtn.href = url;
         goBtn.classList.remove("is-disabled");
 
-        // Track click event (non-blocking)
         goBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           sendEvent("click_tool", {
@@ -1355,23 +1260,17 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           if (act === "linkedin") {
             window.open(
-              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                u
-              )}`
+              `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(u)}`
             );
           }
           if (act === "whatsapp") {
             window.open(
-              `https://api.whatsapp.com/send?text=${encodeURIComponent(
-                u
-              )}`
+              `https://api.whatsapp.com/send?text=${encodeURIComponent(u)}`
             );
           }
           if (act === "twitter") {
             window.open(
-              `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                u
-              )}`
+              `https://twitter.com/intent/tweet?url=${encodeURIComponent(u)}`
             );
           }
           toast("✅ Acción realizada");
@@ -1432,10 +1331,8 @@ document.addEventListener("DOMContentLoaded", function () {
     slice.forEach((t, i) => {
       const deck = renderDeckElement(t);
       if (deck) {
-        // Animación "divertida" y escalonada
         deck.classList.add("osint-animate-in");
         deck.style.animationDelay = `${i * 0.05}s`;
-        
         grid.appendChild(deck);
         appended.push(deck);
       }
@@ -1444,12 +1341,12 @@ document.addEventListener("DOMContentLoaded", function () {
     updateCounter();
   }
 
-  function renderDecks(list, detection) {
+  function renderDecks(list, detection, ignoreFilters = false) {
     const oldPagination = document.getElementById(`${uid}-pagination`);
     if (oldPagination) oldPagination.remove();
     grid.innerHTML = "";
 
-    filteredCache = filterPopularOnly
+    filteredCache = (filterPopularOnly && !ignoreFilters)
       ? (list || []).filter((t) => (t.meta && t.meta.badges || t.badges || []).join(" ").includes("Popular"))
       : (list || []);
 
@@ -1465,11 +1362,10 @@ document.addEventListener("DOMContentLoaded", function () {
     renderNextChunk();
   }
 
-  // Infinite scroll: cargar más mazos al acercarse al final
+  // Infinite scroll
   window.addEventListener("scroll", () => {
     if (!filteredCache.length) return;
     
-    // Usar document.documentElement.scrollHeight para mejor compatibilidad
     const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const clientHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -1664,7 +1560,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function searchBackend(query) {
-    if (!ajaxCfg.url || !ajaxCfg.nonce) return Promise.resolve({ success: false });
+    if (!ajaxCfg.url || !ajaxCfg.nonce) {
+        console.warn("OSINT Deck: Missing AJAX config", ajaxCfg);
+        return Promise.resolve({ success: false });
+    }
     const data = new URLSearchParams();
     data.append("action", "osint_deck_search");
     data.append("nonce", ajaxCfg.nonce);
@@ -1690,11 +1589,9 @@ document.addEventListener("DOMContentLoaded", function () {
     applyFilters();
     toggleSmart();
 
-    // Permitir consulta al backend si la detección local es ambigua o genérica
-    // Esto incluye: no detectado, genérico, keywords sin intención específica (frases largas), y nombres (que pueden ser ayuda/saludos)
     const isAmbiguous = d.type === "none" || 
                         d.type === "generic" || 
-                        (d.type === "keyword" && !d.intent) || 
+                        (d.type === "keyword" && (!d.intent || ["help", "greeting", "toxic"].includes(d.intent))) || 
                         d.type === "fullname";
 
     if (val.length > 2 && isAmbiguous) {
@@ -1706,7 +1603,7 @@ document.addEventListener("DOMContentLoaded", function () {
             t.cards = item.cards;
             return t;
           });
-          renderDecks(backendTools, d);
+          renderDecks(backendTools, d, true);
         }
       } catch (e) {
         console.error(e);
@@ -1714,19 +1611,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Contenedor de acciones de filtro (separado de los chips)
+  // Contenedor de acciones de filtro
   const filterBar = document.getElementById(`${uid}-filters`);
   const actionsContainer = document.createElement("div");
   actionsContainer.className = "osint-filter-actions";
   filterBar.appendChild(actionsContainer);
 
-  // Botón "Limpiar filtros"
   const clearBtn = document.createElement("button");
   clearBtn.className = "osint-action-btn osint-clear-filters";
   clearBtn.innerHTML = '<i class="ri-close-line"></i> Limpiar filtros';
   actionsContainer.appendChild(clearBtn);
 
-  // Botón "Solo populares"
   const popularToggle = document.createElement("button");
   popularToggle.className = "osint-action-btn osint-popular-toggle";
   popularToggle.innerHTML = '<i class="ri-star-line"></i> Solo populares';
@@ -1751,276 +1646,14 @@ document.addEventListener("DOMContentLoaded", function () {
   populateLicenseMenu();
   populateCategoryMenu();
 
-  /* =========================================================
-   * MODAL (SHEET)
-   * ========================================================= */
-  function openModal(tool) {
-    sheetTitle.textContent = tool.name || "";
-    sheetSub.textContent =
-      (tool.category || "") +
-      (tool.info && tool.info.acceso ? " • " + tool.info.acceso : "");
-
-    if (sheetDesc) {
-      sheetDesc.textContent = tool.desc || "";
-    }
-
-    if (sheetMeta) {
-      const info =
-        tool.info && typeof tool.info === "object"
-          ? `
-        <ul class="osint-kv">
-          ${tool.info.tipo
-            ? `<li><span>Tipo:</span>${esc(tool.info.tipo)}</li>`
-            : ""
-          }
-          ${tool.info.licencia
-            ? `<li><span>Licencia:</span>${esc(
-              tool.info.licencia
-            )}</li>`
-            : ""
-          }
-          ${tool.info.acceso
-            ? `<li><span>Acceso:</span>${esc(tool.info.acceso)}</li>`
-            : ""
-          }
-        </ul>
-      `
-          : "";
-
-      const tags =
-        Array.isArray(tool.tags) && tool.tags.length
-          ? `<div class="osint-tags">
-              ${tool.tags
-            .map(
-              (x) =>
-                `<span class="osint-chip osd-tag" data-tag="${esc(
-                  x
-                )}">${esc(x)}</span>`
-            )
-            .join("")}
-             </div>`
-          : "";
-
-      sheetMeta.innerHTML = info + tags;
-
-      sheetMeta.querySelectorAll(".osd-tag").forEach((tagEl) => {
-        tagEl.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const tg = tagEl.dataset.tag || "";
-          setFilter("tag", tg, false);
-          closeModal();
-        });
-      });
-    }
-
-    sheetGrid.innerHTML = "";
-
-    const primary =
-      (tool.cards || [])[0] ||
-      tool.primary ||
-      {};
-    const cards = tool.cards || [];
-    const stack = [primary, ...cards.filter((c) => c !== primary)].slice(
-      0,
-      5
-    );
-
-    stack.forEach((c, i) => {
-      const card = document.createElement("div");
-      card.className = "osint-sheet-card";
-      card.style.zIndex = String(10 + i);
-
-      const tagsHTML =
-        Array.isArray(c.tags) && c.tags.length
-          ? `<div class="osint-card-tags">
-              ${c.tags
-            .map(
-              (x) =>
-                `<span class="osint-chip osd-tag" data-tag="${esc(
-                  x
-                )}">${esc(x)}</span>`
-            )
-            .join("")}
-            </div>`
-          : "";
-
-      card.innerHTML = `
-        <div class="osint-mtitle">${esc(c.title || "Acción")}</div>
-        <div class="osint-mdesc">${esc(c.desc || "")}</div>
-        ${tagsHTML}
-        ${renderActions()}
-      `;
-
-      card.querySelectorAll(".osd-tag").forEach((tagEl) => {
-        tagEl.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const tg = tagEl.dataset.tag || "";
-          setFilter("tag", tg, false);
-          closeModal();
-        });
-      });
-
-      const url = c.url || primary.url || "#";
-      const det = detectRichInput(q.value || "");
-      attachActionEvents(card, url, tool, det);
-      sheetGrid.appendChild(card);
-    });
-
-    overlay.classList.add("active");
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-    sheet.style.opacity = "1";
-    sheet.style.transform = "translateY(0)";
-    lastFocused = document.activeElement;
-    const focusables = sheet.querySelectorAll(focusableSelector);
-    if (focusables.length) {
-      focusables[0].focus();
-    }
-  }
-
-  function closeModal() {
-    if (!overlay.classList.contains("active")) return;
-    overlay.classList.remove("active");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    sheet.style.opacity = "";
-    sheet.style.transform = "";
-    if (lastFocused && typeof lastFocused.focus === "function") {
-      lastFocused.focus();
-    }
-  }
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeModal();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-    if (e.key === "Tab" && overlay.classList.contains("active")) {
-      const focusables = Array.from(sheet.querySelectorAll(focusableSelector)).filter(
-        (el) => !el.hasAttribute("disabled") && el.offsetParent !== null
-      );
-      if (!focusables.length) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  });
-
   // Render inicial
   renderDecks(tools, detectRichInput(q.value || ""));
   q.addEventListener("input", debounce(onInput, 500));
   toggleSmart();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("OSINT Deck v0.1.1 loaded (Multi-instance supported)");
+  initToast();
+  document.querySelectorAll(".osint-wrap[id]").forEach(initOsintDeck);
 });
-
-// Detecci�n extendida accesible globalmente
-function detectIntent(value) {
-  const v = (value || "").toLowerCase();
-  const intents = [
-    { key: "leak", words: ["leak", "breach", "filtr", "dump"], intent: "leaks", msg: "He detectado palabras clave relacionadas con leaks o filtraciones." },
-    { key: "reputation", words: ["reput", "blacklist", "spam"], intent: "reputation", msg: "He detectado intenci\u00f3n de reputaci\u00f3n / listas negras." },
-    { key: "vuln", words: ["vuln", "cve", "bug", "exploit", "poc"], intent: "vuln", msg: "He detectado palabras clave de vulnerabilidades." },
-    { key: "fraud", words: ["fraud", "scam", "fraude", "tarjeta", "carding"], intent: "fraud", msg: "He detectado contexto de fraude/finanzas." }
-  ];
-  for (const item of intents) {
-    if (item.words.some((w) => v.includes(w))) return item;
-  }
-  return null;
-}
-
-function detectRichInput(value) {
-  const cleanText = (s) => String(s || "").trim();
-  const s = cleanText(value);
-  if (!s) return { type: "none", msg: "" };
-
-  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) {
-    return { type: "email", msg: `Has ingresado el correo ${s}. Aqui encontraras herramientas para investigarlo.` };
-  }
-  const socialRe = /^(https?:\/\/)?(www\.)?(facebook\.com|x\.com|twitter\.com|instagram\.com|linkedin\.com|tiktok\.com|github\.com|gitlab\.com|threads\.net)\/[^\s/]+/i;
-  if (socialRe.test(s)) {
-    return { type: "username", msg: `Detecto un perfil social: ${s}. Te muestro herramientas asociadas.` };
-  }
-  if (/^https?:\/\//i.test(s)) {
-    return { type: "url", msg: `Has ingresado la URL ${s}. Te muestro herramientas asociadas.` };
-  }
-  if (/^(?=.{1,253}$)(?!-)(?:[a-z0-9-]+\.)+[a-z]{2,}$/i.test(s)) {
-    return { type: "domain", msg: `Detecto que ingresaste el dominio ${s}. Estas son las herramientas disponibles.` };
-  }
-  if (/^com\.[a-z0-9_-]+\.[a-z0-9_.-]+$/i.test(s)) {
-    return { type: "package", msg: `Detecto un paquete de aplicacion ${s}. Te muestro recursos asociados.` };
-  }
-  if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(s)) {
-    return { type: "ipv4", msg: `Ingresaste una direccion IP: ${s}. Te muestro herramientas relacionadas.` };
-  }
-  if (/^((?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,7}:|([0-9A-Fa-f]{1,4}:){1,6}:[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,5}(:[0-9A-Fa-f]{1,4}){1,2}|([0-9A-Fa-f]{1,4}:){1,4}(:[0-9A-Fa-f]{1,4}){1,3}|([0-9A-Fa-f]{1,4}:){1,3}(:[0-9A-Fa-f]{1,4}){1,4}|([0-9A-Fa-f]{1,4}:){1,2}(:[0-9A-Fa-f]{1,4}){1,5}|[0-9A-Fa-f]{1,4}:((:[0-9A-Fa-f]{1,4}){1,6})|:((:[0-9A-Fa-f]{1,4}){1,7}|:))$/i.test(s)) {
-    return { type: "ipv6", msg: `Detecto la IP ${s}. Aqui tienes utilidades que pueden ayudarte a investigarla.` };
-  }
-  if (/^AS\d{1,10}$/i.test(s)) {
-    return { type: "asn", msg: `Detecto un ASN: ${s}. Aqui tienes herramientas relacionadas.` };
-  }
-  if (/^[0-9A-Fa-f]{2}([:-][0-9A-Fa-f]{2}){5}$/.test(s)) {
-    return { type: "mac", msg: `Ingresaste una direccion MAC: ${s}. Estas son las utilidades que pueden ayudarte.` };
-  }
-  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s)) {
-    return { type: "uuid", msg: `Has ingresado un UUID: ${s}. Estas son las herramientas que puedes usar.` };
-  }
-  if (/^[a-f0-9]{32}$/i.test(s)) {
-    return { type: "md5", msg: `Detecto un hash: ${s}. Aqui tienes herramientas compatibles.` };
-  }
-  if (/^[a-f0-9]{40}$/i.test(s)) {
-    return { type: "sha1", msg: `Has ingresado el hash ${s}. Te muestro las utilidades relacionadas.` };
-  }
-  if (/^[a-f0-9]{64}$/i.test(s)) {
-    return { type: "sha256", msg: `Has ingresado el hash ${s}. Te muestro las utilidades relacionadas.` };
-  }
-  if (/^\d{4,10}$/.test(s)) {
-    return { type: "zip", msg: `Detecto un codigo postal: ${s}. Te muestro herramientas relacionadas.` };
-  }
-  if (/^\+?[0-9][0-9\s().-]{6,}$/i.test(s)) {
-    return { type: "phone", msg: `Has ingresado el numero telefonico ${s}. Estas son las herramientas disponibles.` };
-  }
-  if (/^-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+$/.test(s)) {
-    return { type: "geo", msg: `Detecto coordenadas: ${s}. Aqui tienes recursos que trabajan con este tipo de datos.` };
-  }
-  if (/^0x[a-fA-F0-9]{40}$/.test(s)) {
-    return { type: "eth", msg: `Detecto una direccion de criptomoneda: ${s}. Aqui tienes las herramientas asociadas.` };
-  }
-  if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(s)) {
-    return { type: "btc", msg: `Has ingresado una wallet: ${s}. Te muestro recursos para investigarla.` };
-  }
-  if (/(\.zip|\.rar|\.7z|\.pdf|\.docx?|\.xlsx?|\.pptx?|\.exe|\.dll|\.apk|\.ipa|\.jpg|\.jpeg|\.png|\.gif)$/i.test(s)) {
-    return { type: "file", msg: `Archivo detectado: ${s}. Te muestro utilidades disponibles.` };
-  }
-  if (/BEGIN PGP PUBLIC KEY BLOCK/i.test(s)) {
-    return { type: "pgp", msg: "Has ingresado una clave PGP. Aqui tienes herramientas compatibles." };
-  }
-  if (/^@[a-z0-9_.-]{2,32}$/i.test(s)) {
-    return { type: "username", msg: `Detecto un nombre de usuario: ${s}. Estas son las herramientas disponibles.` };
-  }
-
-  const conversationalStopwords = /^(necesito|quiero|como|donde|que|cual|quien|busca|encuentra|dame|mostrar|ver|ayuda|hola|buenos|buenas|gracias|sexo|porno|pack)/i;
-  if (!conversationalStopwords.test(s) && /^[a-záéíóúüñ][a-záéíóúüñ'`-]+\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+(\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+)*$/i.test(s) && s.length > 8) {
-    return { type: "fullname", msg: `Has ingresado un nombre: ${s}. Te muestro herramientas relacionadas.` };
-  }
-
-  const intent = detectIntent(s);
-  if (intent) {
-    return { type: "keyword", intent: intent.intent, msg: intent.msg };
-  }
-
-  if (s.split(" ").length > 2) {
-    return { type: "keyword", msg: `He detectado palabras clave en tu busqueda (${s}). Te muestro herramientas generales asociadas.` };
-  }
-  return { type: "generic", msg: `He recibido tu busqueda: ${s}. Te muestro herramientas generales que pueden ser utiles.` };
-}
-
-
-
