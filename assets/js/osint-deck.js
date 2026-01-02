@@ -542,18 +542,15 @@ document.addEventListener("DOMContentLoaded", function () {
         msg: "🧩 Verificación y análisis forense."
       };
 
-    if (
-      /^@[a-z0-9_.-]{2,32}$/i.test(s) ||
-      /^[a-z0-9_.-]{3,32}$/i.test(s)
-    )
+    if (/^@[a-z0-9_.-]{2,32}$/i.test(s))
       return {
         type: "username",
         msg: "👤 Investigación de usuarios."
       };
 
     return {
-      type: "generic",
-      msg: "🔎 Búsqueda general."
+      type: "none",
+      msg: ""
     };
   }
 
@@ -1666,11 +1663,55 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  function onInput() {
-    const d = detectRichInput(q.value);
+  function searchBackend(query) {
+    if (!ajaxCfg.url || !ajaxCfg.nonce) return Promise.resolve({ success: false });
+    const data = new URLSearchParams();
+    data.append("action", "osint_deck_search");
+    data.append("nonce", ajaxCfg.nonce);
+    data.append("query", query);
+
+    return fetch(ajaxCfg.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: data.toString(),
+      credentials: "same-origin",
+    })
+      .then(async (r) => {
+        const payload = await r.json().catch(() => ({}));
+        return payload;
+      })
+      .catch(() => ({ success: false }));
+  }
+
+  async function onInput() {
+    const val = (q.value || "").trim();
+    const d = detectRichInput(val);
     if (d.msg) showTooltip(d.msg);
     applyFilters();
     toggleSmart();
+
+    // Permitir consulta al backend si la detección local es ambigua o genérica
+    // Esto incluye: no detectado, genérico, keywords sin intención específica (frases largas), y nombres (que pueden ser ayuda/saludos)
+    const isAmbiguous = d.type === "none" || 
+                        d.type === "generic" || 
+                        (d.type === "keyword" && !d.intent) || 
+                        d.type === "fullname";
+
+    if (val.length > 2 && isAmbiguous) {
+      try {
+        const res = await searchBackend(val);
+        if (res.success && res.data && res.data.results && res.data.results.length > 0) {
+          const backendTools = res.data.results.map(item => {
+            const t = { ...item.tool };
+            t.cards = item.cards;
+            return t;
+          });
+          renderDecks(backendTools, d);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 
   // Contenedor de acciones de filtro (separado de los chips)
@@ -1961,10 +2002,12 @@ function detectRichInput(value) {
   if (/BEGIN PGP PUBLIC KEY BLOCK/i.test(s)) {
     return { type: "pgp", msg: "Has ingresado una clave PGP. Aqui tienes herramientas compatibles." };
   }
-  if (/^@[a-z0-9_.-]{2,32}$/i.test(s) || /^[a-z0-9_.-]{3,32}$/i.test(s)) {
+  if (/^@[a-z0-9_.-]{2,32}$/i.test(s)) {
     return { type: "username", msg: `Detecto un nombre de usuario: ${s}. Estas son las herramientas disponibles.` };
   }
-  if (/^[a-záéíóúüñ][a-záéíóúüñ'`-]+\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+(\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+)*$/i.test(s) && s.length > 8) {
+
+  const conversationalStopwords = /^(necesito|quiero|como|donde|que|cual|quien|busca|encuentra|dame|mostrar|ver|ayuda|hola|buenos|buenas|gracias|sexo|porno|pack)/i;
+  if (!conversationalStopwords.test(s) && /^[a-záéíóúüñ][a-záéíóúüñ'`-]+\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+(\s+[a-záéíóúüñ][a-záéíóúüñ'`-]+)*$/i.test(s) && s.length > 8) {
     return { type: "fullname", msg: `Has ingresado un nombre: ${s}. Te muestro herramientas relacionadas.` };
   }
 

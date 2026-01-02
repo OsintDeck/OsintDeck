@@ -219,7 +219,10 @@ class AiTrainingManager {
             
             // Redirect to avoid resubmission and show result in URL (simple approach)
             if ( $res && isset( $res['category'] ) ) {
-                $confidence = isset( $res['scores'][$res['category']] ) ? number_format( exp( $res['scores'][$res['category']] ), 4 ) : 'N/A';
+                $confidence = 'N/A';
+                if ( isset( $res['scores'] ) && is_array( $res['scores'] ) && isset( $res['scores'][$res['category']] ) ) {
+                    $confidence = number_format( exp( $res['scores'][$res['category']] ), 4 );
+                }
                 echo '<div class="notice notice-info is-dismissible"><p>Predicción para "' . esc_html( $text ) . '": <strong>' . esc_html( $res['category'] ) . '</strong> (Confianza: ' . $confidence . ')</p></div>';
             } else {
                 echo '<div class="notice notice-warning is-dismissible"><p>No se pudo realizar la predicción. Asegúrate de que el modelo esté entrenado.</p></div>';
