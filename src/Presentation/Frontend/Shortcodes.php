@@ -55,7 +55,7 @@ class Shortcodes {
         $atts = shortcode_atts( array(
             'category' => '',
             'access'   => '',
-            'limit'    => 20,
+            'limit'    => -1,
         ), $atts, 'osint_deck' );
 
         // Get all tools from repository
@@ -126,7 +126,7 @@ class Shortcodes {
         $atts = shortcode_atts( array(
             'category' => '',
             'tag'      => '',
-            'limit'    => 12,
+            'limit'    => -1,
             'orderby'  => 'title',
             'order'    => 'ASC',
         ), $atts, 'osint_deck_cards' );

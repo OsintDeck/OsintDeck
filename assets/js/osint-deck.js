@@ -152,6 +152,9 @@ document.addEventListener("DOMContentLoaded", function () {
         <button class="osint-filter-btn" data-filter="category">Categoría ▼</button>
         <div class="osint-dropdown-menu" data-for="category"></div>
       </div>
+      
+      <!-- CONTADOR -->
+      <div class="osint-counter" id="${uid}-counter" style="margin-left: auto; font-size: 0.85em; opacity: 0.7; align-self: center;"></div>
     </div>
 
     <!-- 🔹 Grilla -->
@@ -413,6 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const toggleFiltersBtn = document.getElementById(`${uid}-toggleFilters`);
   const filtersBarRef = document.getElementById(`${uid}-filters`);
+  const counterRef = document.getElementById(`${uid}-counter`);
 
   let showFilters = false;
 
@@ -1362,6 +1366,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function updateCounter() {
+    if (!counterRef) return;
+    const total = filteredCache.length;
+    const shown = Math.min(renderedCount, total);
+    counterRef.textContent = `${shown} / ${total}`;
+  }
+
   function renderNextChunk() {
     if (!filteredCache.length || renderedCount >= filteredCache.length) return;
 
@@ -1377,6 +1388,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    updateCounter();
     // Animaciones desactivadas para evitar desalineaciones
   }
 
@@ -1404,9 +1416,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Infinite scroll: cargar más mazos al acercarse al final
   window.addEventListener("scroll", () => {
     if (!filteredCache.length) return;
-    const nearBottom =
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 400;
+    
+    // Usar document.documentElement.scrollHeight para mejor compatibilidad
+    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+    
+    const nearBottom = scrollTop + clientHeight >= scrollHeight - 400;
+    
     if (nearBottom) {
       renderNextChunk();
     }
