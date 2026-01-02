@@ -222,12 +222,15 @@ class Settings {
             }
 
             $message = sprintf( 
-                __( 'Base de datos reinstalada correctamente. Categorías: %d importadas, %d saltadas. Herramientas: %d importadas, %d saltadas.', 'osint-deck' ),
+                __( 'Base de datos reinstalada correctamente (Borrado + Creación). Se han restaurado los datos por defecto: %d categorías y %d herramientas.', 'osint-deck' ),
                 $cat_result['imported'],
-                $cat_result['skipped'],
-                $tool_result['imported'],
-                $tool_result['skipped']
+                $tool_result['imported']
             );
+            
+            // Add note about skipped items if any (shouldn't be any on fresh install unless duplicates in JSON)
+            if ( $cat_result['skipped'] > 0 || $tool_result['skipped'] > 0 ) {
+                 $message .= sprintf( ' (Nota: %d ítems saltados por duplicidad interna en los datos por defecto)', $cat_result['skipped'] + $tool_result['skipped'] );
+            }
             
             $errors = array();
             if ( ! empty( $cat_result['errors'] ) ) {
