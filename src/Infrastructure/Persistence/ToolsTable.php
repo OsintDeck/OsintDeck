@@ -17,7 +17,7 @@ class ToolsTable {
     /**
      * Table name (without prefix)
      */
-    const TABLE_NAME = 'osint_deck_tools';
+    const TABLE_NAME = 'osint_deck_tools_v2';
 
     /**
      * Get full table name with prefix
@@ -55,12 +55,14 @@ class ToolsTable {
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(191) NOT NULL,
             slug VARCHAR(191) NOT NULL,
+            preview_status VARCHAR(20) DEFAULT 'unaudited',
             data LONGTEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
             UNIQUE KEY name (name),
             UNIQUE KEY slug (slug),
+            KEY idx_preview_status (preview_status),
             KEY idx_created (created_at),
             KEY idx_updated (updated_at)
         ) {$charset_collate};";
@@ -69,7 +71,7 @@ class ToolsTable {
         dbDelta( $sql );
 
         // Store table version
-        update_option( 'osint_deck_table_version', '1.0' );
+        update_option( 'osint_deck_table_version', '1.1' );
     }
 
     /**
@@ -100,6 +102,7 @@ class ToolsTable {
 
         $name = sanitize_text_field( $tool['name'] );
         $slug = sanitize_title( $name );
+        $preview_status = isset( $tool['preview_status'] ) ? sanitize_text_field( $tool['preview_status'] ) : 'unaudited';
         $data = wp_json_encode( $tool );
 
         // Check if exists
@@ -116,10 +119,11 @@ class ToolsTable {
                 $table_name,
                 array(
                     'name' => $name,
+                    'preview_status' => $preview_status,
                     'data' => $data,
                 ),
                 array( 'id' => $existing_id ),
-                array( '%s', '%s' ),
+                array( '%s', '%s', '%s' ),
                 array( '%d' )
             );
 
@@ -132,10 +136,11 @@ class ToolsTable {
                 array(
                     'name'       => $name,
                     'slug'       => $slug,
+                    'preview_status' => $preview_status,
                     'data'       => $data,
                     'created_at' => current_time( 'mysql' ),
                 ),
-                array( '%s', '%s', '%s', '%s' )
+                array( '%s', '%s', '%s', '%s', '%s' )
             );
 
             return $result !== false ? $wpdb->insert_id : false;
@@ -301,6 +306,7 @@ class ToolsTable {
         // Add DB metadata
         $data['_db_id'] = (int) $row['id'];
         $data['_db_slug'] = $row['slug'];
+        $data['preview_status'] = $row['preview_status'] ?? 'unaudited';
         $data['_db_created_at'] = $row['created_at'];
         $data['_db_updated_at'] = $row['updated_at'];
 

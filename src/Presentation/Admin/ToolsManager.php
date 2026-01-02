@@ -67,6 +67,22 @@ class ToolsManager {
             $action = 'list';
         }
 
+        // Handle quick status update
+        if ( $action === 'quick_status' && $id ) {
+            check_admin_referer( 'quick_status_' . $id );
+            $status = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : '';
+            if ( in_array( $status, ['unaudited', 'ok', 'blocked'] ) ) {
+                $tool = $this->tool_repository->get_tool_by_id( $id );
+                if ( $tool ) {
+                    $tool['preview_status'] = $status;
+                    $this->tool_repository->save_tool( $tool );
+                    add_settings_error( 'osint_deck', 'status_updated', sprintf( __( 'Estado actualizado a: %s', 'osint-deck' ), $status ), 'success' );
+                }
+            }
+            settings_errors( 'osint_deck' );
+            $action = 'list';
+        }
+
         switch ( $action ) {
             case 'add':
                 $this->render_form();
@@ -102,8 +118,10 @@ class ToolsManager {
                     <tr>
                         <th><?php _e( 'Nombre', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Categoría', 'osint-deck' ); ?></th>
+                        <th><?php _e( 'Preview', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Cards', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Clicks', 'osint-deck' ); ?></th>
+                        <th><?php _e( 'Reportes', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Badges', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Acciones', 'osint-deck' ); ?></th>
                     </tr>
@@ -133,8 +151,56 @@ class ToolsManager {
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html( $tool['category'] ?? '-' ); ?></td>
+                                <td>
+                                    <?php 
+                                    $status = $tool['preview_status'] ?? 'unaudited';
+                                    $status_labels = array(
+                                        'unaudited' => __( 'No auditado', 'osint-deck' ),
+                                        'ok'        => __( 'OK', 'osint-deck' ),
+                                        'blocked'   => __( 'Bloqueado', 'osint-deck' ),
+                                    );
+                                    $status_colors = array(
+                                        'unaudited' => '#72777c',
+                                        'ok'        => '#46b450',
+                                        'blocked'   => '#dc3232',
+                                    );
+                                    
+                                    // Primary URL for preview
+                                    $preview_url = $tool['url'] ?? '';
+                                    if ( empty( $preview_url ) && ! empty( $tool['cards'][0]['url'] ) ) {
+                                        $preview_url = $tool['cards'][0]['url'];
+                                    }
+                                    ?>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <?php if ( ! empty( $preview_url ) ) : ?>
+                                            <a href="javascript:void(0);" class="button button-small osint-preview-trigger" data-url="<?php echo esc_url( $preview_url ); ?>" data-title="<?php echo esc_attr( $tool['name'] ); ?>" title="<?php _e( 'Probar en Modal (Admin)', 'osint-deck' ); ?>">
+                                                <span class="dashicons dashicons-visibility" style="line-height: 26px;"></span>
+                                            </a>
+                                        <?php endif; ?>
+                                        
+                                        <div style="display: flex; flex-direction: column;">
+                                            <span style="color: <?php echo esc_attr( $status_colors[$status] ?? 'grey' ); ?>; font-weight: bold; font-size: 11px;">
+                                                <?php echo esc_html( $status_labels[$status] ?? $status ); ?>
+                                            </span>
+                                            
+                                            <div class="row-actions visible" style="position: static; padding: 2px 0 0;">
+                                                <?php if ( $status !== 'ok' ) : ?>
+                                                    <a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=osint-deck-tools&action=quick_status&status=ok&id=' . $tool['_db_id'] ), 'quick_status_' . $tool['_db_id'] ); ?>" style="color: #46b450;">OK</a>
+                                                <?php endif; ?>
+                                                <?php if ( $status !== 'ok' && $status !== 'blocked' ) : ?> | <?php endif; ?>
+                                                <?php if ( $status !== 'blocked' ) : ?>
+                                                    <a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=osint-deck-tools&action=quick_status&status=blocked&id=' . $tool['_db_id'] ), 'quick_status_' . $tool['_db_id'] ); ?>" style="color: #dc3232;">Block</a>
+                                                <?php endif; ?>
+                                                <?php if ( $status !== 'unaudited' ) : ?>
+                                                    | <a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=osint-deck-tools&action=quick_status&status=unaudited&id=' . $tool['_db_id'] ), 'quick_status_' . $tool['_db_id'] ); ?>" style="color: #72777c;">Reset</a>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td><?php echo esc_html( $cards_count ); ?></td>
                                 <td><?php echo esc_html( $clicks ); ?></td>
+                                <td><?php echo esc_html( $tool['stats']['reports'] ?? 0 ); ?></td>
                                 <td>
                                     <?php if ( ! empty( $badges['popular'] ) ) : ?>
                                         <span class="dashicons dashicons-star-filled" title="Popular"></span>
@@ -162,6 +228,87 @@ class ToolsManager {
                 </tbody>
             </table>
         </div>
+
+        <!-- Admin Preview Modal -->
+        <div id="osint-admin-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:99999; justify-content:center; align-items:center;">
+            <div style="background:#fff; width:90%; height:90%; display:flex; flex-direction:column; border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+                <div style="padding:10px 15px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; background:#f0f0f1;">
+                    <h3 id="osint-modal-title" style="margin:0;"><?php _e( 'Vista Previa', 'osint-deck' ); ?></h3>
+                    <div style="display:flex; gap:10px;">
+                        <a id="osint-modal-external" href="#" target="_blank" class="button button-secondary"><?php _e( 'Abrir en nueva pestaña', 'osint-deck' ); ?></a>
+                        <button id="osint-modal-close" class="button button-link"><span class="dashicons dashicons-no-alt" style="font-size:24px;"></span></button>
+                    </div>
+                </div>
+                <div style="flex:1; position:relative; background:#fafafa;">
+                    <iframe id="osint-modal-iframe" src="" style="width:100%; height:100%; border:none; display:block;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+                    <div id="osint-modal-loading" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:#666;">
+                        <span class="spinner is-active" style="float:none; margin:0;"></span> <?php _e( 'Cargando...', 'osint-deck' ); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            // Move modal to body to avoid z-index issues
+            if ($('#osint-admin-modal').parent().is('.wrap') || $('#osint-admin-modal').parent().is('.postbox')) {
+                $('#osint-admin-modal').appendTo('body');
+            }
+
+            const modal = $('#osint-admin-modal');
+            const iframe = $('#osint-modal-iframe');
+            const title = $('#osint-modal-title');
+            const external = $('#osint-modal-external');
+            const closeBtn = $('#osint-modal-close');
+            const loading = $('#osint-modal-loading');
+            
+            // Open Modal using delegation
+            $(document).on('click', '.osint-preview-trigger', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const btn = $(this);
+                const url = btn.data('url');
+                const name = btn.data('title');
+                
+                if (!url) return;
+
+                title.text(name || 'Vista Previa');
+                external.attr('href', url);
+                
+                // Show modal and loading
+                modal.css('display', 'flex');
+                loading.show();
+                iframe.css('opacity', '0');
+                
+                // Load iframe
+                iframe.attr('src', url);
+                iframe.on('load', function() {
+                    loading.hide();
+                    iframe.css('opacity', '1');
+                });
+            });
+
+            // Close Modal
+            function closeModal() {
+                modal.hide();
+                iframe.attr('src', 'about:blank');
+            }
+
+            closeBtn.on('click', closeModal);
+            
+            modal.on('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            // ESC key to close
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && modal.is(':visible')) {
+                    closeModal();
+                }
+            });
+        });
+        </script>
         <?php
     }
 
@@ -205,6 +352,20 @@ class ToolsManager {
                 <tr>
                     <th><?php _e( 'Categoría', 'osint-deck' ); ?></th>
                     <td><?php echo esc_html( $tool['category'] ?? '-' ); ?></td>
+                </tr>
+                <tr>
+                    <th><?php _e( 'Estado Preview', 'osint-deck' ); ?></th>
+                    <td>
+                        <?php 
+                        $status = $tool['preview_status'] ?? 'unaudited';
+                        $status_labels = array(
+                            'unaudited' => __( 'No auditado', 'osint-deck' ),
+                            'ok'        => __( 'OK', 'osint-deck' ),
+                            'blocked'   => __( 'Bloqueado', 'osint-deck' ),
+                        );
+                        echo esc_html( $status_labels[$status] ?? $status ); 
+                        ?>
+                    </td>
                 </tr>
                 <?php if ( ! empty( $tool['tags_global'] ) ) : ?>
                 <tr>
@@ -260,6 +421,7 @@ class ToolsManager {
             'url'         => '',
             'favicon'     => '',
             'tags_global' => array(),
+            'preview_status' => 'unaudited',
         );
 
         $data = $is_edit ? wp_parse_args( $tool, $defaults ) : $defaults;
@@ -291,6 +453,17 @@ class ToolsManager {
                                 <?php endforeach; ?>
                             </select>
                             <p class="description"><?php _e( 'Selecciona la categoría a la que pertenece esta herramienta.', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="preview_status"><?php _e( 'Estado Preview', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <select name="preview_status" id="preview_status" class="regular-text">
+                                <option value="unaudited" <?php selected( $data['preview_status'], 'unaudited' ); ?>><?php _e( 'No auditado', 'osint-deck' ); ?></option>
+                                <option value="ok" <?php selected( $data['preview_status'], 'ok' ); ?>><?php _e( 'OK', 'osint-deck' ); ?></option>
+                                <option value="blocked" <?php selected( $data['preview_status'], 'blocked' ); ?>><?php _e( 'Bloqueado', 'osint-deck' ); ?></option>
+                            </select>
+                            <p class="description"><?php _e( 'Estado de la previsualización en iframe.', 'osint-deck' ); ?></p>
                         </td>
                     </tr>
                     <!-- More fields as needed -->
@@ -328,6 +501,7 @@ class ToolsManager {
             '_db_id'      => $id, // ID for update
             'name'        => sanitize_text_field( $_POST['name'] ),
             'category'    => $category_code,
+            'preview_status' => isset( $_POST['preview_status'] ) ? sanitize_text_field( $_POST['preview_status'] ) : 'unaudited',
             // Add other fields
         );
 

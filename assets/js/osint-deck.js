@@ -527,6 +527,16 @@ function initOsintDeck(wrap) {
   function buildCategoryTree(list) {
     const tree = {};
     list.forEach((tool) => {
+      // 1. Check tool top-level category
+      if (tool.category) {
+          const cat = normalizeCategory(tool.category);
+          if (cat.parent) {
+            if (!tree[cat.parent]) tree[cat.parent] = new Set();
+            if (cat.child) tree[cat.parent].add(cat.child);
+          }
+      }
+
+      // 2. Check cards categories
       (tool.cards || []).forEach((card) => {
         const cat = normalizeCategory(card.category);
         if (!cat.parent) return;
@@ -785,18 +795,37 @@ function initOsintDeck(wrap) {
       if (currentLicense && !licencia.includes(currentLicense)) return false;
       if (currentAccess && !acceso.includes(currentAccess)) return false;
 
-      // Categoría: se mira en las cards
+      // Categoría: se mira en el tool y en las cards
       if (currentCat) {
-        const matchCat = (t.cards || []).some((c) => {
-          const cat = (c.category || "").toLowerCase();
-          if (cat === currentCat) return true;
-          const norm = normalizeCategory(cat.toLowerCase());
-          const curNorm = normalizeCategory(currentCat.toLowerCase());
-          if (norm.parent && norm.parent === curNorm.parent && !curNorm.child)
-            return true;
-          return false;
-        });
-        if (!matchCat) return false;
+        let match = false;
+        const curNorm = normalizeCategory(currentCat.toLowerCase());
+
+        // 1. Check tool category
+        if (t.category) {
+          const tCat = t.category.toLowerCase();
+          if (tCat === currentCat) {
+            match = true;
+          } else {
+            const tNorm = normalizeCategory(tCat);
+            if (tNorm.parent && tNorm.parent === curNorm.parent && !curNorm.child) {
+              match = true;
+            }
+          }
+        }
+
+        // 2. Check cards categories
+        if (!match) {
+          match = (t.cards || []).some((c) => {
+            const cat = (c.category || "").toLowerCase();
+            if (cat === currentCat) return true;
+            const norm = normalizeCategory(cat);
+            if (norm.parent && norm.parent === curNorm.parent && !curNorm.child)
+              return true;
+            return false;
+          });
+        }
+
+        if (!match) return false;
       }
 
       // Tag: se mira en tags del tool + tags de las cards
@@ -1096,7 +1125,7 @@ function initOsintDeck(wrap) {
           </div>
 
           <div class="osint-deck-footer-actions">
-            ${renderActions()}
+            ${renderActions(t)}
             <button class="osint-report" title="Reportar herramienta">
               <i class="ri-flag-line"></i>
             </button>
@@ -1150,15 +1179,153 @@ function initOsintDeck(wrap) {
   }
 
   /* =========================================================
+   * PREVIEW MODAL
+   * ========================================================= */
+  let previewOverlay = null;
+
+  function createPreviewModal() {
+    if (document.getElementById('osint-preview-overlay')) {
+        previewOverlay = document.getElementById('osint-preview-overlay');
+        return;
+    }
+
+    const div = document.createElement('div');
+    div.id = 'osint-preview-overlay';
+    div.className = 'osint-overlay';
+    div.style.zIndex = '10000';
+    div.innerHTML = `
+      <div class="osint-sheet" style="width:95%; max-width:1400px; height:90vh; max-height:90vh; display:flex; flex-direction:column;">
+        <div class="osint-sheet-hdr" style="padding:12px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--osint-border);">
+           <div style="display:flex; flex-direction:column;">
+             <h3 class="osint-sheet-title" id="osint-preview-title" style="margin:0; font-size:16px;">Vista Previa</h3>
+             <span style="font-size:11px; color:var(--osint-muted);">Algunos sitios bloquean la vista previa (X-Frame-Options).</span>
+           </div>
+           <div style="display:flex; gap:12px; align-items:center;">
+               <button id="osint-preview-report" class="osint-btn-ghost" title="Reportar que no carga (Marcar como bloqueado)" style="width:auto; padding:0 8px; font-size:12px; color:var(--osint-muted); display:flex; gap:4px;">
+                   <i class="ri-error-warning-line"></i> <span style="display:none; @media(min-width:600px){display:inline;}">¿No carga?</span>
+               </button>
+               <div style="width:1px; height:20px; background:var(--osint-border);"></div>
+               <a href="#" target="_blank" id="osint-preview-ext" class="osint-btn-ghost" title="Abrir en nueva pestaña" style="width:32px; height:32px;"><i class="ri-external-link-line"></i></a>
+               <button id="osint-preview-close" class="osint-btn-ghost" style="width:32px; height:32px;"><i class="ri-close-line"></i></button>
+           </div>
+        </div>
+        <div class="osint-sheet-body" style="flex:1; position:relative; background:#fff; overflow:hidden;">
+           <iframe id="osint-preview-frame" src="" style="width:100%; height:100%; border:none; display:block;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+           
+           <div id="osint-preview-blocked" style="position:absolute; top:0; left:0; width:100%; height:100%; display:none; flex-direction:column; align-items:center; justify-content:center; background:var(--osint-bg); z-index:10; padding:20px; text-align:center;">
+              <div style="font-size:48px; color:var(--osint-muted); margin-bottom:16px;"><i class="ri-eye-off-line"></i></div>
+              <h3 style="margin:0 0 8px 0; color:var(--osint-ink);">Vista previa no disponible</h3>
+              <p style="margin:0 0 24px 0; color:var(--osint-ink-sub); max-width:400px;">
+                Este sitio web no permite ser incrustado en otras páginas (política de seguridad X-Frame-Options).
+              </p>
+              <a href="#" target="_blank" id="osint-preview-blocked-btn" class="osint-btn-animated" style="max-width:200px;">
+                 <span class="text">Abrir en nueva pestaña</span>
+                 <span class="icon">🡭</span>
+              </a>
+           </div>
+
+           <div id="osint-preview-loader" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--osint-bg); z-index:5;">
+              <div class="spinner" style="border: 2px solid var(--osint-border); border-top: 2px solid var(--osint-accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+           </div>
+        </div>
+      </div>
+      <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    `;
+    document.body.appendChild(div);
+    previewOverlay = div;
+
+    const closeBtn = div.querySelector('#osint-preview-close');
+    closeBtn.addEventListener('click', closePreviewModal);
+    div.addEventListener('click', (e) => {
+        if (e.target === div) closePreviewModal();
+    });
+    
+    // Report block
+    const reportBtn = div.querySelector('#osint-preview-report');
+    if (reportBtn) {
+        reportBtn.addEventListener('click', () => {
+             // 1. Show blocked UI
+             const frame = div.querySelector('#osint-preview-frame');
+             const blockedDiv = div.querySelector('#osint-preview-blocked');
+             const loader = div.querySelector('#osint-preview-loader');
+             
+             if(frame) frame.style.display = 'none';
+             if(loader) loader.style.display = 'none';
+             if(blockedDiv) blockedDiv.style.display = 'flex';
+             
+             // 2. Report to backend
+             const currentUrl = div.querySelector('#osint-preview-ext').href;
+             if (currentUrl && currentUrl !== "#") {
+                 reportUrlBlocked(currentUrl);
+             }
+        });
+    }
+
+    // Hide loader on load
+    const frame = div.querySelector('#osint-preview-frame');
+    frame.addEventListener('load', () => {
+        const loader = div.querySelector('#osint-preview-loader');
+        if(loader) loader.style.display = 'none';
+    });
+  }
+
+  function openPreviewModal(url, title, isBlocked = false) {
+    createPreviewModal();
+    const frame = previewOverlay.querySelector('#osint-preview-frame');
+    const extLink = previewOverlay.querySelector('#osint-preview-ext');
+    const loader = previewOverlay.querySelector('#osint-preview-loader');
+    const titleEl = previewOverlay.querySelector('#osint-preview-title');
+    const blockedDiv = previewOverlay.querySelector('#osint-preview-blocked');
+    const blockedBtn = previewOverlay.querySelector('#osint-preview-blocked-btn');
+    
+    if(titleEl) titleEl.textContent = title || "Vista Previa";
+    
+    extLink.href = url;
+    if (blockedBtn) blockedBtn.href = url;
+
+    if (isBlocked) {
+        // Show blocked UI
+        if (blockedDiv) blockedDiv.style.display = 'flex';
+        if (loader) loader.style.display = 'none';
+        frame.style.display = 'none';
+        frame.src = 'about:blank';
+    } else {
+        // Show iframe
+        if (blockedDiv) blockedDiv.style.display = 'none';
+        frame.style.display = 'block';
+        if(loader) loader.style.display = 'flex';
+        frame.src = url;
+    }
+
+    previewOverlay.classList.add('active');
+    previewOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePreviewModal() {
+    if(!previewOverlay) return;
+    previewOverlay.classList.remove('active');
+    previewOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    const frame = previewOverlay.querySelector('#osint-preview-frame');
+    frame.src = 'about:blank'; // Stop loading
+  }
+
+  /* =========================================================
    * RENDER DECKS
    * ========================================================= */
-  function renderActions() {
+  function renderActions(t) {
+    const isBlocked = t && t.preview_status === 'blocked';
     return `
       <div class="osint-actions">
         <a href="#" class="osint-btn-animated osint-act-go" target="_blank" rel="noopener">
           <span class="text">Analizar</span>
           <span class="icon">🡭</span>
         </a>
+
+        ${!isBlocked ? `<button class="osint-act-preview" title="Vista Previa">
+          <i class="ri-eye-line"></i>
+        </button>` : ''}
 
         <div class="osint-share-wrapper">
           <span class="osint-act-share" title="Compartir">
@@ -1195,6 +1362,7 @@ function initOsintDeck(wrap) {
 
     const actionsWrap = card.querySelector(".osint-actions");
     const goBtn = card.querySelector(".osint-act-go");
+    const previewBtn = card.querySelector(".osint-act-preview");
     const shareBtn = card.querySelector(".osint-act-share");
     const shareMenu = card.querySelector(".osint-share-menu");
 
@@ -1233,10 +1401,36 @@ function initOsintDeck(wrap) {
             input_value: inputVal,
           });
         });
+
+        if (previewBtn) {
+            previewBtn.classList.remove("is-disabled");
+
+            // Check admin status
+            if (tool && tool.preview_status === 'blocked') {
+                previewBtn.classList.add('is-blocked');
+                previewBtn.dataset.blocked = "true";
+                previewBtn.title = "Vista previa bloqueada (Admin)";
+            } else if (tool && tool.preview_status === 'ok') {
+                previewBtn.dataset.verified = "true";
+                previewBtn.title = "Vista previa verificada";
+            }
+
+            previewBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault(); // Prevent bubbling
+                if (previewBtn.classList.contains('is-disabled')) return;
+                const isBlocked = previewBtn.dataset.blocked === "true";
+                openPreviewModal(url, (tool && tool.name) || "Vista Previa", isBlocked);
+            });
+        }
       } else {
         goBtn.href = "#";
         goBtn.classList.add("is-disabled");
         goBtn.addEventListener("click", (e) => e.preventDefault());
+
+        if (previewBtn) {
+            previewBtn.classList.add("is-disabled");
+        }
       }
     }
 
@@ -1360,6 +1554,10 @@ function initOsintDeck(wrap) {
     }
 
     renderNextChunk();
+    
+    // Check iframes for the first chunk
+    const firstChunk = filteredCache.slice(0, chunkSize);
+    checkIframeAvailability(firstChunk);
   }
 
   // Infinite scroll
@@ -1373,9 +1571,146 @@ function initOsintDeck(wrap) {
     const nearBottom = scrollTop + clientHeight >= scrollHeight - 400;
     
     if (nearBottom) {
+      const start = renderedCount;
       renderNextChunk();
+      // Check newly rendered items
+      const newItems = filteredCache.slice(start, renderedCount);
+      checkIframeAvailability(newItems);
     }
   });
+
+  /* =========================================================
+   * IFRAME CHECKER & REPORTING
+   * ========================================================= */
+  function reportUrlBlocked(url) {
+      if (!ajaxCfg.url) return;
+      
+      // Update UI immediately for all buttons with this URL
+      const links = grid.querySelectorAll(`.osint-act-go[href="${url.replace(/"/g, '\\"')}"]`);
+      links.forEach(link => {
+          const card = link.closest('.osint-card');
+          if (card) {
+              const previewBtn = card.querySelector('.osint-act-preview');
+              if (previewBtn) {
+                  previewBtn.classList.remove('is-disabled');
+                  previewBtn.classList.add('is-blocked');
+                  previewBtn.setAttribute('title', 'Vista previa bloqueada (Click para abrir externo)');
+                  previewBtn.dataset.blocked = "true";
+              }
+          }
+      });
+
+      // Send report
+      const data = new URLSearchParams();
+      data.append("action", "osint_deck_report_block");
+      if (ajaxCfg.nonce) data.append("nonce", ajaxCfg.nonce);
+      data.append("url", url);
+
+      fetch(ajaxCfg.url, {
+          method: "POST",
+          body: data
+      }).catch(err => console.error("Report block failed", err));
+  }
+
+  function checkIframeAvailability(toolsToCheck) {
+    if (!toolsToCheck || !toolsToCheck.length) return;
+    if (!ajaxCfg.url) return;
+
+    // Filter out tools that already have a decisive status
+    const toolsToQuery = toolsToCheck.filter(t => {
+        return !t.preview_status || t.preview_status === 'unaudited';
+    });
+    
+    if (!toolsToQuery.length) return;
+
+    // Collect URLs to check
+    const urlMap = {}; // url -> [cardElements]
+    const d = detectRichInput(q.value || "");
+    const inputVal = (d && d.value) ? d.value : (q.value || "").trim();
+
+    toolsToQuery.forEach(t => {
+        const cards = Array.isArray(t.cards) ? t.cards : [];
+        if (!cards.length) return;
+        
+        // Find the primary card for this tool instance
+        let primaryCard = pickPrimaryCard(cards, d);
+        if (currentCat) {
+            const byCat = cards.find(c => (c.category || "").toLowerCase() === currentCat.toLowerCase());
+            if (byCat) primaryCard = byCat;
+        }
+
+        const urlTemplate = primaryCard.url || t.url || "#";
+        if (!urlTemplate || urlTemplate === "#") return;
+
+        // Build the actual URL that would be previewed
+        const builtUrl = inputVal ? build(urlTemplate, inputVal) : build(urlTemplate, "");
+        
+        // Find the DOM element for this tool/card
+        // This is tricky because we don't have direct ref here easily unless we stored it.
+        // But we can find it by looking for the link with this href in the grid.
+        // A better way is to query selector by tool name or some ID.
+        // For now, let's look for .osint-act-go[href="builtUrl"]'s parent card.
+        // Actually, we can just find all preview buttons that are currently disabled/waiting?
+        
+        if (!urlMap[builtUrl]) urlMap[builtUrl] = [];
+        
+        // We need to find the specific DOM elements corresponding to this URL.
+        // Since builtUrl might be common, we add to array.
+        // We can search the grid for links matching this href.
+        const links = grid.querySelectorAll(`.osint-act-go[href="${builtUrl.replace(/"/g, '\\"')}"]`);
+        links.forEach(link => {
+            const card = link.closest('.osint-card');
+            if (card) {
+                const previewBtn = card.querySelector('.osint-act-preview');
+                if (previewBtn) {
+                    urlMap[builtUrl].push(previewBtn);
+                    // Set initial state? Maybe a loading spinner or just hidden.
+                    // Currently they are visible by default from renderDeckElement logic if URL is valid.
+                    // Let's hide them initially or show a spinner if we wanted to be fancy.
+                    // For now, let's just let them be and hide them if check fails.
+                }
+            }
+        });
+    });
+
+    const uniqueUrls = Object.keys(urlMap);
+    if (!uniqueUrls.length) return;
+
+    // Send batch request
+    const data = new URLSearchParams();
+    data.append("action", "osint_deck_check_iframe");
+    if (ajaxCfg.nonce) data.append("nonce", ajaxCfg.nonce);
+    data.append("urls", JSON.stringify(uniqueUrls));
+
+    fetch(ajaxCfg.url, {
+      method: "POST",
+      body: data
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success && res.data) {
+            Object.entries(res.data).forEach(([url, canEmbed]) => {
+                const btns = urlMap[url];
+                if (btns) {
+                    btns.forEach(btn => {
+                        if (!canEmbed) {
+                            btn.classList.remove('is-disabled');
+                            btn.classList.add('is-blocked');
+                            btn.setAttribute('title', 'Vista previa bloqueada (Click para abrir externo)');
+                            btn.dataset.blocked = "true";
+                        } else {
+                            btn.classList.remove('is-disabled');
+                            btn.classList.remove('is-blocked');
+                            btn.setAttribute('title', 'Vista Previa');
+                            btn.dataset.blocked = "false";
+                        }
+                    });
+                }
+            });
+        }
+    })
+    .catch(err => console.error("Iframe check failed", err));
+  }
 
   /* =========================================================
    * MODAL (SHEET)

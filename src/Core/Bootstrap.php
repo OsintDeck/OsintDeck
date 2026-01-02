@@ -32,7 +32,7 @@ class Bootstrap {
      *
      * @var string
      */
-    const VERSION = '1.3.6';
+    const VERSION = '1.3.7';
 
     /**
      * Singleton instance
@@ -287,7 +287,7 @@ class Bootstrap {
             'osint-deck-public',
             plugin_dir_url( OSINT_DECK_PLUGIN_FILE ) . 'assets/css/osint-deck.css',
             array(),
-            self::VERSION
+            time()
         );
 
         // Enqueue fixes CSS
@@ -295,7 +295,7 @@ class Bootstrap {
             'osint-deck-fixes',
             plugin_dir_url( OSINT_DECK_PLUGIN_FILE ) . 'assets/css/osint-deck-fixes.css',
             array( 'osint-deck-public' ),
-            self::VERSION
+            time()
         );
 
         // Enqueue legacy JavaScript
@@ -303,7 +303,7 @@ class Bootstrap {
             'osint-deck-main',
             plugin_dir_url( OSINT_DECK_PLUGIN_FILE ) . 'assets/js/osint-deck.js',
             array( 'jquery' ),
-            self::VERSION,
+            time(), // Force cache bust for dev
             true
         );
 
