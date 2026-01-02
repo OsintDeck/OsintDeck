@@ -24,6 +24,13 @@ class InputParser {
     private $tld_manager;
 
     /**
+     * Classifier
+     *
+     * @var NaiveBayesClassifier
+     */
+    private $classifier;
+
+    /**
      * Supported input types
      */
     const TYPE_DOMAIN = 'domain';
@@ -39,6 +46,10 @@ class InputParser {
     const TYPE_WALLET = 'wallet';
     const TYPE_TX_HASH = 'tx_hash';
     const TYPE_NONE = 'none';
+    const TYPE_GREETING = 'greeting';
+    const TYPE_PROMO_NEWS = 'promo_news';
+    const TYPE_HELP = 'help';
+    const TYPE_TOXIC = 'toxic';
 
     /**
      * Regex patterns for detection
@@ -51,9 +62,11 @@ class InputParser {
      * Constructor - Initialize patterns
      * 
      * @param TLDManager $tld_manager TLD Manager instance.
+     * @param NaiveBayesClassifier|null $classifier Classifier instance.
      */
-    public function __construct( TLDManager $tld_manager ) {
+    public function __construct( TLDManager $tld_manager, $classifier = null ) {
         $this->tld_manager = $tld_manager;
+        $this->classifier = $classifier;
         $this->init_patterns();
     }
 
@@ -65,7 +78,8 @@ class InputParser {
     private function init_patterns() {
         $this->patterns = array(
             self::TYPE_EMAIL => '/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/',
-            self::TYPE_IP    => '/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b|(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}/',
+            // IPv4 and IPv6 (including compressed)
+            self::TYPE_IP    => '/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b|(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|:(?:[0-9a-fA-F]{1,4}:){1,7}|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|::(?:[0-9a-fA-F]{1,4}:?){0,7}/i',
             self::TYPE_URL   => '/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/',
             self::TYPE_DOMAIN => '/\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\b/i',
             self::TYPE_HASH  => '/\b[a-fA-F0-9]{32}\b|\b[a-fA-F0-9]{40}\b|\b[a-fA-F0-9]{64}\b/',
@@ -107,6 +121,34 @@ class InputParser {
 
         // Remove overlapping matches (e.g., domain inside URL)
         $detected = $this->remove_overlapping( $detected );
+
+        // If no regex matches, try Naive Bayes
+        if ( empty( $detected ) && $this->classifier ) {
+            $prediction = $this->classifier->predict( $text );
+            
+            // Allow technical types and specific conversational types
+            $valid_types = array(
+                'ipv4', 'ipv6', 'domain', 'url', 'email', 'hash', 'asn', 'phone', 'username', 'wallet', 'md5', 'sha1', 'sha256', 'geo', 'mac', 'btc', 'eth', 'file', 'package', 'zip', 'pgp', 'fullname', 'leaks', 'reputation', 'vuln', 'fraud', 'uuid',
+                'greeting', 'promo_news', 'help', 'toxic'
+            );
+
+            if ( $prediction && in_array( $prediction['category'], $valid_types ) ) {
+                $type = $prediction['category'];
+                
+                // Normalization
+                if ( $type === 'ipv4' || $type === 'ipv6' ) $type = self::TYPE_IP;
+                if ( $type === 'greeting' ) $type = self::TYPE_GREETING;
+                if ( $type === 'promo_news' ) $type = self::TYPE_PROMO_NEWS;
+                if ( $type === 'help' ) $type = self::TYPE_HELP;
+                if ( $type === 'toxic' ) $type = self::TYPE_TOXIC;
+                
+                $detected[] = array(
+                    'type'  => $type,
+                    'value' => $text,
+                    'raw'   => $text,
+                );
+            }
+        }
 
         return $detected;
     }
@@ -364,6 +406,8 @@ class InputParser {
             self::TYPE_WALLET   => __( 'Wallet Crypto', 'osint-deck' ),
             self::TYPE_TX_HASH  => __( 'Transaction Hash', 'osint-deck' ),
             self::TYPE_NONE     => __( 'Ninguno', 'osint-deck' ),
+            self::TYPE_GREETING => __( 'Saludo', 'osint-deck' ),
+            self::TYPE_PROMO_NEWS => __( 'Noticias', 'osint-deck' ),
         );
 
         return $labels[ $type ] ?? $type;

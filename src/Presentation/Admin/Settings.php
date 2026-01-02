@@ -127,9 +127,21 @@ class Settings {
         $theme_selector = get_option( 'osint_deck_theme_selector', '[data-site-skin]' );
         $theme_token_light = get_option( 'osint_deck_theme_token_light', 'light' );
         $theme_token_dark = get_option( 'osint_deck_theme_token_dark', 'dark' );
+        $help_url = get_option( 'osint_deck_help_url', 'https://osint.com.ar/OsintDeck-Ayuda' );
         ?>
         <form method="post" action="">
             <?php wp_nonce_field( 'osint_deck_settings' ); ?>
+
+            <h2><?php _e( 'General', 'osint-deck' ); ?></h2>
+            <table class="form-table">
+                <tr>
+                    <th><label for="help_url"><?php _e( 'URL de Ayuda', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <input type="url" name="help_url" id="help_url" value="<?php echo esc_url( $help_url ); ?>" class="regular-text">
+                        <p class="description"><?php _e( 'Página a la que se enviará al usuario cuando pida ayuda (ej: "ayuda", "como usar").', 'osint-deck' ); ?></p>
+                    </td>
+                </tr>
+            </table>
 
             <h2><?php _e( 'Sistema de Temas', 'osint-deck' ); ?></h2>
             <table class="form-table">
@@ -311,11 +323,13 @@ class Settings {
         $theme_selector = isset( $_POST['theme_selector'] ) ? sanitize_text_field( $_POST['theme_selector'] ) : '';
         $theme_token_light = isset( $_POST['theme_token_light'] ) ? sanitize_text_field( $_POST['theme_token_light'] ) : 'light';
         $theme_token_dark = isset( $_POST['theme_token_dark'] ) ? sanitize_text_field( $_POST['theme_token_dark'] ) : 'dark';
+        $help_url = isset( $_POST['help_url'] ) ? esc_url_raw( $_POST['help_url'] ) : 'https://osint.com.ar/OsintDeck-Ayuda';
 
         update_option( 'osint_deck_theme_mode', $theme_mode );
         update_option( 'osint_deck_theme_selector', $theme_selector );
         update_option( 'osint_deck_theme_token_light', $theme_token_light );
         update_option( 'osint_deck_theme_token_dark', $theme_token_dark );
+        update_option( 'osint_deck_help_url', $help_url );
 
         add_settings_error( 'osint_deck', 'settings_saved', __( 'Configuración guardada', 'osint-deck' ), 'success' );
         settings_errors( 'osint_deck' );

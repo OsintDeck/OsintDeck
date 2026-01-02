@@ -21,6 +21,36 @@ document.addEventListener("DOMContentLoaded", function () {
     tag: "Tag"
   };
 
+  const TYPE_MAP = {
+    email: ["correo", "email"],
+    domain: ["dominio", "dns", "domain"],
+    url: ["url", "web"],
+    ipv4: ["ip", "ipv4"],
+    ipv6: ["ip", "ipv6"],
+    hash: ["hash", "archivo", "file"],
+    sha256: ["hash", "sha256", "file"],
+    sha1: ["hash", "sha1", "file"],
+    md5: ["hash", "md5", "file"],
+    uuid: ["uuid", "guid"],
+    phone: ["telefono", "phone"],
+    geo: ["geo", "gps", "coordenadas"],
+    username: ["user", "usuario", "perfil"],
+    asn: ["asn"],
+    mac: ["mac"],
+    wallet: ["wallet", "crypto", "blockchain"],
+    eth: ["wallet", "eth", "ethereum"],
+    btc: ["wallet", "btc", "bitcoin"],
+    file: ["archivo", "file", "malware"],
+    package: ["apk", "android", "mobile", "app"],
+    zip: ["geo", "postal", "zip"],
+    pgp: ["pgp", "key", "crypto"],
+    fullname: ["persona", "people", "name", "nombre"],
+    leaks: ["leak", "breach", "password", "credential"],
+    reputation: ["reputation", "score", "blacklist", "spam"],
+    vuln: ["cve", "exploit", "vuln", "vulnerability"],
+    fraud: ["fraud", "scam", "carding", "finance"]
+  };
+
   const uid = wrap.getAttribute("id") || "";
   const cfg =
     (window.OSINT_DECK_DATA && window.OSINT_DECK_DATA[uid]) || {};
@@ -628,8 +658,23 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!allTags.some((tg) => tg.includes(lowTag))) return false;
       }
 
-      // Búsqueda libre por texto
-      if (text) {
+      // Búsqueda libre por texto o filtrado por detección
+      if (detection && detection.type && detection.type !== "none") {
+        const wanted = TYPE_MAP[detection.type] || [];
+        if (wanted.length > 0) {
+            const toolTags = (t.tags || []).map(x => String(x).toLowerCase());
+            // Check cards for tags or category
+            const matchInCards = (t.cards || []).some(c => {
+                 const cTags = (c.tags || []).map(x => String(x).toLowerCase());
+                 const cCat = (c.category || "").toLowerCase();
+                 return cTags.some(tag => wanted.includes(tag)) || wanted.includes(cCat);
+            });
+            // Check tool tags
+            const matchInTool = toolTags.some(tag => wanted.includes(tag));
+            
+            if (!matchInCards && !matchInTool) return false;
+        }
+      } else if (text) {
         const bagParts = [
           t.name || "",
           t.category || "",
@@ -823,8 +868,30 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!allTags.some((tg) => tg.includes(lowTag))) return false;
       }
 
-      // Búsqueda libre por texto
-      if (text) {
+      // Filtrado por detección o búsqueda de texto
+      let wanted = [];
+      if (detection && detection.type && detection.type !== "none") {
+        if (detection.type === "keyword" && detection.intent) {
+          wanted = TYPE_MAP[detection.intent] || [];
+        } else {
+          wanted = TYPE_MAP[detection.type] || [];
+        }
+      }
+
+      if (wanted.length > 0) {
+        // Filtrado por tags de detección
+        const toolTags = (t.tags || []).map(x => String(x).toLowerCase());
+        const matchInCards = (t.cards || []).some(c => {
+             const cTags = (c.tags || []).map(x => String(x).toLowerCase());
+             const cCat = (c.category || "").toLowerCase();
+             return cTags.some(tag => wanted.includes(tag)) || wanted.includes(cCat);
+        });
+        const matchInTool = toolTags.some(tag => wanted.includes(tag));
+        
+        if (!matchInCards && !matchInTool) return false;
+
+      } else if (text) {
+        // Fallback: Búsqueda libre por texto
         const bagParts = [
           t.name || "",
           t.category || "",
@@ -1004,7 +1071,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cards = Array.isArray(t.cards) ? t.cards : [];
     if (!cards.length) return null;
 
-    let primaryCard = pickPrimaryCard(cards, detected.type || "");
+    let primaryCard = pickPrimaryCard(cards, detected);
 
     if (currentCat) {
       const byCat = cards.find(
@@ -1148,31 +1215,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return deck;
   }
 
-  function pickPrimaryCard(cards, detectedType) {
+  function pickPrimaryCard(cards, detection) {
     if (!Array.isArray(cards) || !cards.length) return cards && cards[0];
 
-    const typeMap = {
-      email: ["correo", "email"],
-      domain: ["dominio", "dns", "domain"],
-      url: ["url", "web"],
-      ipv4: ["ip", "ipv4"],
-      ipv6: ["ip", "ipv6"],
-      hash: ["hash", "archivo", "file"],
-      sha256: ["hash", "sha256", "file"],
-      sha1: ["hash", "sha1", "file"],
-      md5: ["hash", "md5", "file"],
-      uuid: ["uuid", "guid"],
-      phone: ["telefono", "phone"],
-      geo: ["geo", "gps", "coordenadas"],
-      username: ["user", "usuario", "perfil"],
-      asn: ["asn"],
-      mac: ["mac"],
-      eth: ["wallet", "eth", "ethereum"],
-      btc: ["wallet", "btc", "bitcoin"],
-      file: ["archivo", "file", "malware"]
-    };
+    let type = detection && detection.type ? detection.type : "";
+    if (type === "keyword" && detection.intent) {
+        type = detection.intent;
+    }
 
-    const wanted = typeMap[detectedType] || [];
+    const wanted = TYPE_MAP[type] || [];
     if (wanted.length) {
       const matchCard = cards.find((c) => {
         const tags = (c.tags || []).map((x) => String(x).toLowerCase());
@@ -1272,7 +1323,8 @@ document.addEventListener("DOMContentLoaded", function () {
         goBtn.classList.remove("is-disabled");
 
         // Track click event (non-blocking)
-        goBtn.addEventListener("click", () => {
+        goBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
           sendEvent("click_tool", {
             tool_id: (tool && tool.id) || "",
             input_type: (detection && detection.type) || "",
@@ -1380,16 +1432,19 @@ document.addEventListener("DOMContentLoaded", function () {
     renderedCount += slice.length;
 
     const appended = [];
-    slice.forEach((t) => {
+    slice.forEach((t, i) => {
       const deck = renderDeckElement(t);
       if (deck) {
+        // Animación "divertida" y escalonada
+        deck.classList.add("osint-animate-in");
+        deck.style.animationDelay = `${i * 0.05}s`;
+        
         grid.appendChild(deck);
         appended.push(deck);
       }
     });
 
     updateCounter();
-    // Animaciones desactivadas para evitar desalineaciones
   }
 
   function renderDecks(list, detection) {
@@ -1602,6 +1657,15 @@ document.addEventListener("DOMContentLoaded", function () {
   /* =========================================================
    * INPUT & SEARCH INIT
    * ========================================================= */
+  function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+  }
+
   function onInput() {
     const d = detectRichInput(q.value);
     if (d.msg) showTooltip(d.msg);
@@ -1812,7 +1876,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Render inicial
   renderDecks(tools, detectRichInput(q.value || ""));
-  q.addEventListener("input", onInput);
+  q.addEventListener("input", debounce(onInput, 500));
   toggleSmart();
 });
 
@@ -1855,7 +1919,7 @@ function detectRichInput(value) {
   if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(s)) {
     return { type: "ipv4", msg: `Ingresaste una direccion IP: ${s}. Te muestro herramientas relacionadas.` };
   }
-  if (/^(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}$/i.test(s)) {
+  if (/^((?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,7}:|([0-9A-Fa-f]{1,4}:){1,6}:[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,5}(:[0-9A-Fa-f]{1,4}){1,2}|([0-9A-Fa-f]{1,4}:){1,4}(:[0-9A-Fa-f]{1,4}){1,3}|([0-9A-Fa-f]{1,4}:){1,3}(:[0-9A-Fa-f]{1,4}){1,4}|([0-9A-Fa-f]{1,4}:){1,2}(:[0-9A-Fa-f]{1,4}){1,5}|[0-9A-Fa-f]{1,4}:((:[0-9A-Fa-f]{1,4}){1,6})|:((:[0-9A-Fa-f]{1,4}){1,7}|:))$/i.test(s)) {
     return { type: "ipv6", msg: `Detecto la IP ${s}. Aqui tienes utilidades que pueden ayudarte a investigarla.` };
   }
   if (/^AS\d{1,10}$/i.test(s)) {

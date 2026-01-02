@@ -10,6 +10,7 @@ namespace OsintDeck\Presentation\Admin;
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\TLDManager;
+use OsintDeck\Domain\Service\NaiveBayesClassifier;
 
 /**
  * Class AdminMenu
@@ -40,16 +41,25 @@ class AdminMenu {
     private $tld_manager;
 
     /**
+     * Classifier
+     *
+     * @var NaiveBayesClassifier
+     */
+    private $classifier;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
      * @param CategoryRepositoryInterface $category_repository Category Repository.
      * @param TLDManager $tld_manager TLD Manager.
+     * @param NaiveBayesClassifier $classifier Classifier.
      */
-    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, TLDManager $tld_manager ) {
+    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, TLDManager $tld_manager, NaiveBayesClassifier $classifier ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
         $this->tld_manager = $tld_manager;
+        $this->classifier = $classifier;
     }
 
     /**
@@ -141,6 +151,16 @@ class AdminMenu {
             'manage_options',
             'osint-deck-settings',
             array( $this, 'render_settings' )
+        );
+
+        // AI Training
+        add_submenu_page(
+            'osint-deck',
+            __( 'Entrenamiento IA', 'osint-deck' ),
+            __( 'Entrenamiento IA', 'osint-deck' ),
+            'manage_options',
+            'osint-deck-ai',
+            array( $this, 'render_ai_training' )
         );
     }
 
@@ -255,5 +275,13 @@ class AdminMenu {
     public function render_settings() {
         $settings = new Settings( $this->tool_repository, $this->category_repository, $this->tld_manager );
         $settings->render();
+    }
+
+    /**
+     * Render AI Training page
+     */
+    public function render_ai_training() {
+        $manager = new AiTrainingManager( $this->classifier );
+        $manager->render();
     }
 }

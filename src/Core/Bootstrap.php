@@ -18,6 +18,7 @@ use OsintDeck\Infrastructure\Service\TLDManager;
 use OsintDeck\Infrastructure\Service\Migration;
 use OsintDeck\Domain\Service\InputParser;
 use OsintDeck\Domain\Service\DecisionEngine;
+use OsintDeck\Domain\Service\NaiveBayesClassifier;
 
 /**
  * Class Bootstrap
@@ -31,7 +32,7 @@ class Bootstrap {
      *
      * @var string
      */
-    const VERSION = '1.2.4';
+    const VERSION = '1.3.1';
 
     /**
      * Singleton instance
@@ -96,7 +97,8 @@ class Bootstrap {
         $this->tld_manager->init();
 
         // Initialize Domain Services
-        $input_parser = new InputParser( $this->tld_manager );
+        $classifier = new NaiveBayesClassifier();
+        $input_parser = new InputParser( $this->tld_manager, $classifier );
         $decision_engine = new DecisionEngine( $this->tool_repository, $input_parser );
 
         // Initialize AJAX Handler
@@ -113,7 +115,7 @@ class Bootstrap {
         
         // Initialize Admin Menu (admin only)
         if ( is_admin() ) {
-            $admin_menu = new AdminMenu( $this->tool_repository, $this->category_repository, $this->tld_manager );
+            $admin_menu = new AdminMenu( $this->tool_repository, $this->category_repository, $this->tld_manager, $classifier );
             $admin_menu->init();
         }
     }
@@ -269,6 +271,17 @@ class Bootstrap {
      * @return void
      */
     public function enqueue_public_assets() {
+        // Enqueue RemixIcon
+        wp_enqueue_style(
+            'remixicon',
+            'https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css',
+            array(),
+            '3.5.0'
+        );
+
+        // Enqueue Dashicons (needed for frontend)
+        wp_enqueue_style( 'dashicons' );
+
         // Enqueue legacy CSS
         wp_enqueue_style(
             'osint-deck-public',

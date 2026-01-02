@@ -67,6 +67,22 @@ class DecisionEngine {
         // Parse inputs
         $inputs = $this->input_parser->parse( $query );
 
+        // Check for conversational inputs
+        foreach ( $inputs as $input ) {
+            if ( $input['type'] === InputParser::TYPE_GREETING ) {
+                return $this->get_greeting_response( $query );
+            }
+            if ( $input['type'] === InputParser::TYPE_PROMO_NEWS ) {
+                return $this->get_news_response( $query );
+            }
+            if ( $input['type'] === InputParser::TYPE_HELP ) {
+                return $this->get_help_response( $query );
+            }
+            if ( $input['type'] === InputParser::TYPE_TOXIC ) {
+                return $this->get_toxic_response( $query );
+            }
+        }
+
         // Determine mode
         $mode = $this->determine_mode( $inputs );
 
@@ -75,6 +91,154 @@ class DecisionEngine {
         } else {
             return $this->process_investigation_mode( $query, $inputs );
         }
+    }
+
+    /**
+     * Get greeting response
+     *
+     * @param string $query User query.
+     * @return array Response structure.
+     */
+    private function get_greeting_response( $query ) {
+        return array(
+            'mode'    => self::MODE_CATALOG,
+            'inputs'  => array(),
+            'query'   => $query,
+            'results' => array(
+                array(
+                    'tool' => array(
+                        'name' => 'OSINT Deck AI',
+                        'description' => 'Asistente Virtual',
+                        'url' => '#',
+                        'categories' => array('Asistente'),
+                        'tags_global' => array('ai', 'help'),
+                        'cards' => array(), // Empty for structure consistency
+                        'osint_context' => array('uso_principal' => 'Ayuda'),
+                    ),
+                    'cards' => array(
+                        array(
+                            'id' => 'greeting-card',
+                            'title' => '¡Hola!',
+                            'description' => 'Buenos días. ¿Qué deseas investigar el día de hoy? Puedo ayudarte a buscar IPs, dominios, emails y más.',
+                            'type' => 'info',
+                            'tags' => array('greeting'),
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * Get news response
+     *
+     * @param string $query User query.
+     * @return array Response structure.
+     */
+    private function get_news_response( $query ) {
+        return array(
+            'mode'    => self::MODE_CATALOG,
+            'inputs'  => array(),
+            'query'   => $query,
+            'results' => array(
+                array(
+                    'tool' => array(
+                        'name' => 'Noticias OSINT',
+                        'description' => 'Últimas novedades',
+                        'url' => 'https://osint.com.ar',
+                        'categories' => array('Noticias'),
+                        'tags_global' => array('news', 'osint'),
+                        'cards' => array(),
+                        'osint_context' => array('uso_principal' => 'Información'),
+                    ),
+                    'cards' => array(
+                        array(
+                            'id' => 'news-card',
+                            'title' => 'Noticias y Novedades',
+                            'description' => 'Puedes ver todas las noticias y novedades del mundo OSINT en nuestro sitio web oficial.',
+                            'type' => 'link',
+                            'url' => 'https://osint.com.ar',
+                            'tags' => array('news'),
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * Get help response
+     *
+     * @param string $query User query.
+     * @return array Response structure.
+     */
+    private function get_help_response( $query ) {
+        $help_url = get_option( 'osint_deck_help_url', 'https://osint.com.ar/OsintDeck-Ayuda' );
+
+        return array(
+            'mode'    => self::MODE_CATALOG,
+            'inputs'  => array(),
+            'query'   => $query,
+            'results' => array(
+                array(
+                    'tool' => array(
+                        'name' => 'Ayuda OSINT Deck',
+                        'description' => 'Centro de Ayuda',
+                        'url' => $help_url,
+                        'categories' => array('Ayuda'),
+                        'tags_global' => array('help', 'support'),
+                        'cards' => array(),
+                        'osint_context' => array('uso_principal' => 'Soporte'),
+                    ),
+                    'cards' => array(
+                        array(
+                            'id' => 'help-card',
+                            'title' => '¿Necesitas ayuda?',
+                            'description' => 'Aquí tienes una guía completa sobre cómo utilizar OSINT Deck y qué tipo de búsquedas puedes realizar.',
+                            'type' => 'link',
+                            'url' => $help_url,
+                            'tags' => array('help'),
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * Get toxic response
+     *
+     * @param string $query User query.
+     * @return array Response structure.
+     */
+    private function get_toxic_response( $query ) {
+        return array(
+            'mode'    => self::MODE_CATALOG,
+            'inputs'  => array(),
+            'query'   => $query,
+            'results' => array(
+                array(
+                    'tool' => array(
+                        'name' => 'OSINT Deck AI',
+                        'description' => 'Sistema de Seguridad',
+                        'url' => '#',
+                        'categories' => array('Seguridad'),
+                        'tags_global' => array('security', 'filter'),
+                        'cards' => array(),
+                        'osint_context' => array('uso_principal' => 'Filtro'),
+                    ),
+                    'cards' => array(
+                        array(
+                            'id' => 'toxic-card',
+                            'title' => 'Búsqueda no permitida',
+                            'description' => 'Lo siento, pero no puedo procesar ese tipo de lenguaje o búsqueda. Esta herramienta está diseñada para investigaciones OSINT profesionales.',
+                            'type' => 'info', // Could be 'warning' or 'error' if supported, defaulting to info
+                            'tags' => array('warning'),
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**

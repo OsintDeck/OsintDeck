@@ -1,0 +1,4394 @@
+[
+    {
+        "text": "analizar ip 8.8.8.8",
+        "category": "ipv4"
+    },
+    {
+        "text": "buscar info de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip lookup",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip whois",
+        "category": "ipv4"
+    },
+    {
+        "text": "whois de 1.1.1.1",
+        "category": "ipv4"
+    },
+    {
+        "text": "a quien pertenece esta direccion ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "proveedor de internet de esta ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "empresa dueña de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ver asn de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "asn lookup ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "geolocalizacion de ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "pais de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ciudad aproximada de una ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip geolocation",
+        "category": "ipv4"
+    },
+    {
+        "text": "ubicar ip en el mapa",
+        "category": "ipv4"
+    },
+    {
+        "text": "reverse dns de una ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "rdns lookup",
+        "category": "ipv4"
+    },
+    {
+        "text": "hostname de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "dominios alojados en esa ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "reverse ip domains",
+        "category": "ipv4"
+    },
+    {
+        "text": "que sitios comparten esta ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "escaneo de puertos a una ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "scan ports ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "nmap ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "servicios expuestos en la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "traceroute a la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "tracert ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ruta hacia la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "reputacion de la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip en blacklist",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip abuse report",
+        "category": "ipv4"
+    },
+    {
+        "text": "chequear si una ip es maliciosa",
+        "category": "ipv4"
+    },
+    {
+        "text": "historial de una ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ip history lookup",
+        "category": "ipv4"
+    },
+    {
+        "text": "hacer ping a la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ping a 8.8.8.8",
+        "category": "ipv4"
+    },
+    {
+        "text": "traceroute a la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "tracert ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "ruta hacia la ip",
+        "category": "ipv4"
+    },
+    {
+        "text": "investigar ipv6 2001:4860:4860::8888",
+        "category": "ipv6"
+    },
+    {
+        "text": "analizar ip v6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ipv6 lookup",
+        "category": "ipv6"
+    },
+    {
+        "text": "ip6 whois",
+        "category": "ipv6"
+    },
+    {
+        "text": "who owns this ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "a quien pertenece esta ip v6",
+        "category": "ipv6"
+    },
+    {
+        "text": "proveedor de esta ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "geolocalizacion ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ipv6 geolocation",
+        "category": "ipv6"
+    },
+    {
+        "text": "pais de la ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ubicacion aproximada de ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "reverse dns ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "rdns ipv6 lookup",
+        "category": "ipv6"
+    },
+    {
+        "text": "hostname de una ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "asn de una ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ipv6 asn lookup",
+        "category": "ipv6"
+    },
+    {
+        "text": "prefijo ipv6 \/64 de quien es",
+        "category": "ipv6"
+    },
+    {
+        "text": "rango ipv6 asignado a empresa",
+        "category": "ipv6"
+    },
+    {
+        "text": "scan puertos ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "puertos abiertos en ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "nmap ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "servicios en una ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "hacer ping a una ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "traceroute ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "testear conectividad ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ipv6 connectivity test",
+        "category": "ipv6"
+    },
+    {
+        "text": "calcular subnet ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "ipv6 subnetting",
+        "category": "ipv6"
+    },
+    {
+        "text": "expandir abreviacion ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "comprimir direccion ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "validar formato ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "investigar dominio ejemplo.com",
+        "category": "domain"
+    },
+    {
+        "text": "domain lookup",
+        "category": "domain"
+    },
+    {
+        "text": "domain whois",
+        "category": "domain"
+    },
+    {
+        "text": "who owns this domain",
+        "category": "domain"
+    },
+    {
+        "text": "a quien pertenece el dominio",
+        "category": "domain"
+    },
+    {
+        "text": "empresa dueña del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "buscar subdominios de google.com",
+        "category": "domain"
+    },
+    {
+        "text": "subdomain enumeration",
+        "category": "domain"
+    },
+    {
+        "text": "subdomains finder",
+        "category": "domain"
+    },
+    {
+        "text": "descubrir hosts del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "dns lookup dominio",
+        "category": "domain"
+    },
+    {
+        "text": "registros a mx txt del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "nameservers del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "ns del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "spf dkim dmarc del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "en que hosting esta el dominio",
+        "category": "domain"
+    },
+    {
+        "text": "proveedor de hosting del sitio",
+        "category": "domain"
+    },
+    {
+        "text": "ip del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "fecha de creacion del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "expiracion del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "dominio vencido o activo",
+        "category": "domain"
+    },
+    {
+        "text": "historial de dns del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "historico whois dominio",
+        "category": "domain"
+    },
+    {
+        "text": "cambios de ownership del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "certificados ssl del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "ct logs del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "https del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "tecnologias web del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "cms del sitio web",
+        "category": "domain"
+    },
+    {
+        "text": "frameworks usados en el sitio",
+        "category": "domain"
+    },
+    {
+        "text": "sitemap xml del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "robots.txt del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "typosquatting del dominio",
+        "category": "domain"
+    },
+    {
+        "text": "dominios similares al original",
+        "category": "domain"
+    },
+    {
+        "text": "dominios relacionados",
+        "category": "domain"
+    },
+    {
+        "text": "analizar https:\/\/ejemplo.com\/login",
+        "category": "url"
+    },
+    {
+        "text": "url lookup",
+        "category": "url"
+    },
+    {
+        "text": "link analysis",
+        "category": "url"
+    },
+    {
+        "text": "investigar enlace",
+        "category": "url"
+    },
+    {
+        "text": "verificar link sospechoso",
+        "category": "url"
+    },
+    {
+        "text": "resolver redirecciones de url",
+        "category": "url"
+    },
+    {
+        "text": "seguir redireccion del link",
+        "category": "url"
+    },
+    {
+        "text": "unshorten url",
+        "category": "url"
+    },
+    {
+        "text": "expandir enlace acortado",
+        "category": "url"
+    },
+    {
+        "text": "ver url final",
+        "category": "url"
+    },
+    {
+        "text": "ver headers http de la url",
+        "category": "url"
+    },
+    {
+        "text": "http response headers",
+        "category": "url"
+    },
+    {
+        "text": "codigo de estado http",
+        "category": "url"
+    },
+    {
+        "text": "extraer query string de la url",
+        "category": "url"
+    },
+    {
+        "text": "parametros ?id= de un link",
+        "category": "url"
+    },
+    {
+        "text": "analizar parametros get",
+        "category": "url"
+    },
+    {
+        "text": "captura de pantalla de la url",
+        "category": "url"
+    },
+    {
+        "text": "screenshot del sitio",
+        "category": "url"
+    },
+    {
+        "text": "ver pagina web sin abrirla",
+        "category": "url"
+    },
+    {
+        "text": "archivar url en wayback machine",
+        "category": "url"
+    },
+    {
+        "text": "guardar pagina en archive.org",
+        "category": "url"
+    },
+    {
+        "text": "historial de una pagina web",
+        "category": "url"
+    },
+    {
+        "text": "ver si la url es phishing",
+        "category": "url"
+    },
+    {
+        "text": "phishing link check",
+        "category": "url"
+    },
+    {
+        "text": "url reputation check",
+        "category": "url"
+    },
+    {
+        "text": "ver codigo fuente de la pagina",
+        "category": "url"
+    },
+    {
+        "text": "html source de la url",
+        "category": "url"
+    },
+    {
+        "text": "investigar email",
+        "category": "email"
+    },
+    {
+        "text": "email lookup",
+        "category": "email"
+    },
+    {
+        "text": "osint por correo electronico",
+        "category": "email"
+    },
+    {
+        "text": "buscar informacion de un email",
+        "category": "email"
+    },
+    {
+        "text": "ver si el email esta filtrado",
+        "category": "email"
+    },
+    {
+        "text": "email breach lookup",
+        "category": "email"
+    },
+    {
+        "text": "buscar email en leaks",
+        "category": "email"
+    },
+    {
+        "text": "have i been pwned email",
+        "category": "email"
+    },
+    {
+        "text": "email en bases de datos hackeadas",
+        "category": "email"
+    },
+    {
+        "text": "verificar si un correo es valido",
+        "category": "email"
+    },
+    {
+        "text": "email validation",
+        "category": "email"
+    },
+    {
+        "text": "comprobar formato del correo",
+        "category": "email"
+    },
+    {
+        "text": "validar mx del email",
+        "category": "email"
+    },
+    {
+        "text": "buscar cuentas asociadas al email",
+        "category": "email"
+    },
+    {
+        "text": "servicios donde esta registrado el email",
+        "category": "email"
+    },
+    {
+        "text": "buscar perfiles usando un correo",
+        "category": "email"
+    },
+    {
+        "text": "email usado en redes sociales",
+        "category": "email"
+    },
+    {
+        "text": "reverse email lookup",
+        "category": "email"
+    },
+    {
+        "text": "buscar persona por email",
+        "category": "email"
+    },
+    {
+        "text": "email a nombre",
+        "category": "email"
+    },
+    {
+        "text": "es un email descartable",
+        "category": "email"
+    },
+    {
+        "text": "correo temporal check",
+        "category": "email"
+    },
+    {
+        "text": "detectar mail temporal",
+        "category": "email"
+    },
+    {
+        "text": "reputacion del correo",
+        "category": "email"
+    },
+    {
+        "text": "email trust score",
+        "category": "email"
+    },
+    {
+        "text": "email usado para spam",
+        "category": "email"
+    },
+    {
+        "text": "buscar gravatar por email",
+        "category": "email"
+    },
+    {
+        "text": "hash md5 del email gravatar",
+        "category": "email"
+    },
+    {
+        "text": "ver dominio del email",
+        "category": "email"
+    },
+    {
+        "text": "analizar proveedor del correo",
+        "category": "email"
+    },
+    {
+        "text": "gmail yahoo outlook email check",
+        "category": "email"
+    },
+    {
+        "text": "buscar username en internet",
+        "category": "username"
+    },
+    {
+        "text": "username lookup",
+        "category": "username"
+    },
+    {
+        "text": "osint por nombre de usuario",
+        "category": "username"
+    },
+    {
+        "text": "investigar nickname",
+        "category": "username"
+    },
+    {
+        "text": "buscar user en todas las redes",
+        "category": "username"
+    },
+    {
+        "text": "buscar usuario en facebook",
+        "category": "username"
+    },
+    {
+        "text": "buscar usuario en instagram",
+        "category": "username"
+    },
+    {
+        "text": "buscar usuario en twitter",
+        "category": "username"
+    },
+    {
+        "text": "buscar user en tiktok",
+        "category": "username"
+    },
+    {
+        "text": "buscar user en github",
+        "category": "username"
+    },
+    {
+        "text": "buscar user en reddit",
+        "category": "username"
+    },
+    {
+        "text": "ver si el username esta libre",
+        "category": "username"
+    },
+    {
+        "text": "comprobar disponibilidad de username",
+        "category": "username"
+    },
+    {
+        "text": "username availability check",
+        "category": "username"
+    },
+    {
+        "text": "rastrear alias en internet",
+        "category": "username"
+    },
+    {
+        "text": "actividad online de un usuario",
+        "category": "username"
+    },
+    {
+        "text": "historial de actividad del usuario",
+        "category": "username"
+    },
+    {
+        "text": "cuentas asociadas al username",
+        "category": "username"
+    },
+    {
+        "text": "mismo nickname en varias plataformas",
+        "category": "username"
+    },
+    {
+        "text": "usuarios con el mismo alias",
+        "category": "username"
+    },
+    {
+        "text": "avatar lookup",
+        "category": "username"
+    },
+    {
+        "text": "foto de perfil por username",
+        "category": "username"
+    },
+    {
+        "text": "buscar imagen de perfil del usuario",
+        "category": "username"
+    },
+    {
+        "text": "id de usuario twitter",
+        "category": "username"
+    },
+    {
+        "text": "id de usuario instagram",
+        "category": "username"
+    },
+    {
+        "text": "id de usuario discord",
+        "category": "username"
+    },
+    {
+        "text": "id de usuario telegram",
+        "category": "username"
+    },
+    {
+        "text": "buscar persona por alias",
+        "category": "username"
+    },
+    {
+        "text": "nickname a perfiles sociales",
+        "category": "username"
+    },
+    {
+        "text": "identificar hash md5",
+        "category": "md5"
+    },
+    {
+        "text": "md5 lookup",
+        "category": "md5"
+    },
+    {
+        "text": "md5 reverse lookup",
+        "category": "md5"
+    },
+    {
+        "text": "buscar md5 en rainbow tables",
+        "category": "md5"
+    },
+    {
+        "text": "romper hash md5",
+        "category": "md5"
+    },
+    {
+        "text": "md5 crack online",
+        "category": "md5"
+    },
+    {
+        "text": "md5 decrypt",
+        "category": "md5"
+    },
+    {
+        "text": "descifrar password md5",
+        "category": "md5"
+    },
+    {
+        "text": "ver si un hash es md5",
+        "category": "md5"
+    },
+    {
+        "text": "detectar md5 por longitud",
+        "category": "md5"
+    },
+    {
+        "text": "md5 hash identifier",
+        "category": "md5"
+    },
+    {
+        "text": "comprobar md5",
+        "category": "md5"
+    },
+    {
+        "text": "md5 checksum",
+        "category": "md5"
+    },
+    {
+        "text": "validar integridad md5",
+        "category": "md5"
+    },
+    {
+        "text": "buscar md5 en virus total",
+        "category": "md5"
+    },
+    {
+        "text": "md5 malware lookup",
+        "category": "md5"
+    },
+    {
+        "text": "hash md5 archivo",
+        "category": "md5"
+    },
+    {
+        "text": "sha1 hash lookup",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 reverse lookup",
+        "category": "sha1"
+    },
+    {
+        "text": "buscar sha1 en base de datos",
+        "category": "sha1"
+    },
+    {
+        "text": "romper hash sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "crackear sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 decrypt online",
+        "category": "sha1"
+    },
+    {
+        "text": "ver si un hash es sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "detectar sha1 por longitud",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 hash identifier",
+        "category": "sha1"
+    },
+    {
+        "text": "comprobar sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 checksum",
+        "category": "sha1"
+    },
+    {
+        "text": "validar integridad sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "buscar sha1 en virustotal",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 malware lookup",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 de archivo sospechoso",
+        "category": "sha1"
+    },
+    {
+        "text": "sha1 usado en git commits",
+        "category": "sha1"
+    },
+    {
+        "text": "identificar commit git por sha1",
+        "category": "sha1"
+    },
+    {
+        "text": "sha256 hash lookup",
+        "category": "sha256"
+    },
+    {
+        "text": "buscar hash sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 lookup online",
+        "category": "sha256"
+    },
+    {
+        "text": "comprobar sha256 de un archivo",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 checksum",
+        "category": "sha256"
+    },
+    {
+        "text": "validar integridad sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "buscar sha256 en malwarebazaar",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 en hybrid analysis",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 en any run",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 malware lookup",
+        "category": "sha256"
+    },
+    {
+        "text": "ver si un hash sha256 es malicioso",
+        "category": "sha256"
+    },
+    {
+        "text": "reputacion de hash sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "archivo sospechoso por sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "identificar tipo de archivo por sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "hash sha256 de ejecutable",
+        "category": "sha256"
+    },
+    {
+        "text": "sha256 de pdf sospechoso",
+        "category": "sha256"
+    },
+    {
+        "text": "comparar sha256 de archivo descargado",
+        "category": "sha256"
+    },
+    {
+        "text": "verificar descarga con sha256",
+        "category": "sha256"
+    },
+    {
+        "text": "identificar tipo de hash",
+        "category": "hash"
+    },
+    {
+        "text": "hash identifier online",
+        "category": "hash"
+    },
+    {
+        "text": "que algoritmo de hash es",
+        "category": "hash"
+    },
+    {
+        "text": "detectar hash por longitud",
+        "category": "hash"
+    },
+    {
+        "text": "analizar hash desconocido",
+        "category": "hash"
+    },
+    {
+        "text": "hash lookup",
+        "category": "hash"
+    },
+    {
+        "text": "hash analysis",
+        "category": "hash"
+    },
+    {
+        "text": "comprobar valor hash",
+        "category": "hash"
+    },
+    {
+        "text": "verificar integridad de archivo",
+        "category": "hash"
+    },
+    {
+        "text": "comparar hashes de archivos",
+        "category": "hash"
+    },
+    {
+        "text": "hash check file",
+        "category": "hash"
+    },
+    {
+        "text": "hash de archivo descargado",
+        "category": "hash"
+    },
+    {
+        "text": "validar archivo con hash",
+        "category": "hash"
+    },
+    {
+        "text": "hash mismatch archivo",
+        "category": "hash"
+    },
+    {
+        "text": "md5 sha1 o sha256",
+        "category": "hash"
+    },
+    {
+        "text": "que hash es md5 sha1 sha256",
+        "category": "hash"
+    },
+    {
+        "text": "identificar hash por formato",
+        "category": "hash"
+    },
+    {
+        "text": "hash value verification",
+        "category": "hash"
+    },
+    {
+        "text": "file hash checker",
+        "category": "hash"
+    },
+    {
+        "text": "investigar numero de telefono",
+        "category": "phone"
+    },
+    {
+        "text": "phone lookup",
+        "category": "phone"
+    },
+    {
+        "text": "reverse phone lookup",
+        "category": "phone"
+    },
+    {
+        "text": "osint por numero telefonico",
+        "category": "phone"
+    },
+    {
+        "text": "a quien pertenece este numero",
+        "category": "phone"
+    },
+    {
+        "text": "dueño del numero celular",
+        "category": "phone"
+    },
+    {
+        "text": "buscar persona por telefono",
+        "category": "phone"
+    },
+    {
+        "text": "verificar si el numero es valido",
+        "category": "phone"
+    },
+    {
+        "text": "phone number validation",
+        "category": "phone"
+    },
+    {
+        "text": "validar formato del numero",
+        "category": "phone"
+    },
+    {
+        "text": "normalizar numero telefonico",
+        "category": "phone"
+    },
+    {
+        "text": "formato e164 telefono",
+        "category": "phone"
+    },
+    {
+        "text": "convertir numero a formato internacional",
+        "category": "phone"
+    },
+    {
+        "text": "prefijo pais del telefono",
+        "category": "phone"
+    },
+    {
+        "text": "ver operador del telefono",
+        "category": "phone"
+    },
+    {
+        "text": "carrier lookup",
+        "category": "phone"
+    },
+    {
+        "text": "proveedor del numero celular",
+        "category": "phone"
+    },
+    {
+        "text": "linea fija o movil",
+        "category": "phone"
+    },
+    {
+        "text": "tiene telegram este numero",
+        "category": "phone"
+    },
+    {
+        "text": "buscar numero en whatsapp",
+        "category": "phone"
+    },
+    {
+        "text": "buscar numero en telegram",
+        "category": "phone"
+    },
+    {
+        "text": "numero reportado como spam",
+        "category": "phone"
+    },
+    {
+        "text": "llamadas spam de este numero",
+        "category": "phone"
+    },
+    {
+        "text": "telefono usado para estafas",
+        "category": "phone"
+    },
+    {
+        "text": "buscar numero en bases publicas",
+        "category": "phone"
+    },
+    {
+        "text": "telefono en listas negras",
+        "category": "phone"
+    },
+    {
+        "text": "convertir coordenadas a direccion",
+        "category": "geo"
+    },
+    {
+        "text": "latitud longitud a direccion",
+        "category": "geo"
+    },
+    {
+        "text": "ubicacion por coordenadas gps",
+        "category": "geo"
+    },
+    {
+        "text": "que lugar es esta lat lon",
+        "category": "geo"
+    },
+    {
+        "text": "reverse geocode",
+        "category": "geo"
+    },
+    {
+        "text": "geocoding inverso coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "direccion desde coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "buscar ubicacion en el mapa",
+        "category": "geo"
+    },
+    {
+        "text": "ver coordenadas en el mapa",
+        "category": "geo"
+    },
+    {
+        "text": "mostrar punto gps en mapa",
+        "category": "geo"
+    },
+    {
+        "text": "ver ubicacion en google maps",
+        "category": "geo"
+    },
+    {
+        "text": "abrir coordenadas en google maps",
+        "category": "geo"
+    },
+    {
+        "text": "maps link desde coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "coordenadas gps a mapa",
+        "category": "geo"
+    },
+    {
+        "text": "convertir lat lon a mapa",
+        "category": "geo"
+    },
+    {
+        "text": "street view de coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "ver calle por coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "buscar pais por coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "ciudad segun coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "normalizar coordenadas gps",
+        "category": "geo"
+    },
+    {
+        "text": "formato decimal coordenadas",
+        "category": "geo"
+    },
+    {
+        "text": "convertir coordenadas dms a decimal",
+        "category": "geo"
+    },
+    {
+        "text": "asn lookup",
+        "category": "asn"
+    },
+    {
+        "text": "buscar informacion de un asn",
+        "category": "asn"
+    },
+    {
+        "text": "investigar sistema autonomo",
+        "category": "asn"
+    },
+    {
+        "text": "as number lookup",
+        "category": "asn"
+    },
+    {
+        "text": "a quien pertenece el asn",
+        "category": "asn"
+    },
+    {
+        "text": "empresa dueña del asn",
+        "category": "asn"
+    },
+    {
+        "text": "owner del sistema autonomo",
+        "category": "asn"
+    },
+    {
+        "text": "prefijos ip del asn",
+        "category": "asn"
+    },
+    {
+        "text": "rango de subredes del asn",
+        "category": "asn"
+    },
+    {
+        "text": "netblocks del asn",
+        "category": "asn"
+    },
+    {
+        "text": "bloques ipv4 e ipv6 del asn",
+        "category": "asn"
+    },
+    {
+        "text": "bgp del asn",
+        "category": "asn"
+    },
+    {
+        "text": "bgp routing del asn",
+        "category": "asn"
+    },
+    {
+        "text": "tabla bgp del asn",
+        "category": "asn"
+    },
+    {
+        "text": "peering del asn",
+        "category": "asn"
+    },
+    {
+        "text": "asn peers",
+        "category": "asn"
+    },
+    {
+        "text": "conexiones de peering",
+        "category": "asn"
+    },
+    {
+        "text": "peeringdb asn",
+        "category": "asn"
+    },
+    {
+        "text": "asn relacionado a una ip",
+        "category": "asn"
+    },
+    {
+        "text": "buscar asn por ip",
+        "category": "asn"
+    },
+    {
+        "text": "ip to asn lookup",
+        "category": "asn"
+    },
+    {
+        "text": "historial del asn",
+        "category": "asn"
+    },
+    {
+        "text": "cambios de prefijos del asn",
+        "category": "asn"
+    },
+    {
+        "text": "asn history",
+        "category": "asn"
+    },
+    {
+        "text": "buscar fabricante por mac",
+        "category": "mac"
+    },
+    {
+        "text": "mac vendor lookup",
+        "category": "mac"
+    },
+    {
+        "text": "oui lookup",
+        "category": "mac"
+    },
+    {
+        "text": "identificar fabricante de mac address",
+        "category": "mac"
+    },
+    {
+        "text": "a quien pertenece esta mac",
+        "category": "mac"
+    },
+    {
+        "text": "empresa dueña del prefijo mac",
+        "category": "mac"
+    },
+    {
+        "text": "marca del dispositivo por mac",
+        "category": "mac"
+    },
+    {
+        "text": "analizar direccion mac",
+        "category": "mac"
+    },
+    {
+        "text": "mac address analysis",
+        "category": "mac"
+    },
+    {
+        "text": "investigar mac address",
+        "category": "mac"
+    },
+    {
+        "text": "validar formato mac address",
+        "category": "mac"
+    },
+    {
+        "text": "normalizar direccion mac",
+        "category": "mac"
+    },
+    {
+        "text": "es una mac valida",
+        "category": "mac"
+    },
+    {
+        "text": "tipo de mac address",
+        "category": "mac"
+    },
+    {
+        "text": "mac address unicast o multicast",
+        "category": "mac"
+    },
+    {
+        "text": "mac randomizada",
+        "category": "mac"
+    },
+    {
+        "text": "oui ieee lookup",
+        "category": "mac"
+    },
+    {
+        "text": "prefijo mac ieee",
+        "category": "mac"
+    },
+    {
+        "text": "bitcoin address lookup",
+        "category": "btc"
+    },
+    {
+        "text": "investigar direccion btc",
+        "category": "btc"
+    },
+    {
+        "text": "osint bitcoin wallet",
+        "category": "btc"
+    },
+    {
+        "text": "ver transacciones de una direccion bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "historial de transacciones btc",
+        "category": "btc"
+    },
+    {
+        "text": "btc transaction lookup",
+        "category": "btc"
+    },
+    {
+        "text": "txid bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "balance de wallet btc",
+        "category": "btc"
+    },
+    {
+        "text": "cuanto bitcoin tiene esta direccion",
+        "category": "btc"
+    },
+    {
+        "text": "saldo actual de direccion btc",
+        "category": "btc"
+    },
+    {
+        "text": "explorer blockchain bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "ver bitcoin en blockchain explorer",
+        "category": "btc"
+    },
+    {
+        "text": "buscar direccion en blockchain.info",
+        "category": "btc"
+    },
+    {
+        "text": "rastrear movimientos de bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "seguimiento de fondos btc",
+        "category": "btc"
+    },
+    {
+        "text": "trazar transacciones bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "direccion bitcoin es de exchange",
+        "category": "btc"
+    },
+    {
+        "text": "etiquetas de direcciones btc",
+        "category": "btc"
+    },
+    {
+        "text": "cluster de direcciones bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "ver si una direccion btc esta vinculada a fraude",
+        "category": "btc"
+    },
+    {
+        "text": "bitcoin scam address check",
+        "category": "btc"
+    },
+    {
+        "text": "reputacion de wallet bitcoin",
+        "category": "btc"
+    },
+    {
+        "text": "ethereum address lookup",
+        "category": "eth"
+    },
+    {
+        "text": "investigar direccion ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "osint ethereum wallet",
+        "category": "eth"
+    },
+    {
+        "text": "ver transacciones de una direccion eth",
+        "category": "eth"
+    },
+    {
+        "text": "historial de transacciones ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "eth transaction lookup",
+        "category": "eth"
+    },
+    {
+        "text": "tx hash ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "balance de wallet ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "saldo de direccion eth",
+        "category": "eth"
+    },
+    {
+        "text": "cuanto eth tiene esta wallet",
+        "category": "eth"
+    },
+    {
+        "text": "ver tokens erc20 de una wallet",
+        "category": "eth"
+    },
+    {
+        "text": "tokens erc721 nft",
+        "category": "eth"
+    },
+    {
+        "text": "nft asociados a wallet ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "analizar contrato inteligente",
+        "category": "eth"
+    },
+    {
+        "text": "smart contract ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "ver codigo del contrato eth",
+        "category": "eth"
+    },
+    {
+        "text": "address del smart contract",
+        "category": "eth"
+    },
+    {
+        "text": "etherscan address lookup",
+        "category": "eth"
+    },
+    {
+        "text": "ethereum blockchain explorer",
+        "category": "eth"
+    },
+    {
+        "text": "buscar direccion en etherscan",
+        "category": "eth"
+    },
+    {
+        "text": "gas price ethereum",
+        "category": "eth"
+    },
+    {
+        "text": "costo de gas eth",
+        "category": "eth"
+    },
+    {
+        "text": "gas fee tracker",
+        "category": "eth"
+    },
+    {
+        "text": "direccion eth es de exchange",
+        "category": "eth"
+    },
+    {
+        "text": "wallet ethereum vinculada a fraude",
+        "category": "eth"
+    },
+    {
+        "text": "reputacion de direccion eth",
+        "category": "eth"
+    },
+    {
+        "text": "analizar crypto wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "investigar billetera de criptomonedas",
+        "category": "wallet"
+    },
+    {
+        "text": "crypto wallet lookup",
+        "category": "wallet"
+    },
+    {
+        "text": "osint crypto wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "ver saldo de billetera crypto",
+        "category": "wallet"
+    },
+    {
+        "text": "balance de wallet cripto",
+        "category": "wallet"
+    },
+    {
+        "text": "cuanto dinero tiene esta wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "historial de transacciones de la wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "movimientos de una billetera virtual",
+        "category": "wallet"
+    },
+    {
+        "text": "rastrear fondos de una wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "a quien pertenece esta wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "identificar dueño de billetera crypto",
+        "category": "wallet"
+    },
+    {
+        "text": "wallet asociada a persona",
+        "category": "wallet"
+    },
+    {
+        "text": "wallet es de exchange",
+        "category": "wallet"
+    },
+    {
+        "text": "direccion de exchange crypto",
+        "category": "wallet"
+    },
+    {
+        "text": "wallet etiquetada como exchange",
+        "category": "wallet"
+    },
+    {
+        "text": "ver si una wallet es scam",
+        "category": "wallet"
+    },
+    {
+        "text": "crypto scam wallet check",
+        "category": "wallet"
+    },
+    {
+        "text": "wallet vinculada a fraude",
+        "category": "wallet"
+    },
+    {
+        "text": "reputacion de billetera crypto",
+        "category": "wallet"
+    },
+    {
+        "text": "direccion crypto desconocida",
+        "category": "wallet"
+    },
+    {
+        "text": "que blockchain usa esta wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "detectar red de la wallet",
+        "category": "wallet"
+    },
+    {
+        "text": "analizar archivo",
+        "category": "file"
+    },
+    {
+        "text": "file analysis",
+        "category": "file"
+    },
+    {
+        "text": "investigar archivo sospechoso",
+        "category": "file"
+    },
+    {
+        "text": "osint de archivo",
+        "category": "file"
+    },
+    {
+        "text": "subir archivo a virustotal",
+        "category": "file"
+    },
+    {
+        "text": "escanear archivo en sandbox",
+        "category": "file"
+    },
+    {
+        "text": "analizar archivo en sandbox",
+        "category": "file"
+    },
+    {
+        "text": "analizar ejecutable sospechoso",
+        "category": "file"
+    },
+    {
+        "text": "strings de un binario",
+        "category": "file"
+    },
+    {
+        "text": "examinar exe",
+        "category": "file"
+    },
+    {
+        "text": "analisis estatico de malware",
+        "category": "file"
+    },
+    {
+        "text": "analizar pdf sospechoso",
+        "category": "file"
+    },
+    {
+        "text": "malware en documentos pdf",
+        "category": "file"
+    },
+    {
+        "text": "analizar documento ofimatica",
+        "category": "file"
+    },
+    {
+        "text": "ver metadatos de un archivo",
+        "category": "file"
+    },
+    {
+        "text": "extraer metadatos",
+        "category": "file"
+    },
+    {
+        "text": "metadata file analysis",
+        "category": "file"
+    },
+    {
+        "text": "exif de imagen",
+        "category": "file"
+    },
+    {
+        "text": "extraer exif de foto",
+        "category": "file"
+    },
+    {
+        "text": "metadatos de fotografia",
+        "category": "file"
+    },
+    {
+        "text": "tipo de archivo por contenido",
+        "category": "file"
+    },
+    {
+        "text": "identificar tipo de archivo",
+        "category": "file"
+    },
+    {
+        "text": "file type detection",
+        "category": "file"
+    },
+    {
+        "text": "ver cabecera del archivo",
+        "category": "file"
+    },
+    {
+        "text": "magic bytes del archivo",
+        "category": "file"
+    },
+    {
+        "text": "archivo contiene macros",
+        "category": "file"
+    },
+    {
+        "text": "analizar macros de documento",
+        "category": "file"
+    },
+    {
+        "text": "analizar aplicacion movil",
+        "category": "package"
+    },
+    {
+        "text": "app analysis",
+        "category": "package"
+    },
+    {
+        "text": "investigar app android",
+        "category": "package"
+    },
+    {
+        "text": "osint de aplicacion",
+        "category": "package"
+    },
+    {
+        "text": "analizar apk sospechoso",
+        "category": "package"
+    },
+    {
+        "text": "desempaquetar apk",
+        "category": "package"
+    },
+    {
+        "text": "reverse engineering apk",
+        "category": "package"
+    },
+    {
+        "text": "strings dentro del apk",
+        "category": "package"
+    },
+    {
+        "text": "permisos de una app android",
+        "category": "package"
+    },
+    {
+        "text": "app permissions analyzer",
+        "category": "package"
+    },
+    {
+        "text": "riesgos de permisos de la app",
+        "category": "package"
+    },
+    {
+        "text": "buscar aplicacion en google play",
+        "category": "package"
+    },
+    {
+        "text": "play store app lookup",
+        "category": "package"
+    },
+    {
+        "text": "ver informacion de app en play store",
+        "category": "package"
+    },
+    {
+        "text": "analizar ipa ios",
+        "category": "package"
+    },
+    {
+        "text": "decompilar ipa",
+        "category": "package"
+    },
+    {
+        "text": "ios app analysis",
+        "category": "package"
+    },
+    {
+        "text": "bundle id de la aplicacion ios",
+        "category": "package"
+    },
+    {
+        "text": "identificar bundle identifier ios",
+        "category": "package"
+    },
+    {
+        "text": "package name android",
+        "category": "package"
+    },
+    {
+        "text": "versiones de la aplicacion",
+        "category": "package"
+    },
+    {
+        "text": "historial de versiones de la app",
+        "category": "package"
+    },
+    {
+        "text": "cambios entre versiones de la app",
+        "category": "package"
+    },
+    {
+        "text": "app movil contiene malware",
+        "category": "package"
+    },
+    {
+        "text": "analizar app sospechosa",
+        "category": "package"
+    },
+    {
+        "text": "buscar codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "zip code lookup",
+        "category": "zip"
+    },
+    {
+        "text": "postal code lookup",
+        "category": "zip"
+    },
+    {
+        "text": "a que ciudad pertenece este codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "ciudad del zip code",
+        "category": "zip"
+    },
+    {
+        "text": "localidad por codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "zona del codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "area geografica del zip",
+        "category": "zip"
+    },
+    {
+        "text": "region del codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "ver codigo postal en el mapa",
+        "category": "zip"
+    },
+    {
+        "text": "mapa del zip code",
+        "category": "zip"
+    },
+    {
+        "text": "limites del codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "direccion asociada al codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "buscar calles por codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "zip code usa lookup",
+        "category": "zip"
+    },
+    {
+        "text": "codigo postal internacional",
+        "category": "zip"
+    },
+    {
+        "text": "postal code country",
+        "category": "zip"
+    },
+    {
+        "text": "validar codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "formato de codigo postal",
+        "category": "zip"
+    },
+    {
+        "text": "analizar clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "pgp key lookup",
+        "category": "pgp"
+    },
+    {
+        "text": "gpg key lookup",
+        "category": "pgp"
+    },
+    {
+        "text": "buscar clave publica pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "importar clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "descargar public key pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "fingerprint de clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "huella digital de clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "pgp key fingerprint",
+        "category": "pgp"
+    },
+    {
+        "text": "verificar firma pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "validar firma gpg",
+        "category": "pgp"
+    },
+    {
+        "text": "comprobar firma digital pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "buscar clave en keyserver",
+        "category": "pgp"
+    },
+    {
+        "text": "pgp keyserver lookup",
+        "category": "pgp"
+    },
+    {
+        "text": "servidor de claves gpg",
+        "category": "pgp"
+    },
+    {
+        "text": "correo firmado con pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "email cifrado pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "fecha de expiracion de clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "revocar clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "estado de confianza de clave pgp",
+        "category": "pgp"
+    },
+    {
+        "text": "buscar persona por nombre y apellido",
+        "category": "fullname"
+    },
+    {
+        "text": "fullname search",
+        "category": "fullname"
+    },
+    {
+        "text": "osint por nombre completo",
+        "category": "fullname"
+    },
+    {
+        "text": "investigar persona por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar antecedentes de una persona",
+        "category": "fullname"
+    },
+    {
+        "text": "historial publico de una persona",
+        "category": "fullname"
+    },
+    {
+        "text": "informacion publica de un individuo",
+        "category": "fullname"
+    },
+    {
+        "text": "registros publicos por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "bases de datos publicas de personas",
+        "category": "fullname"
+    },
+    {
+        "text": "documentos publicos por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar familiares por nombre completo",
+        "category": "fullname"
+    },
+    {
+        "text": "arbol familiar por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "parentesco de una persona",
+        "category": "fullname"
+    },
+    {
+        "text": "padron electoral por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar votante por nombre y apellido",
+        "category": "fullname"
+    },
+    {
+        "text": "registro electoral persona",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar direccion por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "domicilio asociado a nombre completo",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar persona en bases gubernamentales",
+        "category": "fullname"
+    },
+    {
+        "text": "registros civiles por nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "homonimos nombre completo",
+        "category": "fullname"
+    },
+    {
+        "text": "diferenciar personas con el mismo nombre",
+        "category": "fullname"
+    },
+    {
+        "text": "buscar filtraciones de datos",
+        "category": "leaks"
+    },
+    {
+        "text": "data breach lookup",
+        "category": "leaks"
+    },
+    {
+        "text": "breach database search",
+        "category": "leaks"
+    },
+    {
+        "text": "ver si mi email aparece en una filtracion",
+        "category": "leaks"
+    },
+    {
+        "text": "email comprometido en leak",
+        "category": "leaks"
+    },
+    {
+        "text": "correo filtrado en bases de datos",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar passwords filtradas",
+        "category": "leaks"
+    },
+    {
+        "text": "credenciales email password filtradas",
+        "category": "leaks"
+    },
+    {
+        "text": "combo list leak",
+        "category": "leaks"
+    },
+    {
+        "text": "base de datos filtrada",
+        "category": "leaks"
+    },
+    {
+        "text": "dump de base de datos hackeada",
+        "category": "leaks"
+    },
+    {
+        "text": "leak de usuarios y contraseñas",
+        "category": "leaks"
+    },
+    {
+        "text": "brecha de datos de una empresa",
+        "category": "leaks"
+    },
+    {
+        "text": "empresa hackeada datos expuestos",
+        "category": "leaks"
+    },
+    {
+        "text": "incidente de seguridad con filtracion",
+        "category": "leaks"
+    },
+    {
+        "text": "buscar leak por nombre de usuario",
+        "category": "leaks"
+    },
+    {
+        "text": "usuario aparece en leak",
+        "category": "leaks"
+    },
+    {
+        "text": "haveibeenpwned lookup",
+        "category": "leaks"
+    },
+    {
+        "text": "hibp breach check",
+        "category": "leaks"
+    },
+    {
+        "text": "datos personales expuestos online",
+        "category": "leaks"
+    },
+    {
+        "text": "informacion sensible filtrada",
+        "category": "leaks"
+    },
+    {
+        "text": "reputation check",
+        "category": "reputation"
+    },
+    {
+        "text": "verificar reputacion online",
+        "category": "reputation"
+    },
+    {
+        "text": "risk score lookup",
+        "category": "reputation"
+    },
+    {
+        "text": "reputacion de una ip",
+        "category": "reputation"
+    },
+    {
+        "text": "ip reputation lookup",
+        "category": "reputation"
+    },
+    {
+        "text": "ip maliciosa check",
+        "category": "reputation"
+    },
+    {
+        "text": "ip reportada por abuso",
+        "category": "reputation"
+    },
+    {
+        "text": "reputacion de dominio",
+        "category": "reputation"
+    },
+    {
+        "text": "domain reputation check",
+        "category": "reputation"
+    },
+    {
+        "text": "dominio en blacklist",
+        "category": "reputation"
+    },
+    {
+        "text": "ver si una url es segura",
+        "category": "reputation"
+    },
+    {
+        "text": "url reputation check",
+        "category": "reputation"
+    },
+    {
+        "text": "link peligroso",
+        "category": "reputation"
+    },
+    {
+        "text": "detectar sitio phishing",
+        "category": "reputation"
+    },
+    {
+        "text": "phishing detection",
+        "category": "reputation"
+    },
+    {
+        "text": "pagina falsa check",
+        "category": "reputation"
+    },
+    {
+        "text": "ver si esta en lista negra",
+        "category": "reputation"
+    },
+    {
+        "text": "blacklist check",
+        "category": "reputation"
+    },
+    {
+        "text": "dns blacklist lookup",
+        "category": "reputation"
+    },
+    {
+        "text": "spam reputation check",
+        "category": "reputation"
+    },
+    {
+        "text": "email sender reputation",
+        "category": "reputation"
+    },
+    {
+        "text": "trust score del sitio",
+        "category": "reputation"
+    },
+    {
+        "text": "nivel de riesgo del dominio",
+        "category": "reputation"
+    },
+    {
+        "text": "buscar vulnerabilidades",
+        "category": "vuln"
+    },
+    {
+        "text": "vulnerability scan",
+        "category": "vuln"
+    },
+    {
+        "text": "security scan web",
+        "category": "vuln"
+    },
+    {
+        "text": "analisis de seguridad del sitio",
+        "category": "vuln"
+    },
+    {
+        "text": "buscar cve de un software",
+        "category": "vuln"
+    },
+    {
+        "text": "cve lookup",
+        "category": "vuln"
+    },
+    {
+        "text": "cve search by version",
+        "category": "vuln"
+    },
+    {
+        "text": "vulnerabilidades por version",
+        "category": "vuln"
+    },
+    {
+        "text": "buscar exploits conocidos",
+        "category": "vuln"
+    },
+    {
+        "text": "exploit database search",
+        "category": "vuln"
+    },
+    {
+        "text": "exploit para version especifica",
+        "category": "vuln"
+    },
+    {
+        "text": "scan de puertos y servicios",
+        "category": "vuln"
+    },
+    {
+        "text": "servicios vulnerables expuestos",
+        "category": "vuln"
+    },
+    {
+        "text": "version vulnerable detectada",
+        "category": "vuln"
+    },
+    {
+        "text": "scanner de wordpress",
+        "category": "vuln"
+    },
+    {
+        "text": "plugin wordpress vulnerable",
+        "category": "vuln"
+    },
+    {
+        "text": "tema wordpress con vulnerabilidades",
+        "category": "vuln"
+    },
+    {
+        "text": "buscar dispositivos iot vulnerables",
+        "category": "vuln"
+    },
+    {
+        "text": "shodan vulnerability search",
+        "category": "vuln"
+    },
+    {
+        "text": "servicios iot expuestos",
+        "category": "vuln"
+    },
+    {
+        "text": "test de sql injection",
+        "category": "vuln"
+    },
+    {
+        "text": "xss vulnerability test",
+        "category": "vuln"
+    },
+    {
+        "text": "csrf vulnerability check",
+        "category": "vuln"
+    },
+    {
+        "text": "auditoria de seguridad web",
+        "category": "vuln"
+    },
+    {
+        "text": "pentesting basico",
+        "category": "vuln"
+    },
+    {
+        "text": "verificar estafa online",
+        "category": "fraud"
+    },
+    {
+        "text": "fraud check",
+        "category": "fraud"
+    },
+    {
+        "text": "scam checker",
+        "category": "fraud"
+    },
+    {
+        "text": "detectar fraude en internet",
+        "category": "fraud"
+    },
+    {
+        "text": "fraude digital",
+        "category": "fraud"
+    },
+    {
+        "text": "investigar fraude online",
+        "category": "fraud"
+    },
+    {
+        "text": "verificar tienda online falsa",
+        "category": "fraud"
+    },
+    {
+        "text": "ecommerce fraud check",
+        "category": "fraud"
+    },
+    {
+        "text": "sitio de compras fraudulento",
+        "category": "fraud"
+    },
+    {
+        "text": "denunciar fraude",
+        "category": "fraud"
+    },
+    {
+        "text": "reportar estafa online",
+        "category": "fraud"
+    },
+    {
+        "text": "reporte de fraude",
+        "category": "fraud"
+    },
+    {
+        "text": "verificar tarjeta de credito",
+        "category": "fraud"
+    },
+    {
+        "text": "credit card fraud check",
+        "category": "fraud"
+    },
+    {
+        "text": "tarjeta usada en fraude",
+        "category": "fraud"
+    },
+    {
+        "text": "bin lookup",
+        "category": "fraud"
+    },
+    {
+        "text": "ver banco por bin",
+        "category": "fraud"
+    },
+    {
+        "text": "issuer de tarjeta por bin",
+        "category": "fraud"
+    },
+    {
+        "text": "lista negra de estafadores",
+        "category": "fraud"
+    },
+    {
+        "text": "base de datos de scammers",
+        "category": "fraud"
+    },
+    {
+        "text": "estafadores conocidos",
+        "category": "fraud"
+    },
+    {
+        "text": "fraude con criptomonedas",
+        "category": "fraud"
+    },
+    {
+        "text": "scam crypto",
+        "category": "fraud"
+    },
+    {
+        "text": "inversion fraudulenta",
+        "category": "fraud"
+    },
+    {
+        "text": "fraude con tarjeta de credito",
+        "category": "fraud"
+    },
+    {
+        "text": "carding fraud",
+        "category": "fraud"
+    },
+    {
+        "text": "deteccion de carding",
+        "category": "fraud"
+    },
+    {
+        "text": "uso fraudulento de tarjetas",
+        "category": "fraud"
+    },
+    {
+        "text": "tarjeta comprometida",
+        "category": "fraud"
+    },
+    {
+        "text": "datos de tarjeta robados",
+        "category": "fraud"
+    },
+    {
+        "text": "credit card scam",
+        "category": "fraud"
+    },
+    {
+        "text": "verificar transaccion fraudulenta",
+        "category": "fraud"
+    },
+    {
+        "text": "pago sospechoso con tarjeta",
+        "category": "fraud"
+    },
+    {
+        "text": "carding forum detection",
+        "category": "fraud"
+    },
+    {
+        "text": "tarjetas vendidas en foros",
+        "category": "fraud"
+    },
+    {
+        "text": "uuid lookup",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid generator",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid v4 generator",
+        "category": "uuid"
+    },
+    {
+        "text": "generar identificador unico",
+        "category": "uuid"
+    },
+    {
+        "text": "validar uuid",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid validator",
+        "category": "uuid"
+    },
+    {
+        "text": "verificar si es uuid",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid format check",
+        "category": "uuid"
+    },
+    {
+        "text": "identificar tipo de uuid",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid v1 v4 v5",
+        "category": "uuid"
+    },
+    {
+        "text": "diferencias entre uuid y guid",
+        "category": "uuid"
+    },
+    {
+        "text": "parsear uuid",
+        "category": "uuid"
+    },
+    {
+        "text": "decodificar uuid",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid a string",
+        "category": "uuid"
+    },
+    {
+        "text": "guid lookup",
+        "category": "uuid"
+    },
+    {
+        "text": "validar guid",
+        "category": "uuid"
+    },
+    {
+        "text": "guid format check",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid usado como identificador",
+        "category": "uuid"
+    },
+    {
+        "text": "uuid en base de datos",
+        "category": "uuid"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "como estas",
+        "category": "greeting"
+    },
+    {
+        "text": "jugar",
+        "category": "none"
+    },
+    {
+        "text": "peliculas gratis",
+        "category": "none"
+    },
+    {
+        "text": "receta de cocina",
+        "category": "none"
+    },
+    {
+        "text": "clima hoy",
+        "category": "none"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "novedades osint",
+        "category": "promo_news"
+    },
+    {
+        "text": "comprar zapatos",
+        "category": "none"
+    },
+    {
+        "text": "esto es basura",
+        "category": "none"
+    },
+    {
+        "text": "no se que buscar",
+        "category": "none"
+    },
+    {
+        "text": "aburrimiento",
+        "category": "none"
+    },
+    {
+        "text": "hola mundo",
+        "category": "greeting"
+    },
+    {
+        "text": "buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas tardes",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas noches",
+        "category": "greeting"
+    },
+    {
+        "text": "que tal",
+        "category": "greeting"
+    },
+    {
+        "text": "prueba de sistema",
+        "category": "none"
+    },
+    {
+        "text": "random text",
+        "category": "none"
+    },
+    {
+        "text": "busqueda sin sentido",
+        "category": "none"
+    },
+    {
+        "text": "quiero ver algo",
+        "category": "none"
+    },
+    {
+        "text": "nada que ver",
+        "category": "none"
+    },
+    {
+        "text": "juegos online",
+        "category": "none"
+    },
+    {
+        "text": "descargar musica",
+        "category": "none"
+    },
+    {
+        "text": "ver futbol gratis",
+        "category": "none"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "hola a todos",
+        "category": "greeting"
+    },
+    {
+        "text": "hola que tal",
+        "category": "greeting"
+    },
+    {
+        "text": "hola buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "hola buenas tardes",
+        "category": "greeting"
+    },
+    {
+        "text": "hola buenas noches",
+        "category": "greeting"
+    },
+    {
+        "text": "buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas tardes",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas noches",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas",
+        "category": "greeting"
+    },
+    {
+        "text": "buen dia",
+        "category": "greeting"
+    },
+    {
+        "text": "que tal",
+        "category": "greeting"
+    },
+    {
+        "text": "como estas",
+        "category": "greeting"
+    },
+    {
+        "text": "como va",
+        "category": "greeting"
+    },
+    {
+        "text": "que onda",
+        "category": "greeting"
+    },
+    {
+        "text": "saludos",
+        "category": "greeting"
+    },
+    {
+        "text": "un saludo",
+        "category": "greeting"
+    },
+    {
+        "text": "hey",
+        "category": "greeting"
+    },
+    {
+        "text": "hello",
+        "category": "greeting"
+    },
+    {
+        "text": "hi",
+        "category": "greeting"
+    },
+    {
+        "text": "hola bot",
+        "category": "greeting"
+    },
+    {
+        "text": "hola sistema",
+        "category": "greeting"
+    },
+    {
+        "text": "hola asistente",
+        "category": "greeting"
+    },
+    {
+        "text": "estas ahi",
+        "category": "greeting"
+    },
+    {
+        "text": "hay alguien",
+        "category": "greeting"
+    },
+    {
+        "text": "empezar",
+        "category": "greeting"
+    },
+    {
+        "text": "inicio",
+        "category": "greeting"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "hola",
+        "category": "greeting"
+    },
+    {
+        "text": "buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "buenos dias",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas",
+        "category": "greeting"
+    },
+    {
+        "text": "buenas",
+        "category": "greeting"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "quiero noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "dame noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ultimas noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "noticias de hoy",
+        "category": "promo_news"
+    },
+    {
+        "text": "novedades",
+        "category": "promo_news"
+    },
+    {
+        "text": "que hay de nuevo",
+        "category": "promo_news"
+    },
+    {
+        "text": "informacion",
+        "category": "promo_news"
+    },
+    {
+        "text": "info",
+        "category": "promo_news"
+    },
+    {
+        "text": "novedades recientes",
+        "category": "promo_news"
+    },
+    {
+        "text": "mostrar noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "leer noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver novedades",
+        "category": "promo_news"
+    },
+    {
+        "text": "actualidad",
+        "category": "promo_news"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "ver noticias",
+        "category": "promo_news"
+    },
+    {
+        "text": "cosa",
+        "category": "none"
+    },
+    {
+        "text": "esto",
+        "category": "none"
+    },
+    {
+        "text": "aquello",
+        "category": "none"
+    },
+    {
+        "text": "nada",
+        "category": "none"
+    },
+    {
+        "text": "algo",
+        "category": "none"
+    },
+    {
+        "text": "random",
+        "category": "none"
+    },
+    {
+        "text": "prueba",
+        "category": "none"
+    },
+    {
+        "text": "test",
+        "category": "none"
+    },
+    {
+        "text": "palabra",
+        "category": "none"
+    },
+    {
+        "text": "texto",
+        "category": "none"
+    },
+    {
+        "text": "mensaje",
+        "category": "none"
+    },
+    {
+        "text": "escribir",
+        "category": "none"
+    },
+    {
+        "text": "teclado",
+        "category": "none"
+    },
+    {
+        "text": "raton",
+        "category": "none"
+    },
+    {
+        "text": "pantalla",
+        "category": "none"
+    },
+    {
+        "text": "mesa",
+        "category": "none"
+    },
+    {
+        "text": "silla",
+        "category": "none"
+    },
+    {
+        "text": "casa",
+        "category": "none"
+    },
+    {
+        "text": "auto",
+        "category": "none"
+    },
+    {
+        "text": "perro",
+        "category": "none"
+    },
+    {
+        "text": "gato",
+        "category": "none"
+    },
+    {
+        "text": "arbol",
+        "category": "none"
+    },
+    {
+        "text": "cielo",
+        "category": "none"
+    },
+    {
+        "text": "comida",
+        "category": "none"
+    },
+    {
+        "text": "cena",
+        "category": "none"
+    },
+    {
+        "text": "almuerzo",
+        "category": "none"
+    },
+    {
+        "text": "desayuno",
+        "category": "none"
+    },
+    {
+        "text": "agua",
+        "category": "none"
+    },
+    {
+        "text": "fuego",
+        "category": "none"
+    },
+    {
+        "text": "tierra",
+        "category": "none"
+    },
+    {
+        "text": "aire",
+        "category": "none"
+    },
+    {
+        "text": "musica",
+        "category": "none"
+    },
+    {
+        "text": "pelicula",
+        "category": "none"
+    },
+    {
+        "text": "juego",
+        "category": "none"
+    },
+    {
+        "text": "deporte",
+        "category": "none"
+    },
+    {
+        "text": "futbol",
+        "category": "none"
+    },
+    {
+        "text": "basquet",
+        "category": "none"
+    },
+    {
+        "text": "libro",
+        "category": "none"
+    },
+    {
+        "text": "papel",
+        "category": "none"
+    },
+    {
+        "text": "lapiz",
+        "category": "none"
+    },
+    {
+        "text": "color",
+        "category": "none"
+    },
+    {
+        "text": "rojo",
+        "category": "none"
+    },
+    {
+        "text": "azul",
+        "category": "none"
+    },
+    {
+        "text": "verde",
+        "category": "none"
+    },
+    {
+        "text": "uno",
+        "category": "none"
+    },
+    {
+        "text": "dos",
+        "category": "none"
+    },
+    {
+        "text": "tres",
+        "category": "none"
+    },
+    {
+        "text": "cuatro",
+        "category": "none"
+    },
+    {
+        "text": "cinco",
+        "category": "none"
+    },
+    {
+        "text": "seis",
+        "category": "none"
+    },
+    {
+        "text": "siete",
+        "category": "none"
+    },
+    {
+        "text": "ocho",
+        "category": "none"
+    },
+    {
+        "text": "nueve",
+        "category": "none"
+    },
+    {
+        "text": "diez",
+        "category": "none"
+    },
+    {
+        "text": "lunes",
+        "category": "none"
+    },
+    {
+        "text": "martes",
+        "category": "none"
+    },
+    {
+        "text": "miercoles",
+        "category": "none"
+    },
+    {
+        "text": "jueves",
+        "category": "none"
+    },
+    {
+        "text": "viernes",
+        "category": "none"
+    },
+    {
+        "text": "sabado",
+        "category": "none"
+    },
+    {
+        "text": "domingo",
+        "category": "none"
+    },
+    {
+        "text": "enero",
+        "category": "none"
+    },
+    {
+        "text": "febrero",
+        "category": "none"
+    },
+    {
+        "text": "marzo",
+        "category": "none"
+    },
+    {
+        "text": "abril",
+        "category": "none"
+    },
+    {
+        "text": "mayo",
+        "category": "none"
+    },
+    {
+        "text": "junio",
+        "category": "none"
+    },
+    {
+        "text": "jugar",
+        "category": "none"
+    },
+    {
+        "text": "correr",
+        "category": "none"
+    },
+    {
+        "text": "saltar",
+        "category": "none"
+    },
+    {
+        "text": "dormir",
+        "category": "none"
+    },
+    {
+        "text": "comer",
+        "category": "none"
+    },
+    {
+        "text": "que",
+        "category": "none"
+    },
+    {
+        "text": "quien",
+        "category": "none"
+    },
+    {
+        "text": "cuando",
+        "category": "none"
+    },
+    {
+        "text": "donde",
+        "category": "none"
+    },
+    {
+        "text": "porque",
+        "category": "none"
+    },
+    {
+        "text": "yo",
+        "category": "none"
+    },
+    {
+        "text": "tu",
+        "category": "none"
+    },
+    {
+        "text": "el",
+        "category": "none"
+    },
+    {
+        "text": "ella",
+        "category": "none"
+    },
+    {
+        "text": "nosotros",
+        "category": "none"
+    },
+    {
+        "text": "ellos",
+        "category": "none"
+    },
+    {
+        "text": "mi",
+        "category": "none"
+    },
+    {
+        "text": "tu",
+        "category": "none"
+    },
+    {
+        "text": "su",
+        "category": "none"
+    },
+    {
+        "text": "nuestro",
+        "category": "none"
+    },
+    {
+        "text": "si",
+        "category": "none"
+    },
+    {
+        "text": "no",
+        "category": "none"
+    },
+    {
+        "text": "tal vez",
+        "category": "none"
+    },
+    {
+        "text": "quizas",
+        "category": "none"
+    },
+    {
+        "text": "bien",
+        "category": "none"
+    },
+    {
+        "text": "mal",
+        "category": "none"
+    },
+    {
+        "text": "regular",
+        "category": "none"
+    },
+    {
+        "text": "mas o menos",
+        "category": "none"
+    },
+    {
+        "text": "cosa",
+        "category": "none"
+    },
+    {
+        "text": "esto",
+        "category": "none"
+    },
+    {
+        "text": "aquello",
+        "category": "none"
+    },
+    {
+        "text": "nada",
+        "category": "none"
+    },
+    {
+        "text": "algo",
+        "category": "none"
+    },
+    {
+        "text": "random",
+        "category": "none"
+    },
+    {
+        "text": "prueba",
+        "category": "none"
+    },
+    {
+        "text": "test",
+        "category": "none"
+    },
+    {
+        "text": "palabra",
+        "category": "none"
+    },
+    {
+        "text": "texto",
+        "category": "none"
+    },
+    {
+        "text": "mensaje",
+        "category": "none"
+    },
+    {
+        "text": "escribir",
+        "category": "none"
+    },
+    {
+        "text": "teclado",
+        "category": "none"
+    },
+    {
+        "text": "raton",
+        "category": "none"
+    },
+    {
+        "text": "pantalla",
+        "category": "none"
+    },
+    {
+        "text": "mesa",
+        "category": "none"
+    },
+    {
+        "text": "silla",
+        "category": "none"
+    },
+    {
+        "text": "casa",
+        "category": "none"
+    },
+    {
+        "text": "auto",
+        "category": "none"
+    },
+    {
+        "text": "perro",
+        "category": "none"
+    },
+    {
+        "text": "gato",
+        "category": "none"
+    },
+    {
+        "text": "arbol",
+        "category": "none"
+    },
+    {
+        "text": "cielo",
+        "category": "none"
+    },
+    {
+        "text": "comida",
+        "category": "none"
+    },
+    {
+        "text": "cena",
+        "category": "none"
+    },
+    {
+        "text": "almuerzo",
+        "category": "none"
+    },
+    {
+        "text": "desayuno",
+        "category": "none"
+    },
+    {
+        "text": "agua",
+        "category": "none"
+    },
+    {
+        "text": "fuego",
+        "category": "none"
+    },
+    {
+        "text": "tierra",
+        "category": "none"
+    },
+    {
+        "text": "aire",
+        "category": "none"
+    },
+    {
+        "text": "musica",
+        "category": "none"
+    },
+    {
+        "text": "pelicula",
+        "category": "none"
+    },
+    {
+        "text": "juego",
+        "category": "none"
+    },
+    {
+        "text": "deporte",
+        "category": "none"
+    },
+    {
+        "text": "futbol",
+        "category": "none"
+    },
+    {
+        "text": "basquet",
+        "category": "none"
+    },
+    {
+        "text": "libro",
+        "category": "none"
+    },
+    {
+        "text": "papel",
+        "category": "none"
+    },
+    {
+        "text": "lapiz",
+        "category": "none"
+    },
+    {
+        "text": "color",
+        "category": "none"
+    },
+    {
+        "text": "rojo",
+        "category": "none"
+    },
+    {
+        "text": "azul",
+        "category": "none"
+    },
+    {
+        "text": "verde",
+        "category": "none"
+    },
+    {
+        "text": "uno",
+        "category": "none"
+    },
+    {
+        "text": "dos",
+        "category": "none"
+    },
+    {
+        "text": "tres",
+        "category": "none"
+    },
+    {
+        "text": "cuatro",
+        "category": "none"
+    },
+    {
+        "text": "cinco",
+        "category": "none"
+    },
+    {
+        "text": "seis",
+        "category": "none"
+    },
+    {
+        "text": "siete",
+        "category": "none"
+    },
+    {
+        "text": "ocho",
+        "category": "none"
+    },
+    {
+        "text": "nueve",
+        "category": "none"
+    },
+    {
+        "text": "diez",
+        "category": "none"
+    },
+    {
+        "text": "lunes",
+        "category": "none"
+    },
+    {
+        "text": "martes",
+        "category": "none"
+    },
+    {
+        "text": "miercoles",
+        "category": "none"
+    },
+    {
+        "text": "jueves",
+        "category": "none"
+    },
+    {
+        "text": "viernes",
+        "category": "none"
+    },
+    {
+        "text": "sabado",
+        "category": "none"
+    },
+    {
+        "text": "domingo",
+        "category": "none"
+    },
+    {
+        "text": "enero",
+        "category": "none"
+    },
+    {
+        "text": "febrero",
+        "category": "none"
+    },
+    {
+        "text": "marzo",
+        "category": "none"
+    },
+    {
+        "text": "abril",
+        "category": "none"
+    },
+    {
+        "text": "mayo",
+        "category": "none"
+    },
+    {
+        "text": "junio",
+        "category": "none"
+    },
+    {
+        "text": "jugar",
+        "category": "none"
+    },
+    {
+        "text": "correr",
+        "category": "none"
+    },
+    {
+        "text": "saltar",
+        "category": "none"
+    },
+    {
+        "text": "dormir",
+        "category": "none"
+    },
+    {
+        "text": "comer",
+        "category": "none"
+    },
+    {
+        "text": "que",
+        "category": "none"
+    },
+    {
+        "text": "quien",
+        "category": "none"
+    },
+    {
+        "text": "cuando",
+        "category": "none"
+    },
+    {
+        "text": "donde",
+        "category": "none"
+    },
+    {
+        "text": "porque",
+        "category": "none"
+    },
+    {
+        "text": "yo",
+        "category": "none"
+    },
+    {
+        "text": "tu",
+        "category": "none"
+    },
+    {
+        "text": "el",
+        "category": "none"
+    },
+    {
+        "text": "ella",
+        "category": "none"
+    },
+    {
+        "text": "nosotros",
+        "category": "none"
+    },
+    {
+        "text": "ellos",
+        "category": "none"
+    },
+    {
+        "text": "mi",
+        "category": "none"
+    },
+    {
+        "text": "tu",
+        "category": "none"
+    },
+    {
+        "text": "su",
+        "category": "none"
+    },
+    {
+        "text": "nuestro",
+        "category": "none"
+    },
+    {
+        "text": "si",
+        "category": "none"
+    },
+    {
+        "text": "no",
+        "category": "none"
+    },
+    {
+        "text": "tal vez",
+        "category": "none"
+    },
+    {
+        "text": "quizas",
+        "category": "none"
+    },
+    {
+        "text": "bien",
+        "category": "none"
+    },
+    {
+        "text": "mal",
+        "category": "none"
+    },
+    {
+        "text": "regular",
+        "category": "none"
+    },
+    {
+        "text": "mas o menos",
+        "category": "none"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "necesito ayuda",
+        "category": "help"
+    },
+    {
+        "text": "como se usa",
+        "category": "help"
+    },
+    {
+        "text": "como funciona",
+        "category": "help"
+    },
+    {
+        "text": "manual",
+        "category": "help"
+    },
+    {
+        "text": "tutorial",
+        "category": "help"
+    },
+    {
+        "text": "instrucciones",
+        "category": "help"
+    },
+    {
+        "text": "guia",
+        "category": "help"
+    },
+    {
+        "text": "que puedo buscar",
+        "category": "help"
+    },
+    {
+        "text": "ejemplos",
+        "category": "help"
+    },
+    {
+        "text": "no entiendo",
+        "category": "help"
+    },
+    {
+        "text": "help",
+        "category": "help"
+    },
+    {
+        "text": "como buscar",
+        "category": "help"
+    },
+    {
+        "text": "que hace esto",
+        "category": "help"
+    },
+    {
+        "text": "ayuda por favor",
+        "category": "help"
+    },
+    {
+        "text": "dame una mano",
+        "category": "help"
+    },
+    {
+        "text": "socorro",
+        "category": "help"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "como se usa",
+        "category": "help"
+    },
+    {
+        "text": "como se usa",
+        "category": "help"
+    },
+    {
+        "text": "como se usa",
+        "category": "help"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "maricon",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "basura",
+        "category": "toxic"
+    },
+    {
+        "text": "estupido",
+        "category": "toxic"
+    },
+    {
+        "text": "idiota",
+        "category": "toxic"
+    },
+    {
+        "text": "imbecil",
+        "category": "toxic"
+    },
+    {
+        "text": "tonto",
+        "category": "toxic"
+    },
+    {
+        "text": "retrasado",
+        "category": "toxic"
+    },
+    {
+        "text": "mogolico",
+        "category": "toxic"
+    },
+    {
+        "text": "tarado",
+        "category": "toxic"
+    },
+    {
+        "text": "concha",
+        "category": "toxic"
+    },
+    {
+        "text": "pija",
+        "category": "toxic"
+    },
+    {
+        "text": "verga",
+        "category": "toxic"
+    },
+    {
+        "text": "pito",
+        "category": "toxic"
+    },
+    {
+        "text": "culo",
+        "category": "toxic"
+    },
+    {
+        "text": "orto",
+        "category": "toxic"
+    },
+    {
+        "text": "cagar",
+        "category": "toxic"
+    },
+    {
+        "text": "me cago",
+        "category": "toxic"
+    },
+    {
+        "text": "andate a la mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "hijo de puta",
+        "category": "toxic"
+    },
+    {
+        "text": "chupa pija",
+        "category": "toxic"
+    },
+    {
+        "text": "chupala",
+        "category": "toxic"
+    },
+    {
+        "text": "mamala",
+        "category": "toxic"
+    },
+    {
+        "text": "boludo",
+        "category": "toxic"
+    },
+    {
+        "text": "pelotudo",
+        "category": "toxic"
+    },
+    {
+        "text": "sorullo",
+        "category": "toxic"
+    },
+    {
+        "text": "forro",
+        "category": "toxic"
+    },
+    {
+        "text": "cornudo",
+        "category": "toxic"
+    },
+    {
+        "text": "maldito",
+        "category": "toxic"
+    },
+    {
+        "text": "asqueroso",
+        "category": "toxic"
+    },
+    {
+        "text": "sexo",
+        "category": "toxic"
+    },
+    {
+        "text": "porno",
+        "category": "toxic"
+    },
+    {
+        "text": "xxx",
+        "category": "toxic"
+    },
+    {
+        "text": "adulto",
+        "category": "toxic"
+    },
+    {
+        "text": "erotico",
+        "category": "toxic"
+    },
+    {
+        "text": "hentai",
+        "category": "toxic"
+    },
+    {
+        "text": "nopor",
+        "category": "toxic"
+    },
+    {
+        "text": "cp",
+        "category": "toxic"
+    },
+    {
+        "text": "child porn",
+        "category": "toxic"
+    },
+    {
+        "text": "pedofilo",
+        "category": "toxic"
+    },
+    {
+        "text": "matar",
+        "category": "toxic"
+    },
+    {
+        "text": "asesinar",
+        "category": "toxic"
+    },
+    {
+        "text": "morir",
+        "category": "toxic"
+    },
+    {
+        "text": "suicidio",
+        "category": "toxic"
+    },
+    {
+        "text": "muerte",
+        "category": "toxic"
+    },
+    {
+        "text": "drogas",
+        "category": "toxic"
+    },
+    {
+        "text": "cocaina",
+        "category": "toxic"
+    },
+    {
+        "text": "heroina",
+        "category": "toxic"
+    },
+    {
+        "text": "fentanilo",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "como se usa esto",
+        "category": "help"
+    },
+    {
+        "text": "como funciona",
+        "category": "help"
+    },
+    {
+        "text": "manual de uso",
+        "category": "help"
+    },
+    {
+        "text": "necesito ayuda",
+        "category": "help"
+    },
+    {
+        "text": "help",
+        "category": "help"
+    },
+    {
+        "text": "socorro",
+        "category": "help"
+    },
+    {
+        "text": "instrucciones",
+        "category": "help"
+    },
+    {
+        "text": "que es esto",
+        "category": "help"
+    },
+    {
+        "text": "como busco",
+        "category": "help"
+    },
+    {
+        "text": "ejemplos de uso",
+        "category": "help"
+    },
+    {
+        "text": "sexo",
+        "category": "toxic"
+    },
+    {
+        "text": "porno",
+        "category": "toxic"
+    },
+    {
+        "text": "xxx",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "concha",
+        "category": "toxic"
+    },
+    {
+        "text": "pija",
+        "category": "toxic"
+    },
+    {
+        "text": "verga",
+        "category": "toxic"
+    },
+    {
+        "text": "culo",
+        "category": "toxic"
+    },
+    {
+        "text": "orto",
+        "category": "toxic"
+    },
+    {
+        "text": "boludo",
+        "category": "toxic"
+    },
+    {
+        "text": "pelotudo",
+        "category": "toxic"
+    },
+    {
+        "text": "asesinar",
+        "category": "toxic"
+    },
+    {
+        "text": "matar",
+        "category": "toxic"
+    },
+    {
+        "text": "suicidio",
+        "category": "toxic"
+    },
+    {
+        "text": "drogas",
+        "category": "toxic"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "como se usa esto",
+        "category": "help"
+    },
+    {
+        "text": "como funciona",
+        "category": "help"
+    },
+    {
+        "text": "manual de uso",
+        "category": "help"
+    },
+    {
+        "text": "necesito ayuda",
+        "category": "help"
+    },
+    {
+        "text": "help",
+        "category": "help"
+    },
+    {
+        "text": "socorro",
+        "category": "help"
+    },
+    {
+        "text": "instrucciones",
+        "category": "help"
+    },
+    {
+        "text": "que es esto",
+        "category": "help"
+    },
+    {
+        "text": "como busco",
+        "category": "help"
+    },
+    {
+        "text": "ejemplos de uso",
+        "category": "help"
+    },
+    {
+        "text": "sexo",
+        "category": "toxic"
+    },
+    {
+        "text": "porno",
+        "category": "toxic"
+    },
+    {
+        "text": "xxx",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "concha",
+        "category": "toxic"
+    },
+    {
+        "text": "pija",
+        "category": "toxic"
+    },
+    {
+        "text": "verga",
+        "category": "toxic"
+    },
+    {
+        "text": "culo",
+        "category": "toxic"
+    },
+    {
+        "text": "orto",
+        "category": "toxic"
+    },
+    {
+        "text": "boludo",
+        "category": "toxic"
+    },
+    {
+        "text": "pelotudo",
+        "category": "toxic"
+    },
+    {
+        "text": "asesinar",
+        "category": "toxic"
+    },
+    {
+        "text": "matar",
+        "category": "toxic"
+    },
+    {
+        "text": "suicidio",
+        "category": "toxic"
+    },
+    {
+        "text": "drogas",
+        "category": "toxic"
+    },
+    {
+        "text": "ayuda",
+        "category": "help"
+    },
+    {
+        "text": "como se usa esto",
+        "category": "help"
+    },
+    {
+        "text": "como funciona",
+        "category": "help"
+    },
+    {
+        "text": "manual de uso",
+        "category": "help"
+    },
+    {
+        "text": "necesito ayuda",
+        "category": "help"
+    },
+    {
+        "text": "help",
+        "category": "help"
+    },
+    {
+        "text": "socorro",
+        "category": "help"
+    },
+    {
+        "text": "instrucciones",
+        "category": "help"
+    },
+    {
+        "text": "que es esto",
+        "category": "help"
+    },
+    {
+        "text": "como busco",
+        "category": "help"
+    },
+    {
+        "text": "ejemplos de uso",
+        "category": "help"
+    },
+    {
+        "text": "sexo",
+        "category": "toxic"
+    },
+    {
+        "text": "porno",
+        "category": "toxic"
+    },
+    {
+        "text": "xxx",
+        "category": "toxic"
+    },
+    {
+        "text": "puto",
+        "category": "toxic"
+    },
+    {
+        "text": "mierda",
+        "category": "toxic"
+    },
+    {
+        "text": "concha",
+        "category": "toxic"
+    },
+    {
+        "text": "pija",
+        "category": "toxic"
+    },
+    {
+        "text": "verga",
+        "category": "toxic"
+    },
+    {
+        "text": "culo",
+        "category": "toxic"
+    },
+    {
+        "text": "orto",
+        "category": "toxic"
+    },
+    {
+        "text": "boludo",
+        "category": "toxic"
+    },
+    {
+        "text": "pelotudo",
+        "category": "toxic"
+    },
+    {
+        "text": "asesinar",
+        "category": "toxic"
+    },
+    {
+        "text": "matar",
+        "category": "toxic"
+    },
+    {
+        "text": "suicidio",
+        "category": "toxic"
+    },
+    {
+        "text": "drogas",
+        "category": "toxic"
+    }
+]
