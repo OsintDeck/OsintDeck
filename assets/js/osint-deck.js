@@ -1126,9 +1126,6 @@ function initOsintDeck(wrap) {
 
           <div class="osint-deck-footer-actions">
             ${renderActions(t)}
-            <button class="osint-report" title="Reportar herramienta">
-              <i class="ri-flag-line"></i>
-            </button>
           </div>
         </div>
       `;
@@ -1316,35 +1313,57 @@ function initOsintDeck(wrap) {
    * ========================================================= */
   function renderActions(t) {
     const isBlocked = t && t.preview_status === 'blocked';
+    const stats = t.stats || {};
+    const likes = parseInt(stats.likes || 0);
+    const favorites = parseInt(stats.favorites || 0);
+    const clicks = parseInt(stats.clicks || 0);
+
     return `
-      <div class="osint-actions">
-        <a href="#" class="osint-btn-animated osint-act-go" target="_blank" rel="noopener">
-          <span class="text">Analizar</span>
-          <span class="icon">🡭</span>
-        </a>
+      <div class="osint-actions-wrapper">
+        <div class="osint-actions-primary">
+            <a href="#" class="osint-btn-animated osint-act-go" target="_blank" rel="noopener">
+              <span class="text">Analizar</span>
+              <span class="icon">🡭</span>
+            </a>
 
-        ${!isBlocked ? `<button class="osint-act-preview" title="Vista Previa">
-          <i class="ri-eye-line"></i>
-        </button>` : ''}
+            ${!isBlocked ? `<button class="osint-act-preview" title="Vista Previa">
+              <i class="ri-eye-line"></i>
+            </button>` : ''}
 
-        <div class="osint-share-wrapper">
-          <span class="osint-act-share" title="Compartir">
-            <span class="dashicons dashicons-share"></span>
-          </span>
-          <div class="osint-share-menu">
-            <button class="osint-share-item" data-action="copy">
-              <span class="dashicons dashicons-admin-page"></span> Copiar
-            </button>
-            <button class="osint-share-item" data-action="linkedin">
-              <span class="dashicons dashicons-linkedin"></span> LinkedIn
-            </button>
-            <button class="osint-share-item" data-action="whatsapp">
-              <span class="dashicons dashicons-format-chat"></span> WhatsApp
-            </button>
-            <button class="osint-share-item" data-action="twitter">
-              <span class="dashicons dashicons-twitter"></span> Twitter/X
-            </button>
-          </div>
+            <div class="osint-share-wrapper">
+              <span class="osint-act-share" title="Compartir">
+                <span class="dashicons dashicons-share"></span>
+              </span>
+              <div class="osint-share-menu">
+                <button class="osint-share-item" data-action="copy">
+                  <span class="dashicons dashicons-admin-page"></span> Copiar
+                </button>
+                <button class="osint-share-item" data-action="linkedin">
+                  <span class="dashicons dashicons-linkedin"></span> LinkedIn
+                </button>
+                <button class="osint-share-item" data-action="whatsapp">
+                  <span class="dashicons dashicons-format-chat"></span> WhatsApp
+                </button>
+                <button class="osint-share-item" data-action="twitter">
+                  <span class="dashicons dashicons-twitter"></span> Twitter/X
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="osint-actions-secondary">
+           <button class="osint-act-like" title="Me gusta">
+              <i class="ri-heart-line"></i> <span class="count">${likes}</span>
+           </button>
+           <button class="osint-act-favorite" title="Favorito">
+              <i class="ri-star-line"></i> <span class="count">${favorites}</span>
+           </button>
+           <span class="osint-stat-clicks" title="Usos">
+              <i class="ri-bar-chart-line"></i> <span class="count">${clicks}</span>
+           </span>
+           <button class="osint-report" title="Reportar herramienta">
+              <i class="ri-flag-line"></i>
+           </button>
         </div>
       </div>
     `;
@@ -1368,6 +1387,48 @@ function initOsintDeck(wrap) {
 
     if (actionsWrap) {
       actionsWrap.classList.toggle("osint-hidden", disableActions);
+    }
+
+    const likeBtn = card.querySelector(".osint-act-like");
+    if (likeBtn) {
+        likeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (likeBtn.disabled) return;
+            likeBtn.disabled = true;
+            
+            sendEvent("like", { tool_id: tool.id || tool._db_id }).then(res => {
+                if(res.ok && res.count !== undefined) {
+                    const cnt = likeBtn.querySelector(".count");
+                    if(cnt) cnt.textContent = res.count;
+                    toast("Te gusta esta herramienta");
+                } else {
+                    toast("Error al registrar like");
+                }
+            }).finally(() => {
+                likeBtn.disabled = false;
+            });
+        });
+    }
+
+    const favBtn = card.querySelector(".osint-act-favorite");
+    if (favBtn) {
+        favBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (favBtn.disabled) return;
+            favBtn.disabled = true;
+
+            sendEvent("favorite", { tool_id: tool.id || tool._db_id }).then(res => {
+                if(res.ok && res.count !== undefined) {
+                    const cnt = favBtn.querySelector(".count");
+                    if(cnt) cnt.textContent = res.count;
+                    toast("Añadido a favoritos");
+                } else {
+                    toast("Error al añadir a favoritos");
+                }
+            }).finally(() => {
+                favBtn.disabled = false;
+            });
+        });
     }
 
     if (goBtn) {

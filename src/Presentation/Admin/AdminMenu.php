@@ -77,10 +77,21 @@ class AdminMenu {
      * @return void
      */
     public function register_menu() {
+        // Calculate report count bubble
+        $report_count = $this->tool_repository->count_total_reports();
+        $menu_title = __( 'OSINT Deck', 'osint-deck' );
+        
+        if ( $report_count > 0 ) {
+            $menu_title .= sprintf(
+                ' <span class="update-plugins count-%1$d"><span class="plugin-count">%1$d</span></span>',
+                $report_count
+            );
+        }
+
         // Main menu
         add_menu_page(
             __( 'OSINT Deck', 'osint-deck' ),
-            __( 'OSINT Deck', 'osint-deck' ),
+            $menu_title,
             'manage_options',
             'osint-deck',
             array( $this, 'render_dashboard' ),

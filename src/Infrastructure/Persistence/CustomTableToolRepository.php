@@ -53,12 +53,12 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
      * Increment click count
      * 
      * @param int $id Tool ID.
-     * @return bool
+     * @return int New click count.
      */
     public function increment_clicks( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
-            return false;
+            return 0;
         }
 
         if ( ! isset( $tool['stats']['clicks'] ) ) {
@@ -66,19 +66,20 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
         }
         $tool['stats']['clicks']++;
 
-        return (bool) ToolsTable::upsert( $tool );
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['clicks'];
     }
 
     /**
      * Increment like count
      * 
      * @param int $id Tool ID.
-     * @return bool
+     * @return int New like count.
      */
     public function increment_likes( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
-            return false;
+            return 0;
         }
 
         if ( ! isset( $tool['stats']['likes'] ) ) {
@@ -86,19 +87,20 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
         }
         $tool['stats']['likes']++;
 
-        return (bool) ToolsTable::upsert( $tool );
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['likes'];
     }
 
     /**
      * Increment report count
      * 
      * @param int $id Tool ID.
-     * @return bool
+     * @return int New report count.
      */
     public function increment_reports( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
-            return false;
+            return 0;
         }
 
         if ( ! isset( $tool['stats']['reports'] ) ) {
@@ -106,7 +108,45 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
         }
         $tool['stats']['reports']++;
 
-        return (bool) ToolsTable::upsert( $tool );
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['reports'];
+    }
+
+    /**
+     * Increment favorite count
+     * 
+     * @param int $id Tool ID.
+     * @return int New favorite count.
+     */
+    public function increment_favorites( $id ) {
+        $tool = ToolsTable::get_by_id( $id );
+        if ( ! $tool ) {
+            return 0;
+        }
+
+        if ( ! isset( $tool['stats']['favorites'] ) ) {
+            $tool['stats']['favorites'] = 0;
+        }
+        $tool['stats']['favorites']++;
+
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['favorites'];
+    }
+
+    /**
+     * Count total reports across all tools
+     * 
+     * @return int Total reports.
+     */
+    public function count_total_reports() {
+        $tools = $this->get_all_tools();
+        $total = 0;
+        foreach ( $tools as $tool ) {
+            if ( ! empty( $tool['stats']['reports'] ) ) {
+                $total += (int) $tool['stats']['reports'];
+            }
+        }
+        return $total;
     }
 
     /**

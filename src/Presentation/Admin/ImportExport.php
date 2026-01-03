@@ -10,6 +10,7 @@ namespace OsintDeck\Presentation\Admin;
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\Migration;
+use OsintDeck\Infrastructure\Service\IconManager;
 
 /**
  * Class ImportExport
@@ -33,6 +34,13 @@ class ImportExport {
     private $category_repository;
 
     /**
+     * Icon Manager
+     *
+     * @var IconManager
+     */
+    private $icon_manager;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
@@ -41,6 +49,7 @@ class ImportExport {
     public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
+        $this->icon_manager = new IconManager();
     }
 
     /**
@@ -204,6 +213,11 @@ class ImportExport {
             if ( ! $this->category_repository->get_category_by_code( $category_code ) ) {
                  $errors[] = sprintf( __( 'Herramienta "%s" omitida: categoría "%s" no existe.', 'osint-deck' ), $tool['name'], $category_code );
                  continue;
+            }
+
+            // Download icon if present
+            if ( ! empty( $tool['favicon'] ) ) {
+                $tool['favicon'] = $this->icon_manager->download_icon( $tool['favicon'], $tool['name'] );
             }
 
             // Use repository import logic which handles upsert

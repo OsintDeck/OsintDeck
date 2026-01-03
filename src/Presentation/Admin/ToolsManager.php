@@ -9,6 +9,7 @@ namespace OsintDeck\Presentation\Admin;
 
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
+use OsintDeck\Infrastructure\Service\IconManager;
 
 /**
  * Class ToolsManager
@@ -32,6 +33,13 @@ class ToolsManager {
     private $category_repository;
 
     /**
+     * Icon Manager
+     *
+     * @var IconManager
+     */
+    private $icon_manager;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
@@ -40,6 +48,7 @@ class ToolsManager {
     public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
+        $this->icon_manager = new IconManager();
     }
 
     /**
@@ -105,6 +114,123 @@ class ToolsManager {
      */
     private function render_list() {
         $tools = $this->tool_repository->get_all_tools();
+        $categories = $this->category_repository->get_all_categories();
+
+        // Get filter parameters
+        $filter_search = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
+        $filter_category = isset( $_GET['category'] ) ? sanitize_text_field( $_GET['category'] ) : '';
+        $filter_status = isset( $_GET['preview_status'] ) ? sanitize_text_field( $_GET['preview_status'] ) : '';
+
+        // Apply filters
+        if ( ! empty( $filter_search ) || ! empty( $filter_category ) || ! empty( $filter_status ) ) {
+            $tools = array_filter( $tools, function( $tool ) use ( $filter_search, $filter_category, $filter_status ) {
+                // Search filter (Name)
+                if ( ! empty( $filter_search ) ) {
+                    if ( stripos( $tool['name'], $filter_search ) === false ) {
+                        return false;
+                    }
+                }
+
+                // Category filter
+                if ( ! empty( $filter_category ) ) {
+                    $tool_cat = $tool['category'] ?? '';
+                    $match = false;
+                    
+                    if ( $tool_cat === $filter_category ) {
+                        $match = true;
+                    } elseif ( ! empty( $tool['cards'] ) ) {
+                        foreach ( $tool['cards'] as $card ) {
+                            if ( isset( $card['category'] ) && $card['category'] === $filter_category ) {
+                                $match = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if ( ! $match ) {
+                        return false;
+                    }
+                }
+
+                // Status filter
+                if ( ! empty( $filter_status ) ) {
+                    $status = $tool['preview_status'] ?? 'unaudited';
+                    if ( $status !== $filter_status ) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
+        // Sorting
+        $orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'name';
+        $order   = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : 'asc';
+
+        usort( $tools, function( $a, $b ) use ( $orderby, $order ) {
+            $result = 0;
+            switch ( $orderby ) {
+                case 'name':
+                    $result = strcasecmp( $a['name'], $b['name'] );
+                    break;
+                case 'category':
+                    $cat_a = $a['category'] ?? '';
+                    if ( empty( $cat_a ) && ! empty( $a['cards'] ) ) {
+                        $cats = [];
+                        foreach($a['cards'] as $c) if(!empty($c['category'])) $cats[] = $c['category'];
+                        if(!empty($cats)) $cat_a = implode(', ', array_unique($cats));
+                    }
+
+                    $cat_b = $b['category'] ?? '';
+                    if ( empty( $cat_b ) && ! empty( $b['cards'] ) ) {
+                        $cats = [];
+                        foreach($b['cards'] as $c) if(!empty($c['category'])) $cats[] = $c['category'];
+                        if(!empty($cats)) $cat_b = implode(', ', array_unique($cats));
+                    }
+
+                    $result = strcasecmp( $cat_a, $cat_b );
+                    break;
+                case 'preview_status':
+                    $status_a = $a['preview_status'] ?? 'unaudited';
+                    $status_b = $b['preview_status'] ?? 'unaudited';
+                    $result = strcasecmp( $status_a, $status_b );
+                    break;
+                case 'cards':
+                    $count_a = isset( $a['cards'] ) ? count( $a['cards'] ) : 0;
+                    $count_b = isset( $b['cards'] ) ? count( $b['cards'] ) : 0;
+                    $result = $count_a - $count_b;
+                    break;
+                case 'clicks':
+                    $clicks_a = isset( $a['stats']['clicks'] ) ? $a['stats']['clicks'] : 0;
+                    $clicks_b = isset( $b['stats']['clicks'] ) ? $b['stats']['clicks'] : 0;
+                    $result = $clicks_a - $clicks_b;
+                    break;
+                case 'reports':
+                    $reports_a = isset( $a['stats']['reports'] ) ? $a['stats']['reports'] : 0;
+                    $reports_b = isset( $b['stats']['reports'] ) ? $b['stats']['reports'] : 0;
+                    $result = $reports_a - $reports_b;
+                    break;
+            }
+            return ( $order === 'asc' ) ? $result : -$result;
+        });
+
+        // Helper for sort links
+        $get_sort_link = function( $column, $title ) use ( $orderby, $order ) {
+            $new_order = ( $orderby === $column && $order === 'asc' ) ? 'desc' : 'asc';
+            $current_url = remove_query_arg( array( 'orderby', 'order' ) );
+            $url = add_query_arg( array(
+                'orderby' => $column,
+                'order'   => $new_order
+            ), $current_url );
+            
+            $icon = '';
+            if ( $orderby === $column ) {
+                $icon = ( $order === 'asc' ) ? ' <span class="dashicons dashicons-arrow-up-alt2" style="font-size:12px;width:12px;height:12px;vertical-align:text-top;"></span>' : ' <span class="dashicons dashicons-arrow-down-alt2" style="font-size:12px;width:12px;height:12px;vertical-align:text-top;"></span>';
+            }
+            
+            return '<a href="' . esc_url( $url ) . '" style="color:#32373c;text-decoration:none;font-weight:bold;">' . $title . $icon . '</a>';
+        };
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline"><?php _e( 'Herramientas OSINT', 'osint-deck' ); ?></h1>
@@ -113,15 +239,61 @@ class ToolsManager {
             </a>
             <hr class="wp-header-end">
 
+            <!-- Filters -->
+            <form method="get" style="margin-bottom: 20px; background: #fff; padding: 10px; border: 1px solid #ccd0d4; box-shadow: 0 1px 1px rgba(0,0,0,.04);">
+                <input type="hidden" name="page" value="osint-deck-tools">
+                
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <!-- Search -->
+                    <div>
+                        <label for="filter-search" class="screen-reader-text"><?php _e( 'Buscar', 'osint-deck' ); ?></label>
+                        <input type="search" id="filter-search" name="s" value="<?php echo esc_attr( $filter_search ); ?>" placeholder="<?php _e( 'Buscar por nombre...', 'osint-deck' ); ?>">
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <select name="category" id="filter-category">
+                            <option value=""><?php _e( 'Todas las categorías', 'osint-deck' ); ?></option>
+                            <?php foreach ( $categories as $cat ) : ?>
+                                <?php 
+                                $cat_name = isset($cat['label']) ? $cat['label'] : (isset($cat['name']) ? $cat['name'] : $cat['code']); 
+                                ?>
+                                <option value="<?php echo esc_attr( $cat_name ); ?>" <?php selected( $filter_category, $cat_name ); ?>>
+                                    <?php echo esc_html( $cat_name ); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <select name="preview_status" id="filter-status">
+                            <option value=""><?php _e( 'Todos los estados', 'osint-deck' ); ?></option>
+                            <option value="ok" <?php selected( $filter_status, 'ok' ); ?>><?php _e( 'OK', 'osint-deck' ); ?></option>
+                            <option value="blocked" <?php selected( $filter_status, 'blocked' ); ?>><?php _e( 'Bloqueado', 'osint-deck' ); ?></option>
+                            <option value="unaudited" <?php selected( $filter_status, 'unaudited' ); ?>><?php _e( 'No auditado', 'osint-deck' ); ?></option>
+                        </select>
+                    </div>
+
+                    <!-- Submit -->
+                    <div>
+                        <button type="submit" class="button button-secondary"><?php _e( 'Filtrar', 'osint-deck' ); ?></button>
+                        <?php if ( ! empty( $filter_search ) || ! empty( $filter_category ) || ! empty( $filter_status ) ) : ?>
+                            <a href="<?php echo admin_url( 'admin.php?page=osint-deck-tools' ); ?>" class="button button-link"><?php _e( 'Limpiar', 'osint-deck' ); ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </form>
+
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e( 'Nombre', 'osint-deck' ); ?></th>
-                        <th><?php _e( 'Categoría', 'osint-deck' ); ?></th>
-                        <th><?php _e( 'Preview', 'osint-deck' ); ?></th>
-                        <th><?php _e( 'Cards', 'osint-deck' ); ?></th>
-                        <th><?php _e( 'Clicks', 'osint-deck' ); ?></th>
-                        <th><?php _e( 'Reportes', 'osint-deck' ); ?></th>
+                        <th><?php echo $get_sort_link( 'name', __( 'Nombre', 'osint-deck' ) ); ?></th>
+                        <th><?php echo $get_sort_link( 'category', __( 'Categoría', 'osint-deck' ) ); ?></th>
+                        <th><?php echo $get_sort_link( 'preview_status', __( 'Preview', 'osint-deck' ) ); ?></th>
+                        <th><?php echo $get_sort_link( 'cards', __( 'Cards', 'osint-deck' ) ); ?></th>
+                        <th><?php echo $get_sort_link( 'clicks', __( 'Clicks', 'osint-deck' ) ); ?></th>
+                        <th><?php echo $get_sort_link( 'reports', __( 'Reportes', 'osint-deck' ) ); ?></th>
                         <th><?php _e( 'Badges', 'osint-deck' ); ?></th>
                         <th><?php _e( 'Acciones', 'osint-deck' ); ?></th>
                     </tr>
@@ -150,7 +322,23 @@ class ToolsManager {
                                         <br><img src="<?php echo esc_url( $tool['favicon'] ); ?>" width="16" height="16" alt="">
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo esc_html( $tool['category'] ?? '-' ); ?></td>
+                                <td>
+                                    <?php 
+                                    $category_display = $tool['category'] ?? '';
+                                    if ( empty( $category_display ) && ! empty( $tool['cards'] ) ) {
+                                        $card_cats = array();
+                                        foreach ( $tool['cards'] as $card ) {
+                                            if ( ! empty( $card['category'] ) ) {
+                                                $card_cats[] = $card['category'];
+                                            }
+                                        }
+                                        if ( ! empty( $card_cats ) ) {
+                                            $category_display = implode( ', ', array_unique( $card_cats ) );
+                                        }
+                                    }
+                                    echo esc_html( $category_display ?: '-' ); 
+                                    ?>
+                                </td>
                                 <td>
                                     <?php 
                                     $status = $tool['preview_status'] ?? 'unaudited';
@@ -497,12 +685,21 @@ class ToolsManager {
             return;
         }
         
+        // Process Icon
+        $favicon = isset( $_POST['favicon'] ) ? esc_url_raw( $_POST['favicon'] ) : '';
+        if ( ! empty( $favicon ) ) {
+            $favicon = $this->icon_manager->download_icon( $favicon, sanitize_title( $_POST['name'] ) );
+        }
+
         $data = array(
             '_db_id'      => $id, // ID for update
             'name'        => sanitize_text_field( $_POST['name'] ),
+            'description' => isset( $_POST['description'] ) ? wp_kses_post( $_POST['description'] ) : '',
             'category'    => $category_code,
+            'url'         => isset( $_POST['url'] ) ? esc_url_raw( $_POST['url'] ) : '',
+            'favicon'     => $favicon,
             'preview_status' => isset( $_POST['preview_status'] ) ? sanitize_text_field( $_POST['preview_status'] ) : 'unaudited',
-            // Add other fields
+            'tags_global' => isset( $_POST['tags_global'] ) ? array_map( 'trim', explode( ',', sanitize_text_field( $_POST['tags_global'] ) ) ) : array(),
         );
 
         // If ID is 0, unset it so it inserts
