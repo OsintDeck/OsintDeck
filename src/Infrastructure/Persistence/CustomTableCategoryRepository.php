@@ -129,7 +129,10 @@ class CustomTableCategoryRepository implements CategoryRepositoryInterface {
             $existing = $this->get_category_by_code( $cat['code'] );
             
             if ( $existing ) {
-                $skipped++;
+                // Update existing category to ensure data consistency
+                $cat['id'] = $existing['id'];
+                $this->save_category( $cat );
+                $imported++;
                 continue;
             }
 

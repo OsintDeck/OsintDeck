@@ -266,6 +266,10 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
             'errors' => array(),
         );
 
+        // Initialize IconManager
+        $logger = new \OsintDeck\Infrastructure\Service\Logger();
+        $icon_manager = new \OsintDeck\Infrastructure\Service\IconManager( $logger );
+
         foreach ( $files as $type => $file ) {
             if ( ! file_exists( $file ) ) {
                 $results['errors'][] = "File not found: $type";
@@ -296,6 +300,11 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
                 if ( $existing ) {
                     $results['skipped']++;
                     continue;
+                }
+
+                // Download icon if present
+                if ( ! empty( $tool['favicon'] ) && ! empty( $tool['name'] ) ) {
+                    $tool['favicon'] = $icon_manager->download_icon( $tool['favicon'], $tool['name'] );
                 }
 
                 $res = $this->save_tool( $tool );

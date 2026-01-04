@@ -11,6 +11,7 @@ use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\TLDManager;
 use OsintDeck\Domain\Service\NaiveBayesClassifier;
+use OsintDeck\Infrastructure\Service\Logger;
 
 /**
  * Class AdminMenu
@@ -240,7 +241,8 @@ class AdminMenu {
      * @return void
      */
     public function render_tools() {
-        $manager = new ToolsManager( $this->tool_repository, $this->category_repository );
+        $logger = new Logger();
+        $manager = new ToolsManager( $this->tool_repository, $this->category_repository, $logger );
         $manager->render();
     }
 

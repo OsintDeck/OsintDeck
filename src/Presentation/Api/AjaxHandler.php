@@ -62,6 +62,7 @@ class AjaxHandler {
         add_action( 'wp_ajax_nopriv_osint_deck_report_block', array( $this, 'handle_report_block' ) );
 
         // Admin AJAX actions
+        add_action( 'wp_ajax_osint_deck_force_download_icons', array( $this, 'handle_force_download_icons' ) );
         add_action( 'wp_ajax_osint_deck_import_tool', array( $this, 'handle_import_tool' ) );
         add_action( 'wp_ajax_osint_deck_export_tool', array( $this, 'handle_export_tool' ) );
     }
@@ -214,6 +215,59 @@ class AjaxHandler {
         set_transient( $cache_key, 0, 7 * 24 * HOUR_IN_SECONDS ); // Block for a week
 
         wp_send_json_success();
+    }
+
+    /**
+     * Handle force download icons
+     *
+     * @return void
+     */
+    public function handle_force_download_icons() {
+        check_ajax_referer( 'osint_deck_admin', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permisos insuficientes', 'osint-deck' ) ) );
+        }
+
+        // Initialize services
+        $logger = new \OsintDeck\Infrastructure\Service\Logger();
+        $icon_manager = new \OsintDeck\Infrastructure\Service\IconManager( $logger );
+
+        // Get all tools
+        $tools = $this->tool_repository->get_all_tools();
+        $updated_count = 0;
+        $failed_count = 0;
+
+        foreach ( $tools as $tool ) {
+            if ( empty( $tool['favicon'] ) ) {
+                continue;
+            }
+
+            // Check if it's already a local file (in uploads)
+            $upload_dir = wp_upload_dir();
+            if ( strpos( $tool['favicon'], $upload_dir['baseurl'] ) !== false ) {
+                continue;
+            }
+
+            // If it's a remote URL, try to download
+            if ( filter_var( $tool['favicon'], FILTER_VALIDATE_URL ) ) {
+                $new_icon = $icon_manager->download_icon( $tool['favicon'], $tool['name'] );
+                
+                if ( $new_icon !== $tool['favicon'] ) {
+                    $tool['favicon'] = $new_icon;
+                    if ( $this->tool_repository->save_tool( $tool ) ) {
+                        $updated_count++;
+                    } else {
+                        $failed_count++;
+                    }
+                }
+            }
+        }
+
+        wp_send_json_success( array(
+            'message' => sprintf( __( 'Iconos actualizados: %d. Fallidos: %d', 'osint-deck' ), $updated_count, $failed_count ),
+            'updated' => $updated_count
+        ) );
     }
 
     /**

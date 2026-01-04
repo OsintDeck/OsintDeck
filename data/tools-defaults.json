@@ -307,7 +307,7 @@
                 "title": "Search & Analysis",
                 "desc": "Busca o analiza URL, IP, dominio o hash de archivo.",
                 "url": "https://www.virustotal.com/gui/search/{input}",
-                "category_code": "SECURITY__ANALYSIS__MALWARE",
+                "category_code": "SECURITY__IOC__LOOKUP",
                 "tags": [
                     "malware",
                     "reputation",
@@ -330,7 +330,7 @@
                 "title": "URL Scanner",
                 "desc": "Escanea una URL específica para detectar amenazas.",
                 "url": "https://www.virustotal.com/gui/home/url",
-                "category_code": "SECURITY__SCANNER__URL",
+                "category_code": "SECURITY__REPUTATION__BLACKLIST_CHECK",
                 "tags": [
                     "scanner",
                     "url",
@@ -423,7 +423,7 @@
                 "title": "Web Scanner",
                 "desc": "Inicia un nuevo escaneo de un sitio web.",
                 "url": "https://urlscan.io/",
-                "category_code": "WEB__SCANNER__NEW",
+                "category_code": "WEB__TECH__FINGERPRINT",
                 "tags": [
                     "scanner",
                     "web",
@@ -495,7 +495,7 @@
                 "title": "Reverse IP Lookup",
                 "desc": "Encuentra otros sitios alojados en el mismo servidor.",
                 "url": "https://viewdns.info/reverseip/?host={input}&t=1",
-                "category_code": "INFRA__IP__REVERSE_LOOKUP",
+                "category_code": "INFRA__DNS__PTR_LOOKUP",
                 "tags": [
                     "reverse-ip",
                     "shared-hosting",
@@ -515,7 +515,7 @@
                 "title": "DNS Report",
                 "desc": "Informe completo de configuración DNS.",
                 "url": "https://viewdns.info/dnsreport/?domain={input}",
-                "category_code": "INFRA__DNS__REPORT",
+                "category_code": "INFRA__DNS__LOOKUP",
                 "tags": [
                     "dns",
                     "report",
@@ -753,7 +753,7 @@
                 "title": "Host Search",
                 "desc": "Analiza servicios y certificados de una IP.",
                 "url": "https://search.censys.io/hosts/{input}",
-                "category_code": "INFRA__SCAN__HOST_DETAILS",
+                "category_code": "INFRA__IOT__SEARCH",
                 "tags": ["host", "services", "certificates"],
                 "input": {
                     "types": ["ip"],
@@ -827,7 +827,7 @@
                 "title": "Check IP Reputation",
                 "desc": "Consulta si una IP ha sido reportada por actividades maliciosas.",
                 "url": "https://www.abuseipdb.com/check/{input}",
-                "category_code": "SECURITY__REPUTATION__IP_CHECK",
+                "category_code": "SECURITY__REPUTATION__BLACKLIST_CHECK",
                 "tags": ["reputation", "abuse", "malware"],
                 "input": {
                     "types": ["ip"],
@@ -888,7 +888,7 @@
                 "title": "DNS History & Subdomains",
                 "desc": "Historial de registros DNS y subdominios asociados.",
                 "url": "https://securitytrails.com/domain/{input}/dns",
-                "category_code": "INFRA__DNS__HISTORY",
+                "category_code": "INFRA__DNS__LOOKUP",
                 "tags": ["dns", "history", "subdomains"],
                 "input": {
                     "types": ["domain"],
@@ -901,7 +901,7 @@
                 "title": "IP Neighbors",
                 "desc": "Dominios alojados en la misma IP.",
                 "url": "https://securitytrails.com/list/ip/{input}",
-                "category_code": "INFRA__IP__NEIGHBORS",
+                "category_code": "INFRA__DNS__PTR_LOOKUP",
                 "tags": ["ip", "neighbors", "shared-hosting"],
                 "input": {
                     "types": ["ip"],

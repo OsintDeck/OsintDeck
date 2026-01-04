@@ -11,6 +11,7 @@ use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\Migration;
 use OsintDeck\Infrastructure\Service\IconManager;
+use OsintDeck\Infrastructure\Service\Logger;
 
 /**
  * Class ImportExport
@@ -41,15 +42,24 @@ class ImportExport {
     private $icon_manager;
 
     /**
+     * Logger
+     *
+     * @var Logger|null
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
      * @param CategoryRepositoryInterface $category_repository Category Repository.
+     * @param Logger|null $logger Logger.
      */
-    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository ) {
+    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, Logger $logger = null ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
-        $this->icon_manager = new IconManager();
+        $this->logger = $logger;
+        $this->icon_manager = new IconManager( $logger );
     }
 
     /**
@@ -197,6 +207,10 @@ class ImportExport {
         $updated = 0;
         $errors = array();
 
+        if ( $this->logger ) {
+            $this->logger->info( 'Starting import of ' . count( $tools ) . ' tools.' );
+        }
+
         foreach ( $tools as $tool ) {
             if ( empty( $tool['name'] ) ) {
                 $errors[] = 'Tool without name skipped';
@@ -227,6 +241,13 @@ class ImportExport {
                 $imported++;
             } else {
                 $errors[] = "Failed to import {$tool['name']}";
+            }
+        }
+
+        if ( $this->logger ) {
+            $this->logger->info( "Import completed. Imported: $imported, Updated: $updated, Errors: " . count( $errors ) );
+            if ( ! empty( $errors ) ) {
+                $this->logger->error( 'Import errors: ' . implode( '; ', $errors ) );
             }
         }
 

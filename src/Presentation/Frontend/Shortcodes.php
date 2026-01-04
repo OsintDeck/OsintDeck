@@ -8,6 +8,7 @@
 namespace OsintDeck\Presentation\Frontend;
 
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
+use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 
 /**
  * Class Shortcodes
@@ -24,12 +25,21 @@ class Shortcodes {
     private $tool_repository;
 
     /**
+     * Category Repository
+     *
+     * @var CategoryRepositoryInterface
+     */
+    private $category_repository;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
+     * @param CategoryRepositoryInterface $category_repository Category Repository.
      */
-    public function __construct( ToolRepositoryInterface $tool_repository ) {
+    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository ) {
         $this->tool_repository = $tool_repository;
+        $this->category_repository = $category_repository;
     }
 
     /**
@@ -52,6 +62,11 @@ class Shortcodes {
      * @return string HTML output.
      */
     public function render_search( $atts ) {
+        // Fix: Force re-seed if requested to fix category hierarchy
+        if ( isset( $_GET['osint_reseed'] ) && current_user_can( 'manage_options' ) ) {
+            $this->category_repository->seed_defaults();
+        }
+
         $atts = shortcode_atts( array(
             'category' => '',
             'access'   => '',
@@ -60,12 +75,23 @@ class Shortcodes {
 
         // Get all tools from repository
         $all_tools = $this->tool_repository->get_all_tools();
+
+        // Prepare categories
+        $all_tools = $this->prepare_tools_categories( $all_tools );
+
         $tools = array();
 
         // Filter by category/access if specified
         foreach ( $all_tools as $t ) {
-            if ( $atts['category'] && ! empty( $t['category'] ) ) {
-                if ( strcasecmp( $t['category'], $atts['category'] ) !== 0 ) {
+            if ( $atts['category'] ) {
+                $match = false;
+                if ( ! empty( $t['category'] ) && strcasecmp( $t['category'], $atts['category'] ) === 0 ) {
+                    $match = true;
+                } elseif ( ! empty( $t['category_code'] ) && strcasecmp( $t['category_code'], $atts['category'] ) === 0 ) {
+                    $match = true;
+                }
+                
+                if ( ! $match ) {
                     continue;
                 }
             }
@@ -134,12 +160,23 @@ class Shortcodes {
         // Get all tools and filter manually (since repository doesn't support advanced filtering yet)
         // This aligns with Clean Architecture by abstracting the data source
         $all_tools = $this->tool_repository->get_all_tools();
+        
+        // Prepare categories
+        $all_tools = $this->prepare_tools_categories( $all_tools );
+
         $filtered_tools = array();
 
         foreach ( $all_tools as $tool ) {
             // Filter by category
             if ( ! empty( $atts['category'] ) ) {
-                if ( empty( $tool['category'] ) || strcasecmp( $tool['category'], $atts['category'] ) !== 0 ) {
+                $match = false;
+                if ( ! empty( $tool['category'] ) && strcasecmp( $tool['category'], $atts['category'] ) === 0 ) {
+                    $match = true;
+                } elseif ( ! empty( $tool['category_code'] ) && strcasecmp( $tool['category_code'], $atts['category'] ) === 0 ) {
+                    $match = true;
+                }
+                
+                if ( ! $match ) {
                     continue;
                 }
             }
@@ -262,5 +299,49 @@ class Shortcodes {
             <?php endif; ?>
         </div>
         <?php
+    }
+
+    /**
+     * Prepare tools with category labels
+     *
+     * @param array $tools List of tools.
+     * @return array Prepared tools.
+     */
+    private function prepare_tools_categories( $tools ) {
+        $categories = $this->category_repository->get_all_categories();
+        $category_map = [];
+        foreach ( $categories as $cat ) {
+            $code = $cat['code'] ?? '';
+            $label = $cat['label'] ?? ( $cat['name'] ?? $code );
+            // Fix: use group_name column from database
+            $group = $cat['group_name'] ?? '';
+            
+            if ( $code ) {
+                // If label has hierarchy (contains /), use it.
+                // Otherwise if we have a group, prepend it.
+                if ( strpos( $label, '/' ) !== false ) {
+                    $category_map[$code] = $label;
+                } elseif ( $group ) {
+                    $category_map[$code] = $group . ' / ' . $label;
+                } else {
+                    $category_map[$code] = $label;
+                }
+            }
+        }
+
+        foreach ( $tools as &$t ) {
+            if ( empty( $t['category'] ) && ! empty( $t['category_code'] ) && isset( $category_map[$t['category_code']] ) ) {
+                $t['category'] = $category_map[$t['category_code']];
+            }
+            if ( ! empty( $t['cards'] ) && is_array( $t['cards'] ) ) {
+                foreach ( $t['cards'] as &$card ) {
+                    if ( empty( $card['category'] ) && ! empty( $card['category_code'] ) && isset( $category_map[$card['category_code']] ) ) {
+                        $card['category'] = $category_map[$card['category_code']];
+                    }
+                }
+            }
+        }
+        unset( $t );
+        return $tools;
     }
 }

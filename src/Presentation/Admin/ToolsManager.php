@@ -10,6 +10,7 @@ namespace OsintDeck\Presentation\Admin;
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\IconManager;
+use OsintDeck\Infrastructure\Service\Logger;
 
 /**
  * Class ToolsManager
@@ -40,15 +41,24 @@ class ToolsManager {
     private $icon_manager;
 
     /**
+     * Logger
+     *
+     * @var Logger|null
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
      * @param CategoryRepositoryInterface $category_repository Category Repository.
+     * @param Logger|null $logger Logger.
      */
-    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository ) {
+    public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, Logger $logger = null ) {
         $this->tool_repository = $tool_repository;
         $this->category_repository = $category_repository;
-        $this->icon_manager = new IconManager();
+        $this->logger = $logger;
+        $this->icon_manager = new IconManager( $logger );
     }
 
     /**
@@ -330,6 +340,9 @@ class ToolsManager {
                                         foreach ( $tool['cards'] as $card ) {
                                             if ( ! empty( $card['category'] ) ) {
                                                 $card_cats[] = $card['category'];
+                                            } elseif ( ! empty( $card['category_code'] ) ) {
+                                                $code = $card['category_code'];
+                                                $card_cats[] = $category_map[$code] ?? $code;
                                             }
                                         }
                                         if ( ! empty( $card_cats ) ) {
@@ -610,9 +623,35 @@ class ToolsManager {
             'favicon'     => '',
             'tags_global' => array(),
             'preview_status' => 'unaudited',
+            'info'        => array(
+                'tipo'     => '',
+                'acceso'   => '',
+                'licencia' => '',
+            ),
         );
 
         $data = $is_edit ? wp_parse_args( $tool, $defaults ) : $defaults;
+        
+        // Ensure nested array exists if merged from DB but empty
+        if ( ! isset( $data['info'] ) || ! is_array( $data['info'] ) ) {
+            $data['info'] = $defaults['info'];
+        }
+
+        // UX: Auto-fill from cards if top-level data is missing
+        if ( empty( $data['description'] ) && ! empty( $data['cards'][0]['desc'] ) ) {
+            $data['description'] = $data['cards'][0]['desc'];
+        }
+        if ( empty( $data['url'] ) && ! empty( $data['cards'][0]['url'] ) ) {
+            $data['url'] = $data['cards'][0]['url'];
+        }
+        if ( empty( $data['category'] ) && ! empty( $data['cards'][0]['category_code'] ) ) {
+            $data['category'] = $data['cards'][0]['category_code'];
+        } elseif ( empty( $data['category'] ) && ! empty( $data['cards'][0]['category'] ) ) {
+             $data['category'] = $data['cards'][0]['category'];
+        }
+        if ( empty( $data['tags_global'] ) && ! empty( $data['cards'][0]['tags'] ) ) {
+            $data['tags_global'] = $data['cards'][0]['tags'];
+        }
         
         ?>
         <div class="wrap">
@@ -630,19 +669,78 @@ class ToolsManager {
                         </td>
                     </tr>
                     <tr>
+                        <th><label for="description"><?php _e( 'Descripción', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <textarea name="description" id="description" rows="5" class="large-text"><?php echo esc_textarea( $data['description'] ); ?></textarea>
+                            <p class="description"><?php _e( 'Breve descripción de la herramienta.', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="url"><?php _e( 'URL', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="url" name="url" id="url" value="<?php echo esc_attr( $data['url'] ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'Enlace principal de la herramienta.', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="favicon"><?php _e( 'Icono (Favicon)', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="text" name="favicon" id="favicon" value="<?php echo esc_attr( $data['favicon'] ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'URL del icono. Si es remoto, se intentará descargar al guardar.', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="category"><?php _e( 'Categoría', 'osint-deck' ); ?> *</label></th>
                         <td>
                             <select name="category" id="category" required class="regular-text">
                                 <option value=""><?php _e( '-- Seleccionar Categoría --', 'osint-deck' ); ?></option>
                                 <?php foreach ( $categories as $cat ) : ?>
                                     <option value="<?php echo esc_attr( $cat['code'] ); ?>" <?php selected( $data['category'], $cat['code'] ); ?>>
-                                        <?php echo esc_html( $cat['name'] ); ?> (<?php echo esc_html( $cat['code'] ); ?>)
+                                        <?php echo esc_html( $cat['label'] ); ?> (<?php echo esc_html( $cat['code'] ); ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                             <p class="description"><?php _e( 'Selecciona la categoría a la que pertenece esta herramienta.', 'osint-deck' ); ?></p>
                         </td>
                     </tr>
+                    <tr>
+                        <th><label for="tags_global"><?php _e( 'Tags', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="text" name="tags_global" id="tags_global" value="<?php echo esc_attr( implode( ', ', $data['tags_global'] ) ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'Separados por comas (ej: email, search, free).', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th scope="row" colspan="2"><h3><?php _e( 'Metadatos (Filtros)', 'osint-deck' ); ?></h3></th>
+                    </tr>
+                    
+                    <tr>
+                        <th><label for="info_tipo"><?php _e( 'Tipo', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="text" name="info[tipo]" id="info_tipo" value="<?php echo esc_attr( $data['info']['tipo'] ?? '' ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'Ej: Web, API, Browser Extension', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="info_acceso"><?php _e( 'Acceso', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="text" name="info[acceso]" id="info_acceso" value="<?php echo esc_attr( $data['info']['acceso'] ?? '' ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'Ej: Free, Freemium, Paid, Registration', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="info_licencia"><?php _e( 'Licencia', 'osint-deck' ); ?></label></th>
+                        <td>
+                            <input type="text" name="info[licencia]" id="info_licencia" value="<?php echo esc_attr( $data['info']['licencia'] ?? '' ); ?>" class="regular-text">
+                            <p class="description"><?php _e( 'Ej: Open Source, Proprietary', 'osint-deck' ); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row" colspan="2"><h3><?php _e( 'Configuración Avanzada', 'osint-deck' ); ?></h3></th>
+                    </tr>
+
                     <tr>
                         <th><label for="preview_status"><?php _e( 'Estado Preview', 'osint-deck' ); ?></label></th>
                         <td>
@@ -699,7 +797,8 @@ class ToolsManager {
             'url'         => isset( $_POST['url'] ) ? esc_url_raw( $_POST['url'] ) : '',
             'favicon'     => $favicon,
             'preview_status' => isset( $_POST['preview_status'] ) ? sanitize_text_field( $_POST['preview_status'] ) : 'unaudited',
-            'tags_global' => isset( $_POST['tags_global'] ) ? array_map( 'trim', explode( ',', sanitize_text_field( $_POST['tags_global'] ) ) ) : array(),
+            'tags_global' => isset( $_POST['tags_global'] ) ? array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $_POST['tags_global'] ) ) ) ) : array(),
+            'info'        => isset( $_POST['info'] ) && is_array( $_POST['info'] ) ? array_map( 'sanitize_text_field', $_POST['info'] ) : array(),
         );
 
         // If ID is 0, unset it so it inserts

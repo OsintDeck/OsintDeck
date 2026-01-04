@@ -16,6 +16,7 @@ use OsintDeck\Presentation\Api\UserEvents;
 use OsintDeck\Presentation\Admin\AdminMenu;
 use OsintDeck\Infrastructure\Service\TLDManager;
 use OsintDeck\Infrastructure\Service\Migration;
+use OsintDeck\Infrastructure\Service\Logger;
 use OsintDeck\Domain\Service\InputParser;
 use OsintDeck\Domain\Service\DecisionEngine;
 use OsintDeck\Domain\Service\NaiveBayesClassifier;
@@ -106,7 +107,7 @@ class Bootstrap {
         $ajax_handler->init();
 
         // Initialize Shortcodes
-        $shortcodes = new Shortcodes( $this->tool_repository );
+        $shortcodes = new Shortcodes( $this->tool_repository, $this->category_repository );
         $shortcodes->init();
 
         // Initialize User Events
@@ -126,25 +127,39 @@ class Bootstrap {
      * @return void
      */
     private function init_hooks() {
-        // Register activation/deactivation hooks
-        register_activation_hook( OSINT_DECK_PLUGIN_FILE, array( $this, 'activate' ) );
-        register_deactivation_hook( OSINT_DECK_PLUGIN_FILE, array( $this, 'deactivate' ) );
-
         // Admin hooks
         if ( is_admin() ) {
             add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+            add_action( 'admin_init', array( $this, 'check_environment' ) );
         }
 
         // Frontend hooks
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_assets' ) );
+
+        // Cron hooks
+        add_action( 'osint_deck_daily_cleanup', array( $this, 'daily_cleanup' ) );
     }
 
     /**
-     * Plugin activation
+     * Daily cleanup task
+     * 
+     * @return void
+     */
+    public function daily_cleanup() {
+        $logger = new Logger();
+        $deleted = $logger->clean_old_logs();
+
+        if ( $deleted > 0 ) {
+            $logger->info( "Daily cleanup: Deleted $deleted old logs." );
+        }
+    }
+
+    /**
+     * Install data and seed defaults
      *
      * @return void
      */
-    public function activate() {
+    public function install_data() {
         // Set default options
         $this->set_default_options();
 
@@ -190,11 +205,11 @@ class Bootstrap {
     }
 
     /**
-     * Plugin deactivation
+     * Cleanup hooks and log deactivation
      *
      * @return void
      */
-    public function deactivate() {
+    public function cleanup_hooks() {
         // Log deactivation
         if ( defined( 'OSD_DEBUG_PANEL' ) && OSD_DEBUG_PANEL ) {
             error_log( '[OSINT Deck] Plugin deactivated' );
@@ -316,5 +331,92 @@ class Bootstrap {
                 'nonce'   => wp_create_nonce( 'osint_deck_public' ),
             )
         );
+    }
+
+    /**
+     * Check environment and create necessary directories
+     */
+    public function check_environment() {
+        self::create_upload_directories();
+    }
+
+    /**
+     * Plugin activation
+     */
+    public static function activate() {
+        // Create database tables
+        \OsintDeck\Infrastructure\Persistence\ToolsTable::create_table();
+        \OsintDeck\Infrastructure\Persistence\CategoriesTable::create_table();
+        \OsintDeck\Infrastructure\Persistence\LogsTable::create_table();
+
+        // Create upload directories
+        self::create_upload_directories();
+
+        // Schedule cron jobs
+        if ( ! wp_next_scheduled( 'osint_deck_daily_cleanup' ) ) {
+            wp_schedule_event( time(), 'daily', 'osint_deck_daily_cleanup' );
+        }
+        
+        // Run instance-level installation
+        self::get_instance()->install_data();
+        
+        // Flush rewrite rules
+        flush_rewrite_rules();
+    }
+
+    /**
+     * Plugin deactivation
+     */
+    public static function deactivate() {
+        // Clear scheduled hooks
+        wp_clear_scheduled_hook( 'osint_deck_daily_cleanup' );
+        
+        // Run instance-level cleanup
+        self::get_instance()->cleanup_hooks();
+        
+        // Flush rewrite rules
+        flush_rewrite_rules();
+    }
+
+    /**
+     * Create upload directories
+     */
+    private static function create_upload_directories() {
+        $upload_dir = wp_upload_dir();
+        
+        if ( isset( $upload_dir['error'] ) && ! empty( $upload_dir['error'] ) ) {
+            error_log( 'OSINT Deck: Error getting upload directory: ' . $upload_dir['error'] );
+            return;
+        }
+
+        $basedir = $upload_dir['basedir'];
+        $dirs = [
+            $basedir . '/osint-deck',
+            $basedir . '/osint-deck/icons'
+        ];
+
+        foreach ( $dirs as $dir ) {
+            if ( ! file_exists( $dir ) ) {
+                if ( wp_mkdir_p( $dir ) ) {
+                    // Create index.php for security
+                    file_put_contents( $dir . '/index.php', '<?php // Silence is golden.' );
+                } else {
+                    error_log( 'OSINT Deck: Failed to create directory: ' . $dir );
+                }
+            } else {
+                // Ensure index.php exists
+                if ( ! file_exists( $dir . '/index.php' ) ) {
+                    file_put_contents( $dir . '/index.php', '<?php // Silence is golden.' );
+                }
+            }
+        }
+
+        // Copy default icon if it doesn't exist in uploads
+        $default_icon_source = OSINT_DECK_PLUGIN_DIR . 'assets/images/default-icon.svg';
+        $default_icon_dest = $basedir . '/osint-deck/icons/default-icon.svg';
+
+        if ( file_exists( $default_icon_source ) && ! file_exists( $default_icon_dest ) ) {
+            copy( $default_icon_source, $default_icon_dest );
+        }
     }
 }

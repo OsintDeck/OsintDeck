@@ -949,7 +949,7 @@ function initOsintDeck(wrap) {
     const menus = wrap.querySelectorAll(".osint-dropdown-menu");
     menus.forEach((menu) => {
       if (!menu.contains(e.target) && !e.target.closest(".osint-filter-btn")) {
-        menu.classList.remove("active");
+        menu.classList.remove("show");
       }
     });
 
@@ -957,9 +957,13 @@ function initOsintDeck(wrap) {
     const btn = e.target.closest(".osint-filter-btn");
     // Only if button belongs to this wrapper
     if (btn && wrap.contains(btn) && btn.dataset.filter) {
-       menus.forEach(m => m.classList.remove("active"));
        const menu = wrap.querySelector(`.osint-dropdown-menu[data-for="${btn.dataset.filter}"]`);
-       if (menu) menu.classList.toggle("active");
+       
+       menus.forEach(m => {
+           if (m !== menu) m.classList.remove("show");
+       });
+       
+       if (menu) menu.classList.toggle("show");
     }
 
     // Select option
@@ -981,7 +985,7 @@ function initOsintDeck(wrap) {
            // Only leaf items trigger filter, parents might toggle submenu (CSS handles hover, JS not strictly needed for toggle unless mobile)
            if (catItem.classList.contains("osint-cat-item")) {
                setFilter("category", rawValue, false);
-               menu.classList.remove("active");
+               menu.classList.remove("show");
            }
        }
     }

@@ -10,6 +10,7 @@ namespace OsintDeck\Presentation\Admin;
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Domain\Service\NaiveBayesClassifier;
+use OsintDeck\Infrastructure\Service\Logger;
 
 /**
  * Class Settings
@@ -61,6 +62,13 @@ class Settings {
     private $tld_manager_admin;
 
     /**
+     * Logger
+     *
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
@@ -74,8 +82,11 @@ class Settings {
         $this->tld_manager = $tld_manager;
         $this->classifier = $classifier;
         
+        // Initialize Logger
+        $this->logger = new Logger();
+        
         // Initialize sub-components for tabs
-        $this->import_export_manager = new ImportExport( $tool_repository, $category_repository );
+        $this->import_export_manager = new ImportExport( $tool_repository, $category_repository, $this->logger );
         $this->tld_manager_admin = new TLDManagerAdmin( $tld_manager );
     }
 
@@ -85,7 +96,7 @@ class Settings {
      * @return void
      */
     public function render() {
-        $allowed_tabs = array( 'general', 'data', 'tlds' );
+        $allowed_tabs = array( 'general', 'data', 'tlds', 'logs' );
         $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
         
         if ( ! in_array( $active_tab, $allowed_tabs ) ) {
@@ -101,6 +112,7 @@ class Settings {
                 <a href="?page=osint-deck-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>"><?php _e( 'General', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=data" class="nav-tab <?php echo $active_tab == 'data' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Datos', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=tlds" class="nav-tab <?php echo $active_tab == 'tlds' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Dominios / TLDs', 'osint-deck' ); ?></a>
+                <a href="?page=osint-deck-settings&tab=logs" class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', 'osint-deck' ); ?></a>
             </h2>
 
             <div class="tab-content">
@@ -111,6 +123,9 @@ class Settings {
                         break;
                     case 'tlds':
                         $this->render_tlds_tab();
+                        break;
+                    case 'logs':
+                        $this->render_logs_tab();
                         break;
                     case 'general':
                     default:
@@ -138,6 +153,8 @@ class Settings {
         $theme_token_light = get_option( 'osint_deck_theme_token_light', 'light' );
         $theme_token_dark = get_option( 'osint_deck_theme_token_dark', 'dark' );
         $help_url = get_option( 'osint_deck_help_url', 'https://osint.com.ar/OsintDeck-Ayuda' );
+        $log_retention = get_option( 'osint_deck_log_retention', 30 );
+        $logging_enabled = get_option( 'osint_deck_logging_enabled', false );
         ?>
         <form method="post" action="">
             <?php wp_nonce_field( 'osint_deck_settings' ); ?>
@@ -149,6 +166,20 @@ class Settings {
                     <td>
                         <input type="url" name="help_url" id="help_url" value="<?php echo esc_url( $help_url ); ?>" class="regular-text">
                         <p class="description"><?php _e( 'Página a la que se enviará al usuario cuando pida ayuda (ej: "ayuda", "como usar").', 'osint-deck' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="logging_enabled"><?php _e( 'Habilitar Logs', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <input type="checkbox" name="logging_enabled" id="logging_enabled" value="1" <?php checked( $logging_enabled, true ); ?>>
+                        <p class="description"><?php _e( 'Activar sistema de registro de errores y eventos.', 'osint-deck' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="log_retention"><?php _e( 'Retención de Logs (días)', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <input type="number" name="log_retention" id="log_retention" value="<?php echo esc_attr( $log_retention ); ?>" class="small-text" min="1">
+                        <p class="description"><?php _e( 'Cantidad de días que se guardarán los logs antes de ser eliminados automáticamente.', 'osint-deck' ); ?></p>
                     </td>
                 </tr>
             </table>
@@ -327,6 +358,61 @@ class Settings {
 
         <hr>
 
+        <h2><?php _e( 'Mantenimiento de Iconos', 'osint-deck' ); ?></h2>
+        <p><?php _e( 'Utilidades para gestionar los iconos de las herramientas.', 'osint-deck' ); ?></p>
+        
+        <table class="form-table">
+            <tr>
+                <th scope="row"><?php _e( 'Descargar Iconos Faltantes', 'osint-deck' ); ?></th>
+                <td>
+                    <button type="button" id="osint-deck-force-icons" class="button button-secondary">
+                        <?php _e( 'Forzar descarga de iconos', 'osint-deck' ); ?>
+                    </button>
+                    <p class="description"><?php _e( 'Intenta descargar iconos para herramientas que aún usan enlaces remotos (http/https).', 'osint-deck' ); ?></p>
+                    <div id="osint-deck-icons-result" style="margin-top: 10px; font-weight: bold;"></div>
+                </td>
+            </tr>
+        </table>
+        <script>
+        jQuery(document).ready(function($) {
+            $('#osint-deck-force-icons').on('click', function() {
+                var $btn = $(this);
+                var $result = $('#osint-deck-icons-result');
+                
+                if (!confirm('<?php _e( '¿Deseas intentar descargar los iconos faltantes? Esto puede tardar unos segundos.', 'osint-deck' ); ?>')) {
+                    return;
+                }
+
+                $btn.prop('disabled', true).text('<?php _e( 'Procesando...', 'osint-deck' ); ?>');
+                $result.html('<?php _e( 'Analizando herramientas...', 'osint-deck' ); ?>');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'osint_deck_force_download_icons',
+                        nonce: '<?php echo wp_create_nonce( 'osint_deck_admin' ); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $result.html('<span style="color: green;">' + response.data.message + '</span>');
+                        } else {
+                            $result.html('<span style="color: red;">Error: ' + (response.data.message || 'Unknown error') + '</span>');
+                        }
+                    },
+                    error: function() {
+                        $result.html('<span style="color: red;"><?php _e( 'Error de conexión', 'osint-deck' ); ?></span>');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false).text('<?php _e( 'Forzar descarga de iconos', 'osint-deck' ); ?>');
+                    }
+                });
+            });
+        });
+        </script>
+
+        <hr>
+
         <h2><?php _e( 'Reinstalar Base de Datos', 'osint-deck' ); ?></h2>
         <p class="description" style="color: #b32d2e;">
             <?php _e( '¡CUIDADO! Esta acción eliminará TODOS los datos actuales (herramientas y categorías personalizadas) y volverá a cargar los datos por defecto.', 'osint-deck' ); ?>
@@ -346,6 +432,114 @@ class Settings {
      */
     private function render_tlds_tab() {
         $this->tld_manager_admin->render();
+    }
+
+    /**
+     * Render Logs Tab
+     */
+    private function render_logs_tab() {
+        // Pagination
+        $page = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
+        $limit = 20;
+        $offset = ( $page - 1 ) * $limit;
+        
+        // Filter
+        $level = isset( $_GET['level'] ) ? sanitize_text_field( $_GET['level'] ) : '';
+
+        // Get logs
+        $logs = $this->logger->get_logs( $limit, $offset, $level );
+        $total_logs = $this->logger->count_logs( $level );
+        $total_pages = ceil( $total_logs / $limit );
+
+        // Base URL for pagination
+        $base_url = add_query_arg( array(
+            'page' => 'osint-deck-settings',
+            'tab'  => 'logs',
+            'level' => $level
+        ), admin_url( 'admin.php' ) );
+
+        ?>
+        <div class="osint-deck-logs">
+            <div class="tablenav top">
+                <div class="alignleft actions">
+                    <form method="get" action="">
+                        <input type="hidden" name="page" value="osint-deck-settings">
+                        <input type="hidden" name="tab" value="logs">
+                        <select name="level">
+                            <option value=""><?php _e( 'Todos los niveles', 'osint-deck' ); ?></option>
+                            <option value="info" <?php selected( $level, 'info' ); ?>><?php _e( 'Info', 'osint-deck' ); ?></option>
+                            <option value="error" <?php selected( $level, 'error' ); ?>><?php _e( 'Error', 'osint-deck' ); ?></option>
+                            <option value="warning" <?php selected( $level, 'warning' ); ?>><?php _e( 'Warning', 'osint-deck' ); ?></option>
+                            <option value="debug" <?php selected( $level, 'debug' ); ?>><?php _e( 'Debug', 'osint-deck' ); ?></option>
+                        </select>
+                        <input type="submit" class="button" value="<?php _e( 'Filtrar', 'osint-deck' ); ?>">
+                    </form>
+                </div>
+                <div class="tablenav-pages">
+                    <span class="displaying-num"><?php printf( _n( '%s elemento', '%s elementos', $total_logs, 'osint-deck' ), number_format_i18n( $total_logs ) ); ?></span>
+                    <?php
+                    if ( $total_pages > 1 ) {
+                        $page_links = paginate_links( array(
+                            'base' => add_query_arg( 'paged', '%#%', $base_url ),
+                            'format' => '',
+                            'prev_text' => __( '&laquo;', 'osint-deck' ),
+                            'next_text' => __( '&raquo;', 'osint-deck' ),
+                            'total' => $total_pages,
+                            'current' => $page
+                        ) );
+                        if ( $page_links ) {
+                            echo '<span class="pagination-links">' . $page_links . '</span>';
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="manage-column column-date" style="width: 150px;"><?php _e( 'Fecha', 'osint-deck' ); ?></th>
+                        <th scope="col" class="manage-column column-level" style="width: 80px;"><?php _e( 'Nivel', 'osint-deck' ); ?></th>
+                        <th scope="col" class="manage-column column-message"><?php _e( 'Mensaje', 'osint-deck' ); ?></th>
+                        <th scope="col" class="manage-column column-context" style="width: 20%;"><?php _e( 'Contexto', 'osint-deck' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ( ! empty( $logs ) ) : ?>
+                        <?php foreach ( $logs as $log ) : ?>
+                            <tr>
+                                <td><?php echo esc_html( $log['created_at'] ); ?></td>
+                                <td>
+                                    <span class="osint-deck-log-level log-level-<?php echo esc_attr( $log['level'] ); ?>" 
+                                          style="padding: 3px 8px; border-radius: 3px; font-weight: bold; font-size: 11px; text-transform: uppercase; 
+                                          background: <?php echo $log['level'] === 'error' ? '#d63638' : ($log['level'] === 'warning' ? '#dba617' : ($log['level'] === 'debug' ? '#2271b1' : '#00a32a')); ?>; 
+                                          color: #fff;">
+                                        <?php echo esc_html( $log['level'] ); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html( $log['message'] ); ?></td>
+                                <td>
+                                    <?php 
+                                    if ( ! empty( $log['context'] ) ) {
+                                        echo '<pre style="margin: 0; white-space: pre-wrap; font-size: 10px; max-height: 100px; overflow: auto;">';
+                                        echo esc_html( print_r( $log['context'], true ) );
+                                        echo '</pre>';
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4"><?php _e( 'No hay registros.', 'osint-deck' ); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
 
     /**
@@ -462,12 +656,16 @@ class Settings {
         $theme_token_light = isset( $_POST['theme_token_light'] ) ? sanitize_text_field( $_POST['theme_token_light'] ) : 'light';
         $theme_token_dark = isset( $_POST['theme_token_dark'] ) ? sanitize_text_field( $_POST['theme_token_dark'] ) : 'dark';
         $help_url = isset( $_POST['help_url'] ) ? esc_url_raw( $_POST['help_url'] ) : 'https://osint.com.ar/OsintDeck-Ayuda';
+        $log_retention = isset( $_POST['log_retention'] ) ? intval( $_POST['log_retention'] ) : 30;
+        $logging_enabled = isset( $_POST['logging_enabled'] ) ? (bool) $_POST['logging_enabled'] : false;
 
         update_option( 'osint_deck_theme_mode', $theme_mode );
         update_option( 'osint_deck_theme_selector', $theme_selector );
         update_option( 'osint_deck_theme_token_light', $theme_token_light );
         update_option( 'osint_deck_theme_token_dark', $theme_token_dark );
         update_option( 'osint_deck_help_url', $help_url );
+        update_option( 'osint_deck_log_retention', $log_retention );
+        update_option( 'osint_deck_logging_enabled', $logging_enabled );
 
         add_settings_error( 'osint_deck', 'settings_saved', __( 'Configuración guardada', 'osint-deck' ), 'success' );
         settings_errors( 'osint_deck' );

@@ -36,3 +36,9 @@ if ( file_exists( OSINT_DECK_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 add_action( 'plugins_loaded', function() {
     \OsintDeck\Core\Bootstrap::get_instance();
 }, 10 );
+
+// Register activation hook
+register_activation_hook( __FILE__, array( 'OsintDeck\Core\Bootstrap', 'activate' ) );
+
+// Register deactivation hook
+register_deactivation_hook( __FILE__, array( 'OsintDeck\Core\Bootstrap', 'deactivate' ) );
