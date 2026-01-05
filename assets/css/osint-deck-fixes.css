@@ -531,16 +531,52 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     border-radius: 16px !important;
     box-shadow: var(--osint-shadow) !important;
     
-    animation: osintSlideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    /* Smooth entrance */
+    animation: osintFilterIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
+    transform-origin: top center !important;
 }
 
-@keyframes osintSlideOut {
-    from {
+.osint-filter-bar.is-closing {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+    
+    position: relative !important;
+    z-index: 40 !important;
+    width: 98% !important;
+    margin: -10px auto 20px !important;
+    padding: 24px 16px 12px !important;
+    
+    background: var(--osint-card) !important;
+    border: 1px solid var(--osint-border) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--osint-shadow) !important;
+
+    /* Smooth exit */
+    animation: osintFilterOut 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
+    transform-origin: top center !important;
+    pointer-events: none !important;
+}
+
+@keyframes osintFilterIn {
+    0% {
         opacity: 0;
-        transform: translateY(-30px) scale(0.96);
+        transform: translateY(-40px) scale(0.95);
     }
-    to {
+    100% {
         opacity: 1;
         transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes osintFilterOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.95);
     }
 }

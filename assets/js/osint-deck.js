@@ -733,13 +733,31 @@ function initOsintDeck(wrap) {
 
   toggleFiltersBtn.addEventListener("click", () => {
     showFilters = !showFilters;
-    filtersBarRef.style.display = showFilters ? "flex" : "none";
+    
     if (showFilters) {
-      if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+      // Opening
+      filtersBarRef.style.display = "flex";
+      filtersBarRef.classList.remove("is-closing");
+      // Force reflow
+      void filtersBarRef.offsetWidth; 
+      
       filtersBarRef.classList.add("is-open");
+      if (chatBarRef) chatBarRef.classList.add("has-filters-open");
     } else {
-      if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+      // Closing
       filtersBarRef.classList.remove("is-open");
+      filtersBarRef.classList.add("is-closing");
+      if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+      
+      // Wait for animation to finish
+      const onEnd = () => {
+        if (filtersBarRef.classList.contains("is-closing")) {
+          filtersBarRef.style.display = "none";
+          filtersBarRef.classList.remove("is-closing");
+        }
+        filtersBarRef.removeEventListener("animationend", onEnd);
+      };
+      filtersBarRef.addEventListener("animationend", onEnd);
     }
   });
 
