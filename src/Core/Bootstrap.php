@@ -294,6 +294,15 @@ class Bootstrap {
             '3.5.0'
         );
 
+        // Enqueue GSAP
+        wp_enqueue_script(
+            'gsap',
+            'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+            array(),
+            '3.12.5',
+            true
+        );
+
         // Enqueue Dashicons (needed for frontend)
         wp_enqueue_style( 'dashicons' );
 

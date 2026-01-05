@@ -506,13 +506,10 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-chatbar {
     position: relative !important;
     z-index: 50 !important;
-    transition: margin-bottom 0.42s cubic-bezier(.22,.61,.36,1) !important;
 }
 
 .osint-chatbar.has-filters-open {
-   margin-bottom: 0 !important;
-   box-shadow: none !important; /* Remove shadow to prevent dirty overlap on filters */
-   border-bottom: 1px solid var(--osint-border) !important; /* Ensure separation */
+   margin-bottom: 0;
 }
 
 /* WRAPPER: animates HEIGHT */
@@ -523,9 +520,6 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
    overflow: hidden !important;
    position: relative !important;
    z-index: 40 !important;
-
-   transition: height 420ms cubic-bezier(.22,.61,.36,1) !important;
-   will-change: height !important;
 }
 
 /* FILTER BAR: GPU ONLY (transform + opacity) */
@@ -544,11 +538,6 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
    opacity: 0 !important;
    transform: translateY(-12px) scale(.99) !important;
    transform-origin: top center !important;
-   will-change: transform, opacity !important;
-
-   transition: 
-     transform 420ms cubic-bezier(.22,.61,.36,1), 
-     opacity 220ms ease !important;
 }
 
 .osint-filter-wrap.is-open .osint-filter-bar {
@@ -568,7 +557,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
    .osint-filter-bar {
      transition: none !important;
      transform: none !important;
-     opacity: 1 !important;
+     opacity:  !important;
      height: auto !important;
    }
 }

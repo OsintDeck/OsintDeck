@@ -730,13 +730,25 @@ function initOsintDeck(wrap) {
   // ResizeObserver for dynamic height
   const ro = new ResizeObserver(() => {
     if (showFilters && !isAnimating && filterWrapRef && filterWrapRef.style.height !== "auto") {
-      filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+       if (typeof gsap !== 'undefined') {
+          // If open and not animating, ensure height matches content
+          gsap.set(filterWrapRef, { height: "auto" });
+       } else {
+          filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+       }
     }
   });
   if (filtersBarRef) ro.observe(filtersBarRef);
 
   // Initialize state
-  if (filterWrapRef) filterWrapRef.style.height = "0px";
+  if (filterWrapRef) {
+      if (typeof gsap !== 'undefined') {
+          gsap.set(filterWrapRef, { height: 0 });
+          gsap.set(filtersBarRef, { y: -12, opacity: 0, scale: 0.99 });
+      } else {
+          filterWrapRef.style.height = "0px";
+      }
+  }
 
   function ensureFiltersVisible() {
     if (!showFilters) openFilters();
@@ -747,23 +759,64 @@ function initOsintDeck(wrap) {
      isAnimating = true;
      showFilters = true;
 
-     filterWrapRef.classList.add("is-open");
-     if (chatBarRef) chatBarRef.classList.add("has-filters-open");
-     filterWrapRef.setAttribute("aria-hidden", "false");
+     // Check for GSAP
+     if (typeof gsap !== 'undefined') {
+          filterWrapRef.classList.add("is-open");
+          if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+          filterWrapRef.setAttribute("aria-hidden", "false");
 
-     filterWrapRef.style.height = "0px";
-     // Force reflow
-     void filterWrapRef.getBoundingClientRect();
+          const tl = gsap.timeline({
+              onComplete: () => {
+                  isAnimating = false;
+                  // Ensure height is set to auto for responsiveness
+                  gsap.set(filterWrapRef, { height: "auto" });
+              }
+          });
 
-     filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+          // Animate Search Bar Margin
+          if (chatBarRef) {
+              tl.to(chatBarRef, {
+                  marginBottom: 0,
+                  duration: 0.42,
+                  ease: "power2.out"
+              }, 0);
+          }
+          
+          // Animate Wrapper Height
+          tl.to(filterWrapRef, {
+              height: "auto",
+              duration: 0.42,
+              ease: "power2.out"
+          }, "<");
 
-     const onEnd = (e) => {
-       if (e.propertyName !== "height") return;
-       filterWrapRef.removeEventListener("transitionend", onEnd);
-       filterWrapRef.style.height = "auto";
-       isAnimating = false;
-     };
-     filterWrapRef.addEventListener("transitionend", onEnd);
+          // Animate Filter Bar
+          tl.to(filtersBarRef, {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.42,
+              ease: "back.out(1.2)"
+          }, "<0.1"); 
+
+     } else {
+         // Fallback
+         filterWrapRef.classList.add("is-open");
+         if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+         filterWrapRef.setAttribute("aria-hidden", "false");
+    
+         filterWrapRef.style.height = "0px";
+         void filterWrapRef.getBoundingClientRect();
+    
+         filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+    
+         const onEnd = (e) => {
+           if (e.propertyName !== "height") return;
+           filterWrapRef.removeEventListener("transitionend", onEnd);
+           filterWrapRef.style.height = "auto";
+           isAnimating = false;
+         };
+         filterWrapRef.addEventListener("transitionend", onEnd);
+     }
   }
 
   function closeFilters() {
@@ -771,25 +824,63 @@ function initOsintDeck(wrap) {
      isAnimating = true;
      showFilters = false;
 
-     filterWrapRef.classList.add("is-closing");
-     filterWrapRef.classList.remove("is-open");
-     if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
-     filterWrapRef.setAttribute("aria-hidden", "true");
+     if (typeof gsap !== 'undefined') {
+         const tl = gsap.timeline({
+             onComplete: () => {
+                 isAnimating = false;
+                 filterWrapRef.classList.remove("is-open");
+                 if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+                 filterWrapRef.setAttribute("aria-hidden", "true");
+                 // Clear inline styles for margin-bottom to revert to CSS
+                 if (chatBarRef) gsap.set(chatBarRef, { clearProps: "marginBottom" });
+             }
+         });
 
-     filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
-     void filterWrapRef.getBoundingClientRect();
+         tl.to(filtersBarRef, {
+             y: -12,
+             opacity: 0,
+             scale: 0.99,
+             duration: 0.3,
+             ease: "power2.in"
+         });
 
-     requestAnimationFrame(() => {
-       filterWrapRef.style.height = "0px";
-     });
+         tl.to(filterWrapRef, {
+             height: 0,
+             duration: 0.4,
+             ease: "power3.inOut"
+         }, "-=0.2");
 
-     const onEnd = (e) => {
-       if (e.propertyName !== "height") return;
-       filterWrapRef.removeEventListener("transitionend", onEnd);
-       filterWrapRef.classList.remove("is-closing");
-       isAnimating = false;
-     };
-     filterWrapRef.addEventListener("transitionend", onEnd);
+         if (chatBarRef) {
+             tl.to(chatBarRef, {
+                 marginBottom: "20px", // Approximate return value, or let clearProps handle it if we animate to something close?
+                 // If we animate to 20px, it looks smooth. If we just remove class, it might jump if we don't animate.
+                 // We animate to 20px then clearProps.
+                 duration: 0.4,
+                 ease: "power3.inOut"
+             }, "<");
+         }
+
+     } else {
+         filterWrapRef.classList.add("is-closing");
+         filterWrapRef.classList.remove("is-open");
+         if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+         filterWrapRef.setAttribute("aria-hidden", "true");
+    
+         filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+         void filterWrapRef.getBoundingClientRect();
+    
+         requestAnimationFrame(() => {
+           filterWrapRef.style.height = "0px";
+         });
+    
+         const onEnd = (e) => {
+           if (e.propertyName !== "height") return;
+           filterWrapRef.removeEventListener("transitionend", onEnd);
+           filterWrapRef.classList.remove("is-closing");
+           isAnimating = false;
+         };
+         filterWrapRef.addEventListener("transitionend", onEnd);
+     }
   }
 
   if (toggleFiltersBtn) {
