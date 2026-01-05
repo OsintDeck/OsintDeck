@@ -330,12 +330,12 @@ class Shortcodes {
         }
 
         foreach ( $tools as &$t ) {
-            if ( empty( $t['category'] ) && ! empty( $t['category_code'] ) && isset( $category_map[$t['category_code']] ) ) {
+            if ( ! empty( $t['category_code'] ) && isset( $category_map[$t['category_code']] ) ) {
                 $t['category'] = $category_map[$t['category_code']];
             }
             if ( ! empty( $t['cards'] ) && is_array( $t['cards'] ) ) {
                 foreach ( $t['cards'] as &$card ) {
-                    if ( empty( $card['category'] ) && ! empty( $card['category_code'] ) && isset( $category_map[$card['category_code']] ) ) {
+                    if ( ! empty( $card['category_code'] ) && isset( $category_map[$card['category_code']] ) ) {
                         $card['category'] = $category_map[$card['category_code']];
                     }
                 }

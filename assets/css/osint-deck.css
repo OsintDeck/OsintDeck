@@ -248,6 +248,21 @@
   color: var(--osint-accent);
 }
 
+/* Custom Scrollbar for Dropdown */
+.osint-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.osint-dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.osint-dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: var(--osint-border);
+  border-radius: 4px;
+}
+.osint-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: var(--osint-muted);
+}
+
 /* ------------------------------------------------------------
  * 4. Grid & Cards (Deck Stack Effect)
  * ------------------------------------------------------------ */
@@ -360,8 +375,7 @@
 .osd-chip {
   font-size: 11px;
   background: rgba(255,255,255,0.03);
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 2px 8px;  border-radius: 4px;
   color: var(--osint-muted);
   display: flex;
   align-items: center;
@@ -714,3 +728,53 @@
 .osint-act-like.liked { color: #ff4757; }
 .osint-act-favorite.favorited { color: #ffa502; }
 .osint-report.sent { color: #f87171; opacity: 0.5; pointer-events: none; }
+
+/* ------------------------------------------------------------
+ * 5. Category Dropdown Hierarchy
+ * ------------------------------------------------------------ */
+.osint-cat-parent {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.osint-cat-parent > span {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--osint-muted);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  background: rgba(255,255,255,0.03);
+  border-radius: 4px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.osint-submenu {
+  display: flex;
+  flex-direction: column;
+  padding-left: 16px;
+  border-left: 2px solid var(--osint-border);
+  margin-left: 10px;
+  margin-top: 2px;
+}
+
+.osint-cat-item {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--osint-ink-sub);
+  font-size: 13px;
+  transition: all 0.2s;
+  display: block;
+  position: relative;
+}
+
+.osint-cat-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+  padding-left: 16px;
+}
