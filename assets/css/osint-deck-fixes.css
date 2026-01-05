@@ -267,6 +267,7 @@ html[data-site-skin="dark"] .osint-btn-animated .icon {
 .osint-wrap[data-theme="light"] .osint-btn-animated:hover,
 html:not([data-site-skin="dark"]) .osint-btn-animated:hover {
     border-color: #000 !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important; /* Black shadow override */
 }
 
 .osint-wrap[data-theme="light"] .osint-btn-animated:hover .text,
@@ -280,6 +281,7 @@ html:not([data-site-skin="dark"]) .osint-btn-animated:hover .icon {
 .osint-wrap[data-theme="dark"] .osint-btn-animated:hover,
 html[data-site-skin="dark"] .osint-btn-animated:hover {
     border-color: #fff !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important; /* Black shadow override */
 }
 
 .osint-wrap[data-theme="dark"] .osint-btn-animated:hover .text,
