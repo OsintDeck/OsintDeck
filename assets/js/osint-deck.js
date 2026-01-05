@@ -767,7 +767,10 @@ function initOsintDeck(wrap) {
       if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
       
       // Wait for animation to finish
-      const onEnd = () => {
+      const onEnd = (e) => {
+        // Ignore bubbled events from children
+        if (e.target !== filtersBarRef) return;
+
         if (filtersBarRef.classList.contains("is-closing")) {
           filtersBarRef.style.display = "none";
           filtersBarRef.classList.remove("is-closing");

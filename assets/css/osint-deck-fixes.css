@@ -506,7 +506,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-chatbar {
     position: relative !important;
     z-index: 50 !important;
-    transition: margin-bottom 0.3s ease !important;
+    transition: margin-bottom 0.7s cubic-bezier(0.2, 1, 0.3, 1) !important;
 }
 
 .osint-chatbar.has-filters-open {
