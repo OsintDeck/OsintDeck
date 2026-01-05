@@ -403,6 +403,7 @@ function initOsintDeck(wrap) {
     </div>
 
     <!-- 🔹 Filtros -->
+    <div class="osint-filter-wrap" id="${uid}-filterWrap" aria-hidden="true">
     <div class="osint-filter-bar" id="${uid}-filters">
       <!-- TIPO -->
       <div class="osint-filter-dropdown">
@@ -443,6 +444,7 @@ function initOsintDeck(wrap) {
       <button class="osint-action-btn osint-clear-filters" id="${uid}-clear-btn" aria-label="Limpiar filtros" data-title="Limpiar filtros">
         <i class="ri-close-line"></i>
       </button>
+    </div>
     </div>
 
     <!-- 🔹 Grilla -->
@@ -713,73 +715,88 @@ function initOsintDeck(wrap) {
   let lastFocused = null;
 
   const toggleFiltersBtn = document.getElementById(`${uid}-toggleFilters`);
+  const filterWrapRef = document.getElementById(`${uid}-filterWrap`);
   const filtersBarRef = document.getElementById(`${uid}-filters`);
-  const chatBarRef = filtersBarRef.previousElementSibling;
+  const chatBarRef = filterWrapRef ? filterWrapRef.previousElementSibling : null;
   const counterRef = document.getElementById(`${uid}-counter`);
 
   let showFilters = false;
+  let isAnimating = false;
 
   /* =========================================================
    * MOSTRAR / OCULTAR FILTROS
    * ========================================================= */
-  filtersBarRef.style.display = "none";
-
-  function ensureFiltersVisible() {
-    showFilters = true;
-    filtersBarRef.style.display = "flex";
-    if (chatBarRef) chatBarRef.classList.add("has-filters-open");
-    filtersBarRef.classList.add("is-open");
-  }
-
-  toggleFiltersBtn.addEventListener("click", () => {
-    showFilters = !showFilters;
-    
-    if (showFilters) {
-      // Opening
-      filtersBarRef.style.display = "flex";
-      filtersBarRef.classList.remove("is-closing");
-      
-      // Calculate exact height for smooth animation
-      // Apply target styles temporarily to measure
-      filtersBarRef.style.width = "98%";
-      filtersBarRef.style.padding = "24px 16px 12px";
-      
-      const exactHeight = filtersBarRef.scrollHeight;
-      filtersBarRef.style.setProperty('--filter-height', `${exactHeight}px`);
-      
-      // Remove temp styles
-      filtersBarRef.style.width = "";
-      filtersBarRef.style.padding = "";
-
-      // Force reflow
-      void filtersBarRef.offsetWidth; 
-      
-      filtersBarRef.classList.add("is-open");
-      if (chatBarRef) chatBarRef.classList.add("has-filters-open");
-    } else {
-      // Closing
-      // Measure current height before closing to ensure smooth exit
-      const currentHeight = filtersBarRef.scrollHeight;
-      filtersBarRef.style.setProperty('--filter-height', `${currentHeight}px`);
-      
-      filtersBarRef.classList.remove("is-open");
-      filtersBarRef.classList.add("is-closing");
-      if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
-      
-      // Wait for animation to finish
-      const onEnd = (e) => {
-        // Ignore bubbled events from children
-        if (e.target !== filtersBarRef) return;
-
-        if (filtersBarRef.classList.contains("is-closing")) {
-          filtersBarRef.style.display = "none";
-          filtersBarRef.classList.remove("is-closing");
-        }
-        filtersBarRef.removeEventListener("animationend", onEnd);
-      };
-      filtersBarRef.addEventListener("animationend", onEnd);
+   
+  // ResizeObserver for dynamic height
+  const ro = new ResizeObserver(() => {
+    if (showFilters && !isAnimating && filterWrapRef && filterWrapRef.style.height !== "auto") {
+      filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
     }
   });
+  if (filtersBarRef) ro.observe(filtersBarRef);
+
+  // Initialize state
+  if (filterWrapRef) filterWrapRef.style.height = "0px";
+
+  function ensureFiltersVisible() {
+    if (!showFilters) openFilters();
+  }
+
+  function openFilters() {
+     if (showFilters || isAnimating || !filterWrapRef) return;
+     isAnimating = true;
+     showFilters = true;
+
+     filterWrapRef.classList.add("is-open");
+     if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+     filterWrapRef.setAttribute("aria-hidden", "false");
+
+     filterWrapRef.style.height = "0px";
+     // Force reflow
+     void filterWrapRef.getBoundingClientRect();
+
+     filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+
+     const onEnd = (e) => {
+       if (e.propertyName !== "height") return;
+       filterWrapRef.removeEventListener("transitionend", onEnd);
+       filterWrapRef.style.height = "auto";
+       isAnimating = false;
+     };
+     filterWrapRef.addEventListener("transitionend", onEnd);
+  }
+
+  function closeFilters() {
+     if (!showFilters || isAnimating || !filterWrapRef) return;
+     isAnimating = true;
+     showFilters = false;
+
+     filterWrapRef.classList.add("is-closing");
+     filterWrapRef.classList.remove("is-open");
+     if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+     filterWrapRef.setAttribute("aria-hidden", "true");
+
+     filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+     void filterWrapRef.getBoundingClientRect();
+
+     requestAnimationFrame(() => {
+       filterWrapRef.style.height = "0px";
+     });
+
+     const onEnd = (e) => {
+       if (e.propertyName !== "height") return;
+       filterWrapRef.removeEventListener("transitionend", onEnd);
+       filterWrapRef.classList.remove("is-closing");
+       isAnimating = false;
+     };
+     filterWrapRef.addEventListener("transitionend", onEnd);
+  }
+
+  if (toggleFiltersBtn) {
+    toggleFiltersBtn.addEventListener("click", () => {
+      showFilters ? closeFilters() : openFilters();
+    });
+  }
 
   /* =========================================================
    * BOTÓN PEGAR / LIMPIAR

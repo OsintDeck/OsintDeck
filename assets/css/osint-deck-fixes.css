@@ -506,110 +506,67 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-chatbar {
     position: relative !important;
     z-index: 50 !important;
-    transition: margin-bottom 0.7s cubic-bezier(0.2, 1, 0.3, 1) !important;
+    transition: margin-bottom 0.42s cubic-bezier(.22,.61,.36,1) !important;
 }
 
 .osint-chatbar.has-filters-open {
-    margin-bottom: 0 !important; /* Remove gap so filter bar can tuck in */
-    /* Keep original radius and shadow - SEPARATE look */
+   margin-bottom: 0 !important;
 }
 
-.osint-filter-bar.is-open {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    gap: 12px !important;
-    
-    position: relative !important;
-    z-index: 40 !important; /* Behind search bar */
-    width: 98% !important;
-    margin: -10px auto 20px !important; /* Tuck behind (-10px), center, bottom margin */
-    padding: 24px 16px 12px !important; /* Extra top padding so content clears the search bar overlap */
-    
-    background: var(--osint-card) !important;
-    border: 1px solid var(--osint-border) !important;
-    border-radius: 16px !important;
-    box-shadow: var(--osint-shadow) !important;
-    
-    /* Smooth entrance - ULTRA SMOOTH */
-    animation: osintFilterIn 0.9s cubic-bezier(0.2, 1, 0.3, 1) forwards !important;
-    transform-origin: top center !important;
-    will-change: transform, opacity, max-height, margin, padding;
+/* WRAPPER: animates HEIGHT */
+.osint-filter-wrap {
+   width: 98% !important;
+   margin: -10px auto 20px !important;
+   height: 0;
+   overflow: hidden !important;
+   position: relative !important;
+   z-index: 40 !important;
+
+   transition: height 420ms cubic-bezier(.22,.61,.36,1) !important;
+   will-change: height !important;
 }
 
-.osint-filter-bar.is-closing {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    gap: 12px !important;
-    
-    position: relative !important;
-    z-index: 40 !important;
-    width: 98% !important;
-    margin: -10px auto 20px !important;
-    padding: 24px 16px 12px !important;
-    
-    background: var(--osint-card) !important;
-    border: 1px solid var(--osint-border) !important;
-    border-radius: 16px !important;
-    box-shadow: var(--osint-shadow) !important;
+/* FILTER BAR: GPU ONLY (transform + opacity) */
+.osint-filter-bar {
+   display: flex !important;
+   flex-wrap: wrap !important;
+   gap: 12px !important;
+   align-items: center !important;
 
-    /* Smooth exit - ULTRA SMOOTH */
-    animation: osintFilterOut 0.7s cubic-bezier(0.2, 1, 0.3, 1) forwards !important;
-    transform-origin: top center !important;
-    pointer-events: none !important;
-    will-change: transform, opacity, max-height, margin, padding;
+   background: var(--osint-card) !important;
+   border: 1px solid var(--osint-border) !important;
+   border-radius: 16px !important;
+   box-shadow: var(--osint-shadow) !important;
+   padding: 24px 16px 12px !important;
+
+   opacity: 0 !important;
+   transform: translateY(-12px) scale(.99) !important;
+   transform-origin: top center !important;
+   will-change: transform, opacity !important;
+
+   transition: 
+     transform 420ms cubic-bezier(.22,.61,.36,1), 
+     opacity 220ms ease !important;
 }
 
-@keyframes osintFilterIn {
-    0% {
-        opacity: 0;
-        transform: translateY(-40px) scale(0.95);
-        max-height: 0;
-        margin-bottom: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-width: 0;
-        overflow: hidden;
-    }
-    50% {
-        opacity: 1;
-        /* Keep expanding */
-    }
-    99% {
-        overflow: hidden;
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        max-height: var(--filter-height, 500px);
-        margin-bottom: 20px;
-        padding-top: 24px;
-        padding-bottom: 12px;
-        border-width: 1px;
-        overflow: visible;
-    }
+.osint-filter-wrap.is-open .osint-filter-bar {
+   opacity: 1 !important;
+   transform: translateY(0) scale(1) !important;
 }
 
-@keyframes osintFilterOut {
-    0% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        max-height: var(--filter-height, 500px);
-        margin-bottom: 20px;
-        padding-top: 24px;
-        padding-bottom: 12px;
-        border-width: 1px;
-        overflow: hidden;
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-40px) scale(0.95);
-        max-height: 0;
-        margin-bottom: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-width: 0;
-        overflow: hidden;
-    }
+.osint-filter-wrap.is-closing .osint-filter-bar {
+   opacity: 0 !important;
+   transform: translateY(-12px) scale(.99) !important;
+   pointer-events: none !important;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+   .osint-filter-wrap,
+   .osint-filter-bar {
+     transition: none !important;
+     transform: none !important;
+     opacity: 1 !important;
+     height: auto !important;
+   }
 }
