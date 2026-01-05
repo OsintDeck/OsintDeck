@@ -674,11 +674,15 @@ function initOsintDeck(wrap) {
           <div class="osint-submenu">
             ${subs
           .map(
-            (s) => `
+            (s) => {
+              const label = s || "General";
+              const value = s ? (parent + " / " + s) : parent;
+              return `
               <div class="osint-cat-item"
-                   data-value="${esc((parent + " / " + s).toLowerCase())}">
-                ${esc(s)}
-              </div>`
+                   data-value="${esc(value.toLowerCase())}">
+                ${esc(label)}
+              </div>`;
+            }
           )
           .join("")}
           </div>
