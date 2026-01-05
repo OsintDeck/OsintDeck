@@ -511,6 +511,8 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 
 .osint-chatbar.has-filters-open {
    margin-bottom: 0 !important;
+   box-shadow: none !important; /* Remove shadow to prevent dirty overlap on filters */
+   border-bottom: 1px solid var(--osint-border) !important; /* Ensure separation */
 }
 
 /* WRAPPER: animates HEIGHT */
