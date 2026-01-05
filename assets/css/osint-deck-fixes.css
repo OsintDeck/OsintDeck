@@ -582,7 +582,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
-        max-height: 500px; /* Adjust if content is larger */
+        max-height: var(--filter-height, 500px);
         margin-bottom: 20px;
         padding-top: 24px;
         padding-bottom: 12px;
@@ -595,7 +595,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     0% {
         opacity: 1;
         transform: translateY(0) scale(1);
-        max-height: 500px;
+        max-height: var(--filter-height, 500px);
         margin-bottom: 20px;
         padding-top: 24px;
         padding-bottom: 12px;

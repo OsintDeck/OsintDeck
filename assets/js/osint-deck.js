@@ -738,6 +738,19 @@ function initOsintDeck(wrap) {
       // Opening
       filtersBarRef.style.display = "flex";
       filtersBarRef.classList.remove("is-closing");
+      
+      // Calculate exact height for smooth animation
+      // Apply target styles temporarily to measure
+      filtersBarRef.style.width = "98%";
+      filtersBarRef.style.padding = "24px 16px 12px";
+      
+      const exactHeight = filtersBarRef.scrollHeight;
+      filtersBarRef.style.setProperty('--filter-height', `${exactHeight}px`);
+      
+      // Remove temp styles
+      filtersBarRef.style.width = "";
+      filtersBarRef.style.padding = "";
+
       // Force reflow
       void filtersBarRef.offsetWidth; 
       
@@ -745,6 +758,10 @@ function initOsintDeck(wrap) {
       if (chatBarRef) chatBarRef.classList.add("has-filters-open");
     } else {
       // Closing
+      // Measure current height before closing to ensure smooth exit
+      const currentHeight = filtersBarRef.scrollHeight;
+      filtersBarRef.style.setProperty('--filter-height', `${currentHeight}px`);
+      
       filtersBarRef.classList.remove("is-open");
       filtersBarRef.classList.add("is-closing");
       if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
