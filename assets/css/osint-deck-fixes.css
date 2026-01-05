@@ -531,8 +531,8 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     border-radius: 16px !important;
     box-shadow: var(--osint-shadow) !important;
     
-    /* Smooth entrance */
-    animation: osintFilterIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    /* Smooth entrance - ULTRA SMOOTH */
+    animation: osintFilterIn 0.9s cubic-bezier(0.2, 1, 0.3, 1) forwards !important;
     transform-origin: top center !important;
     will-change: transform, opacity, max-height, margin, padding;
 }
@@ -554,8 +554,8 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     border-radius: 16px !important;
     box-shadow: var(--osint-shadow) !important;
 
-    /* Smooth exit */
-    animation: osintFilterOut 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    /* Smooth exit - ULTRA SMOOTH */
+    animation: osintFilterOut 0.7s cubic-bezier(0.2, 1, 0.3, 1) forwards !important;
     transform-origin: top center !important;
     pointer-events: none !important;
     will-change: transform, opacity, max-height, margin, padding;
