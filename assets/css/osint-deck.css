@@ -175,21 +175,75 @@
   color: var(--osint-accent);
 }
 
-/* Detection Pill */
+/* Detection Tooltip */
 .osint-detected {
   display: none;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  position: absolute;
+  bottom: 100%;
+  left: 12px;
+  margin-bottom: 12px;
+  
+  background: var(--osint-card);
   color: var(--osint-ink);
-  background: rgba(0, 255, 224, 0.1);
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(0, 255, 224, 0.2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--osint-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  
+  align-items: center;
+  gap: 10px;
   white-space: nowrap;
+  
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  pointer-events: none; /* disable pointer when hidden */
 }
-.osint-detected.has-detection { display: flex; }
+
+.osint-detected.show {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Arrow */
+.osint-detected::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--osint-card) transparent transparent transparent;
+}
+
+.osint-pin-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--osint-ink-sub);
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.osint-pin-btn:hover,
+.osint-pin-btn.active {
+  color: var(--osint-accent);
+  background: rgba(0,0,0,0.05);
+}
+
+.osint-msg-text {
+    margin-right: 4px;
+}
 
 /* Filters */
 .osint-filter-bar {
@@ -843,7 +897,55 @@ html[data-site-skin="dark"] .osint-act-go:hover::before {
 .osint-report.sent { color: #f87171; opacity: 0.5; pointer-events: none; }
 
 /* ------------------------------------------------------------
- * 5. Category Dropdown Hierarchy
+ * 5. Custom Tooltips
+ * ------------------------------------------------------------ */
+[data-title] {
+    position: relative;
+}
+
+[data-title]::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--osint-card);
+    color: var(--osint-ink);
+    border: 1px solid var(--osint-border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 2147483647;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    font-weight: 500;
+}
+
+[data-title]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+/* Force tooltips to bottom for top bars (Chatbar & Filterbar) to avoid clipping */
+.osint-chatbar [data-title]::after,
+.osint-filter-bar [data-title]::after {
+    bottom: auto;
+    top: 100%;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.osint-chatbar [data-title]:hover::after,
+.osint-filter-bar [data-title]:hover::after {
+    transform: translateX(-50%) translateY(8px);
+}
+
+/* ------------------------------------------------------------
+ * 6. Category Dropdown Hierarchy
  * ------------------------------------------------------------ */
 .osint-cat-parent {
   display: flex;

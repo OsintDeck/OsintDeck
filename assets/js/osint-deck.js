@@ -374,7 +374,8 @@ function initOsintDeck(wrap) {
         <button type="button"
                 class="osint-btn-ghost osint-toggle-filters"
                 id="${uid}-toggleFilters"
-                aria-label="Mostrar/ocultar filtros">
+                aria-label="Mostrar/ocultar filtros"
+                data-title="Ajustar filtros">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round">
@@ -430,7 +431,7 @@ function initOsintDeck(wrap) {
       <!-- GRUPO CENTRAL (Counter + Star) -->
       <div style="display:flex; align-items:center; gap:12px; margin: 0 auto;">
         <div class="osint-counter" id="${uid}-counter" style="font-size: 0.85em; opacity: 0.7;"></div>
-        <button class="osint-action-btn osint-popular-toggle" id="${uid}-popular-btn" aria-label="Solo populares">
+        <button class="osint-action-btn osint-popular-toggle" id="${uid}-popular-btn" aria-label="Solo populares" data-title="Solo populares">
           <i class="ri-star-line"></i>
         </button>
       </div>
@@ -439,7 +440,7 @@ function initOsintDeck(wrap) {
       <div style="width:1px; height:24px; background:var(--osint-border); align-self:center;"></div>
 
       <!-- BOTÓN LIMPIAR -->
-      <button class="osint-action-btn osint-clear-filters" id="${uid}-clear-btn" aria-label="Limpiar filtros">
+      <button class="osint-action-btn osint-clear-filters" id="${uid}-clear-btn" aria-label="Limpiar filtros" data-title="Limpiar filtros">
         <i class="ri-close-line"></i>
       </button>
     </div>
@@ -738,6 +739,10 @@ function initOsintDeck(wrap) {
   function setSmartIcon(mode) {
     const icon = btnSmart.querySelector(".osint-icon");
     icon.setAttribute("data-mode", mode);
+    
+    // Update tooltip
+    btnSmart.setAttribute("data-title", mode === "paste" ? "Pegar desde portapapeles" : "Limpiar búsqueda");
+
     icon.innerHTML =
       mode === "paste"
         ? `<span class="dashicons dashicons-admin-page"></span>`
@@ -1343,12 +1348,12 @@ function initOsintDeck(wrap) {
               <span class="icon">🡭</span>
             </a>
 
-            ${!isBlocked ? `<button class="osint-act-preview" title="Vista Previa">
+            ${!isBlocked ? `<button class="osint-act-preview" data-title="Vista Previa">
               <i class="ri-eye-line"></i>
             </button>` : ''}
 
             <div class="osint-share-wrapper">
-              <span class="osint-act-share" title="Compartir">
+              <span class="osint-act-share" data-title="Compartir">
                 <span class="dashicons dashicons-share"></span>
               </span>
               <div class="osint-share-menu">
@@ -1369,16 +1374,16 @@ function initOsintDeck(wrap) {
         </div>
 
         <div class="osint-actions-secondary">
-           <button class="osint-act-like" title="Me gusta">
+           <button class="osint-act-like" data-title="Me gusta">
               <i class="ri-heart-line"></i> <span class="count">${likes}</span>
            </button>
-           <button class="osint-act-favorite" title="Favorito">
+           <button class="osint-act-favorite" data-title="Favorito">
               <i class="ri-star-line"></i> <span class="count">${favorites}</span>
            </button>
-           <span class="osint-stat-clicks" title="Usos">
+           <span class="osint-stat-clicks" data-title="Usos">
               <i class="ri-bar-chart-line"></i> <span class="count">${clicks}</span>
            </span>
-           <button class="osint-report" title="Reportar herramienta">
+           <button class="osint-report" data-title="Reportar herramienta">
               <i class="ri-flag-line"></i>
            </button>
         </div>
@@ -1954,10 +1959,79 @@ function initOsintDeck(wrap) {
     }
   });
 
+  let detectedTimer = null;
+  let detectedPinned = false;
+
   function updateDetectedMessage(msg) {
     const el = document.getElementById(`${uid}-detected`);
     if (!el) return;
-    el.textContent = msg || "";
+
+    // Clear existing timer
+    if (detectedTimer) {
+      clearTimeout(detectedTimer);
+      detectedTimer = null;
+    }
+
+    if (!msg) {
+      if (!detectedPinned) {
+        el.classList.remove("show");
+        // Wait for transition before hiding
+        setTimeout(() => {
+             if(!el.classList.contains("show")) el.style.display = 'none';
+        }, 200);
+      }
+      return;
+    }
+
+    const currentText = el.querySelector('.osint-msg-text')?.textContent;
+    
+    // If message changed, reset pin (unless we want to keep it? User said "solo para este caso")
+    // Assuming new detection = new context = reset pin
+    if (currentText !== msg) {
+        detectedPinned = false;
+        
+        el.innerHTML = `
+            <span class="osint-msg-text">${esc(msg)}</span>
+            <button type="button" class="osint-pin-btn" title="Fijar mensaje">
+                <i class="ri-pushpin-line"></i>
+            </button>
+        `;
+        
+        const pinBtn = el.querySelector('.osint-pin-btn');
+        pinBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            detectedPinned = !detectedPinned;
+            pinBtn.classList.toggle('active', detectedPinned);
+            const icon = pinBtn.querySelector('i');
+            icon.className = detectedPinned ? "ri-pushpin-fill" : "ri-pushpin-line";
+            
+            if (detectedPinned) {
+                if (detectedTimer) clearTimeout(detectedTimer);
+            } else {
+                // Resume timer to hide
+                detectedTimer = setTimeout(() => {
+                    el.classList.remove("show");
+                    setTimeout(() => {
+                        if(!detectedPinned) el.style.display = 'none';
+                    }, 200);
+                }, 3000);
+            }
+        });
+    }
+
+    el.style.display = 'flex';
+    // Force reflow
+    void el.offsetWidth;
+    el.classList.add("show");
+
+    if (!detectedPinned) {
+        detectedTimer = setTimeout(() => {
+            el.classList.remove("show");
+            setTimeout(() => {
+                if(!detectedPinned) el.style.display = 'none';
+            }, 200);
+        }, 3000);
+    }
   }
 
   /* =========================================================
@@ -2027,9 +2101,6 @@ function initOsintDeck(wrap) {
   // Botón Populares (Seleccionado del DOM)
   const popularToggle = document.getElementById(`${uid}-popular-btn`);
   if (popularToggle) {
-    popularToggle.onmouseenter = () => showTooltip("Solo populares");
-    popularToggle.onmouseleave = () => { if (typeof tooltipEl !== 'undefined' && tooltipEl) tooltipEl.classList.remove("show"); };
-    
     popularToggle.addEventListener("click", () => {
       filterPopularOnly = !filterPopularOnly;
       popularToggle.classList.toggle("active", filterPopularOnly);
@@ -2044,9 +2115,6 @@ function initOsintDeck(wrap) {
   // Botón Limpiar (Seleccionado del DOM)
   const clearBtn = document.getElementById(`${uid}-clear-btn`);
   if (clearBtn) {
-    clearBtn.onmouseenter = () => showTooltip("Limpiar filtros");
-    clearBtn.onmouseleave = () => { if (typeof tooltipEl !== 'undefined' && tooltipEl) tooltipEl.classList.remove("show"); };
-    
     clearBtn.addEventListener("click", () => {
       setFilter("", "", true);
     });
