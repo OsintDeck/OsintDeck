@@ -475,8 +475,13 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 }
 
 .osint-preview-hover-popup iframe {
-    width: 400%;
-    height: 400%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 960px !important; /* 240px / 0.25 */
+    height: 720px !important; /* 180px / 0.25 */
+    max-width: none !important;
+    max-height: none !important;
     transform: scale(0.25);
     transform-origin: top left;
     border: none;
@@ -497,16 +502,28 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     gap: 8px;
 }
 
-.osint-preview-loader::after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--osint-border);
-    border-top-color: var(--osint-accent);
-    border-radius: 50%;
-    animation: osint-spin 0.8s linear infinite;
+/* Filter Menu Integration */
+.osint-chatbar {
+    transition: border-radius 0.2s ease, border-bottom 0.2s ease, margin-bottom 0.2s ease !important;
 }
 
-@keyframes osint-spin {
-    to { transform: rotate(360deg); }
+.osint-chatbar.has-filters-open {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom: 1px solid transparent !important;
+    margin-bottom: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    box-shadow: none !important; /* Optional: remove shadow when integrated */
+    z-index: 50 !important;
+}
+
+.osint-filter-bar.is-open {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-top: none !important;
+    margin-top: 0 !important;
+    box-shadow: var(--osint-shadow) !important;
+    z-index: 49 !important;
+    border-radius: 0 0 20px 20px !important;
+    display: flex !important;
 }

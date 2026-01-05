@@ -714,6 +714,7 @@ function initOsintDeck(wrap) {
 
   const toggleFiltersBtn = document.getElementById(`${uid}-toggleFilters`);
   const filtersBarRef = document.getElementById(`${uid}-filters`);
+  const chatBarRef = filtersBarRef.previousElementSibling;
   const counterRef = document.getElementById(`${uid}-counter`);
 
   let showFilters = false;
@@ -726,11 +727,20 @@ function initOsintDeck(wrap) {
   function ensureFiltersVisible() {
     showFilters = true;
     filtersBarRef.style.display = "flex";
+    if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+    filtersBarRef.classList.add("is-open");
   }
 
   toggleFiltersBtn.addEventListener("click", () => {
     showFilters = !showFilters;
     filtersBarRef.style.display = showFilters ? "flex" : "none";
+    if (showFilters) {
+      if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+      filtersBarRef.classList.add("is-open");
+    } else {
+      if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+      filtersBarRef.classList.remove("is-open");
+    }
   });
 
   /* =========================================================
