@@ -289,11 +289,6 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     color: #fff !important;
 }
 
-/* Fix button shadow to be black and soft instead of cyan */
-.osint-btn-animated:hover {
-    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.16), 0 2px 6px -2px rgba(0, 0, 0, 0.1) !important;
-}
-
 /* Tablet responsive - prevent stretch */
 @media (max-width: 1024px) {
     .osint-grid {
@@ -511,32 +506,26 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-chatbar {
     position: relative !important;
     z-index: 50 !important;
-    transition: border-radius 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .osint-chatbar.has-filters-open {
-   margin-bottom: 0 !important;
-   border-bottom-left-radius: 0 !important;
-   border-bottom-right-radius: 0 !important;
-   border-bottom-color: transparent !important;
-   box-shadow: 0 4px 12px -4px rgba(0,0,0,0.1) !important; /* Reduce shadow to blend */
+   margin-bottom: 0;
 }
 
 /* WRAPPER: animates HEIGHT */
 .osint-filter-wrap {
    width: 100% !important;
-   margin: 0 !important;
-   margin-top: -1px !important; /* Overlap to merge borders */
+   margin: -10px 0 20px !important;
    height: 0;
    overflow: hidden; /* JS toggles this */
    position: relative !important;
    z-index: 40 !important;
 }
 
-/* FILTER BAR: Integrated Style */
+/* FILTER BAR: GPU ONLY (transform + opacity) */
 .osint-filter-bar {
    width: 100% !important;
-   margin: 0 !important;
+   margin: 0 auto !important;
    display: flex !important;
    flex-wrap: wrap !important;
    gap: 12px !important;
@@ -544,28 +533,47 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 
    background: var(--osint-card) !important;
    border: 1px solid var(--osint-border) !important;
-   border-top: none !important; /* Integrated look */
-   border-radius: 0 0 24px 24px !important; /* Bottom rounded only */
+   border-radius: 16px; /* Removed !important for integration transition */
    
    /* Softer Shadow */
    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.04) !important;
    
-   padding: 24px 24px 16px !important;
+   padding: 24px 16px 12px !important;
    
    /* Extra margin bottom to prevent shadow clipping during animation */
    margin-bottom: 20px !important; 
 
    opacity: 0 !important;
-   /* Transform handled by GSAP, but set defaults here if JS fails */
+   transform: translateY(-12px) scale(.99) !important;
    transform-origin: top center !important;
+   transition: border-radius 0.4s ease, border-color 0.4s ease !important;
 }
 
 .osint-filter-wrap.is-open .osint-filter-bar {
    opacity: 1 !important;
+   transform: translateY(0) scale(1) !important;
+   /* Integration styles */
+   border-top-left-radius: 0 !important;
+   border-top-right-radius: 0 !important;
+   border-top-color: transparent !important;
+}
+
+/* Chatbar Integration */
+.osint-chatbar {
+    transition: border-radius 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
+}
+
+.osint-chatbar.has-filters-open {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+    z-index: 51 !important; /* Ensure it stays above filter bar seam */
 }
 
 .osint-filter-wrap.is-closing .osint-filter-bar {
    opacity: 0 !important;
+   transform: translateY(-12px) scale(.99) !important;
    pointer-events: none !important;
 }
 

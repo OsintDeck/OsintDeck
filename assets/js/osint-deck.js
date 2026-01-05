@@ -745,8 +745,7 @@ function initOsintDeck(wrap) {
   if (filterWrapRef) {
       if (typeof gsap !== 'undefined') {
           gsap.set(filterWrapRef, { height: 0 });
-          // Slide from slightly behind (-30px) instead of just -12px, no scale
-          gsap.set(filtersBarRef, { y: -30, opacity: 0 });
+          gsap.set(filtersBarRef, { y: -12, opacity: 0, scale: 0.99 });
       } else {
           filterWrapRef.style.height = "0px";
       }
@@ -795,9 +794,9 @@ function initOsintDeck(wrap) {
           tl.to(filtersBarRef, {
               y: 0,
               opacity: 1,
-              // No scale, integrated feel
+              scale: 1,
               duration: 0.42,
-              ease: "circ.out"
+              ease: "back.out(1.2)"
           }, "<0.1"); 
 
      } else {
@@ -843,8 +842,9 @@ function initOsintDeck(wrap) {
          });
 
          tl.to(filtersBarRef, {
-             y: -30,
+             y: -12,
              opacity: 0,
+             scale: 0.99,
              duration: 0.3,
              ease: "power2.in"
          });
@@ -857,7 +857,7 @@ function initOsintDeck(wrap) {
 
          if (chatBarRef) {
              tl.to(chatBarRef, {
-                 marginBottom: "20px", // Approximate return value, or let clearProps handle it if we animate to something close?
+                 marginBottom: "24px", // Approximate return value, or let clearProps handle it if we animate to something close?
                  // If we animate to 20px, it looks smooth. If we just remove class, it might jump if we don't animate.
                  // We animate to 20px then clearProps.
                  duration: 0.4,
