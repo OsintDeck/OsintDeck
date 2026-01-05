@@ -1510,6 +1510,7 @@ function initOsintDeck(wrap) {
                 if (previewTimer) clearTimeout(previewTimer);
 
                 previewTimer = setTimeout(() => {
+                    // Check if popup already exists in DOM and is linked to this closure
                     if (!previewPopup) {
                         previewPopup = document.createElement('div');
                         previewPopup.className = 'osint-preview-hover-popup';
@@ -1518,23 +1519,24 @@ function initOsintDeck(wrap) {
                             <iframe src="${finalUrl}" scrolling="no" frameborder="0" onload="this.previousElementSibling.style.display='none'"></iframe>
                         `;
                         document.body.appendChild(previewPopup);
-                        
-                        const rect = previewBtn.getBoundingClientRect();
-                        const popupWidth = 320;
-                        const popupHeight = 240;
-                        
-                        let top = rect.top - popupHeight - 12;
-                        let left = rect.left + (rect.width / 2) - (popupWidth / 2);
-                        
-                        if (left < 10) left = 10;
-                        if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
-                        if (top < 10) top = rect.bottom + 12;
-                        
-                        previewPopup.style.top = `${top + window.scrollY}px`;
-                        previewPopup.style.left = `${left + window.scrollX}px`;
-                        
-                        requestAnimationFrame(() => previewPopup.classList.add('active'));
                     }
+
+                    // Update position
+                    const rect = previewBtn.getBoundingClientRect();
+                    const popupWidth = 240;
+                    const popupHeight = 180;
+                    
+                    let top = rect.top - popupHeight - 12;
+                    let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+                    
+                    if (left < 10) left = 10;
+                    if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
+                    if (top < 10) top = rect.bottom + 12;
+                    
+                    previewPopup.style.top = `${top + window.scrollY}px`;
+                    previewPopup.style.left = `${left + window.scrollX}px`;
+                    
+                    requestAnimationFrame(() => previewPopup.classList.add('active'));
                 }, 600); 
             });
 
@@ -1542,13 +1544,7 @@ function initOsintDeck(wrap) {
                 if (previewTimer) clearTimeout(previewTimer);
                 if (previewPopup) {
                     previewPopup.classList.remove('active');
-                    const popupToRemove = previewPopup;
-                    previewPopup = null;
-                    setTimeout(() => {
-                        if(popupToRemove && popupToRemove.parentNode) {
-                            popupToRemove.parentNode.removeChild(popupToRemove);
-                        }
-                    }, 300);
+                    // Removed destruction logic for caching
                 }
             });
             // --- HOVER PREVIEW END ---

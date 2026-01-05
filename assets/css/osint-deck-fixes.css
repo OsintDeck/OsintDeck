@@ -453,8 +453,8 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 /* Preview Hover Popup */
 .osint-preview-hover-popup {
     position: absolute;
-    width: 320px;
-    height: 240px;
+    width: 240px;
+    height: 180px;
     background: var(--osint-card);
     border: 1px solid var(--osint-border);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -465,10 +465,12 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     transform: translateY(10px);
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
+    visibility: hidden;
 }
 
 .osint-preview-hover-popup.active {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
 }
 
