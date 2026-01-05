@@ -248,6 +248,45 @@
   color: var(--osint-accent);
 }
 
+/* Filter Actions (Right aligned) */
+.osint-filter-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.osint-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--osint-border);
+  background: var(--osint-card);
+  color: var(--osint-ink-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  font-size: 16px; /* Icon size */
+}
+
+.osint-action-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+  border-color: var(--osint-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.osint-action-btn.active {
+  background: rgba(255, 165, 2, 0.15);
+  color: #ffa502;
+  border-color: #ffa502;
+  box-shadow: 0 0 12px rgba(255, 165, 2, 0.2);
+}
+
 /* Custom Scrollbar for Dropdown */
 .osint-dropdown-menu::-webkit-scrollbar {
   width: 6px;
@@ -284,6 +323,7 @@
 }
 .osint-deck:hover {
   transform: translateY(-5px);
+  z-index: 100;
 }
 
 .osint-card {
@@ -317,20 +357,21 @@
 }
 .osint-top-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 .osint-fav {
-  width: 48px; height: 48px;
-  border-radius: 10px;
+  width: 50px; height: 50px;
+  border-radius: 20px;
   overflow: hidden;
-  background: #000;
+  background: var(--osint-bg);
   flex-shrink: 0;
   border: 1px solid var(--osint-border);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 6px;
 }
 .osint-fav img {
   width: 100%;
@@ -460,6 +501,78 @@
 .osint-btn-animated:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 255, 224, 0.2);
+}
+
+.osint-btn-animated .text {
+  flex: 1;
+  text-align: left;
+}
+
+.osint-btn-animated .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--osint-ink);
+  color: var(--osint-bg);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.osint-act-go {
+  flex: 1;
+  justify-content: space-between;
+}
+
+/* Light theme: white button, light gray arrow background, dark text */
+.osint-wrap[data-theme="light"] .osint-act-go,
+html:not([data-site-skin="dark"]) .osint-act-go {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #d7dbe1;
+}
+.osint-wrap[data-theme="light"] .osint-act-go .icon,
+html:not([data-site-skin="dark"]) .osint-act-go .icon {
+  background: #e5e7eb; /* light gray */
+  color: #111111;      /* arrow icon color */
+}
+
+/* Dark theme: dark gray button, black border, white text; arrow: white on black circle */
+.osint-wrap[data-theme="dark"] .osint-act-go,
+html[data-site-skin="dark"] .osint-act-go {
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+.osint-wrap[data-theme="dark"] .osint-act-go .icon,
+html[data-site-skin="dark"] .osint-act-go .icon {
+  background: #000000; /* black circle */
+  color: #ffffff;      /* white arrow */
+}
+
+@keyframes osd-charge-black {
+  0% { left: -100%; opacity: 0; }
+  10% { left: -100%; opacity: 0.25; }
+  60% { left: 0; opacity: 0.15; }
+  100% { left: 0; opacity: 0; }
+}
+.osint-wrap[data-theme="dark"] .osint-act-go::before,
+html[data-site-skin="dark"] .osint-act-go::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0) 100%);
+  border-radius: 20px;
+  z-index: 0;
+}
+.osint-wrap[data-theme="dark"] .osint-act-go:hover::before,
+html[data-site-skin="dark"] .osint-act-go:hover::before {
+  animation: osd-charge-black 900ms ease-out 1;
 }
 
 .osint-act-preview, .osint-act-share {
@@ -649,7 +762,7 @@
 }
 
 .osint-deck.osint-animate-in {
-  animation: osintFadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: osintFadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   opacity: 0; /* Start hidden */
 }
 

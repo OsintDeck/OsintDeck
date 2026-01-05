@@ -23,6 +23,10 @@
     margin: 0 auto !important;
 }
 
+.osint-deck:hover {
+    z-index: 100 !important;
+}
+
 /* Fix card to be flexible height */
 .osint-card {
     width: 100% !important;
@@ -156,14 +160,17 @@
 
 /* Larger favicon */
 .osint-fav {
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 8px !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 20px !important;
+    padding: 6px !important;
 }
 
 .osint-fav img {
-    width: 24px !important;
-    height: 24px !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    padding: 0 !important;
 }
 
 /* Better spacing for card header */

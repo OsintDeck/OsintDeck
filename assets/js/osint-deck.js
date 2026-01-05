@@ -427,8 +427,21 @@ function initOsintDeck(wrap) {
         <div class="osint-dropdown-menu" data-for="category"></div>
       </div>
       
-      <!-- CONTADOR -->
-      <div class="osint-counter" id="${uid}-counter" style="margin-left: auto; font-size: 0.85em; opacity: 0.7; align-self: center;"></div>
+      <!-- GRUPO CENTRAL (Counter + Star) -->
+      <div style="display:flex; align-items:center; gap:12px; margin: 0 auto;">
+        <div class="osint-counter" id="${uid}-counter" style="font-size: 0.85em; opacity: 0.7;"></div>
+        <button class="osint-action-btn osint-popular-toggle" id="${uid}-popular-btn" aria-label="Solo populares">
+          <i class="ri-star-line"></i>
+        </button>
+      </div>
+
+      <!-- SEPARADOR -->
+      <div style="width:1px; height:24px; background:var(--osint-border); align-self:center;"></div>
+
+      <!-- BOTÓN LIMPIAR -->
+      <button class="osint-action-btn osint-clear-filters" id="${uid}-clear-btn" aria-label="Limpiar filtros">
+        <i class="ri-close-line"></i>
+      </button>
     </div>
 
     <!-- 🔹 Grilla -->
@@ -1577,7 +1590,7 @@ function initOsintDeck(wrap) {
     if (!counterRef) return;
     const total = filteredCache.length;
     const shown = Math.min(renderedCount, total);
-    counterRef.textContent = `${shown} / ${total}`;
+    counterRef.textContent = `${shown} visibles de ${total}`;
   }
 
   function renderNextChunk() {
@@ -1591,7 +1604,7 @@ function initOsintDeck(wrap) {
       const deck = renderDeckElement(t);
       if (deck) {
         deck.classList.add("osint-animate-in");
-        deck.style.animationDelay = `${i * 0.05}s`;
+        deck.style.animationDelay = `${i * 0.1}s`;
         grid.appendChild(deck);
         appended.push(deck);
       }
@@ -2011,34 +2024,33 @@ function initOsintDeck(wrap) {
     }
   }
 
-  // Contenedor de acciones de filtro
-  const filterBar = document.getElementById(`${uid}-filters`);
-  const actionsContainer = document.createElement("div");
-  actionsContainer.className = "osint-filter-actions";
-  filterBar.appendChild(actionsContainer);
+  // Botón Populares (Seleccionado del DOM)
+  const popularToggle = document.getElementById(`${uid}-popular-btn`);
+  if (popularToggle) {
+    popularToggle.onmouseenter = () => showTooltip("Solo populares");
+    popularToggle.onmouseleave = () => { if (typeof tooltipEl !== 'undefined' && tooltipEl) tooltipEl.classList.remove("show"); };
+    
+    popularToggle.addEventListener("click", () => {
+      filterPopularOnly = !filterPopularOnly;
+      popularToggle.classList.toggle("active", filterPopularOnly);
+      const icon = popularToggle.querySelector("i");
+      if (icon) {
+        icon.className = filterPopularOnly ? "ri-star-fill" : "ri-star-line";
+      }
+      applyFilters();
+    });
+  }
 
-  const clearBtn = document.createElement("button");
-  clearBtn.className = "osint-action-btn osint-clear-filters";
-  clearBtn.innerHTML = '<i class="ri-close-line"></i> Limpiar filtros';
-  actionsContainer.appendChild(clearBtn);
-
-  const popularToggle = document.createElement("button");
-  popularToggle.className = "osint-action-btn osint-popular-toggle";
-  popularToggle.innerHTML = '<i class="ri-star-line"></i> Solo populares';
-  popularToggle.addEventListener("click", () => {
-    filterPopularOnly = !filterPopularOnly;
-    popularToggle.classList.toggle("active", filterPopularOnly);
-    const icon = popularToggle.querySelector("i");
-    if (icon) {
-      icon.className = filterPopularOnly ? "ri-star-fill" : "ri-star-line";
-    }
-    applyFilters();
-  });
-  actionsContainer.appendChild(popularToggle);
-
-  clearBtn.addEventListener("click", () => {
-    setFilter("", "", true);
-  });
+  // Botón Limpiar (Seleccionado del DOM)
+  const clearBtn = document.getElementById(`${uid}-clear-btn`);
+  if (clearBtn) {
+    clearBtn.onmouseenter = () => showTooltip("Limpiar filtros");
+    clearBtn.onmouseleave = () => { if (typeof tooltipEl !== 'undefined' && tooltipEl) tooltipEl.classList.remove("show"); };
+    
+    clearBtn.addEventListener("click", () => {
+      setFilter("", "", true);
+    });
+  }
 
   // Inicializar menús
   populateTypeMenu();
