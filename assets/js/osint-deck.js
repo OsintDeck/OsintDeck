@@ -769,7 +769,7 @@ function initOsintDeck(wrap) {
               onComplete: () => {
                   isAnimating = false;
                   // Ensure height is set to auto for responsiveness
-                  gsap.set(filterWrapRef, { height: "auto" });
+                  gsap.set(filterWrapRef, { height: "auto", overflow: "visible" });
               }
           });
 
@@ -813,6 +813,7 @@ function initOsintDeck(wrap) {
            if (e.propertyName !== "height") return;
            filterWrapRef.removeEventListener("transitionend", onEnd);
            filterWrapRef.style.height = "auto";
+           filterWrapRef.style.overflow = "visible";
            isAnimating = false;
          };
          filterWrapRef.addEventListener("transitionend", onEnd);
@@ -825,6 +826,9 @@ function initOsintDeck(wrap) {
      showFilters = false;
 
      if (typeof gsap !== 'undefined') {
+         // Immediately set overflow hidden to ensure clean closing animation
+         gsap.set(filterWrapRef, { overflow: "hidden" });
+
          const tl = gsap.timeline({
              onComplete: () => {
                  isAnimating = false;
@@ -861,6 +865,7 @@ function initOsintDeck(wrap) {
          }
 
      } else {
+         filterWrapRef.style.overflow = "hidden";
          filterWrapRef.classList.add("is-closing");
          filterWrapRef.classList.remove("is-open");
          if (chatBarRef) chatBarRef.classList.remove("has-filters-open");

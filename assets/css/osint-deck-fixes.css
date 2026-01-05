@@ -517,7 +517,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
    width: 98% !important;
    margin: -10px auto 20px !important;
    height: 0;
-   overflow: hidden !important;
+   overflow: hidden; /* JS toggles this */
    position: relative !important;
    z-index: 40 !important;
 }
