@@ -1353,7 +1353,7 @@ function initOsintDeck(wrap) {
             </button>` : ''}
 
             <div class="osint-share-wrapper">
-              <span class="osint-act-share" data-title="Compartir">
+              <span class="osint-act-share">
                 <span class="dashicons dashicons-share"></span>
               </span>
               <div class="osint-share-menu">
@@ -1497,6 +1497,61 @@ function initOsintDeck(wrap) {
                 previewBtn.dataset.verified = "true";
                 previewBtn.title = "Vista previa verificada";
             }
+
+            // --- HOVER PREVIEW START ---
+            let previewPopup = null;
+            let previewTimer = null;
+
+            previewBtn.addEventListener('mouseenter', () => {
+                if (previewBtn.classList.contains('is-disabled')) return;
+                const finalUrl = goBtn.href;
+                
+                // Clear any existing timer
+                if (previewTimer) clearTimeout(previewTimer);
+
+                previewTimer = setTimeout(() => {
+                    if (!previewPopup) {
+                        previewPopup = document.createElement('div');
+                        previewPopup.className = 'osint-preview-hover-popup';
+                        previewPopup.innerHTML = `
+                            <div class="osint-preview-loader">Cargando vista previa...</div>
+                            <iframe src="${finalUrl}" scrolling="no" frameborder="0" onload="this.previousElementSibling.style.display='none'"></iframe>
+                        `;
+                        document.body.appendChild(previewPopup);
+                        
+                        const rect = previewBtn.getBoundingClientRect();
+                        const popupWidth = 320;
+                        const popupHeight = 240;
+                        
+                        let top = rect.top - popupHeight - 12;
+                        let left = rect.left + (rect.width / 2) - (popupWidth / 2);
+                        
+                        if (left < 10) left = 10;
+                        if (left + popupWidth > window.innerWidth) left = window.innerWidth - popupWidth - 10;
+                        if (top < 10) top = rect.bottom + 12;
+                        
+                        previewPopup.style.top = `${top + window.scrollY}px`;
+                        previewPopup.style.left = `${left + window.scrollX}px`;
+                        
+                        requestAnimationFrame(() => previewPopup.classList.add('active'));
+                    }
+                }, 600); 
+            });
+
+            previewBtn.addEventListener('mouseleave', () => {
+                if (previewTimer) clearTimeout(previewTimer);
+                if (previewPopup) {
+                    previewPopup.classList.remove('active');
+                    const popupToRemove = previewPopup;
+                    previewPopup = null;
+                    setTimeout(() => {
+                        if(popupToRemove && popupToRemove.parentNode) {
+                            popupToRemove.parentNode.removeChild(popupToRemove);
+                        }
+                    }, 300);
+                }
+            });
+            // --- HOVER PREVIEW END ---
 
             previewBtn.addEventListener("click", (e) => {
                 e.stopPropagation();

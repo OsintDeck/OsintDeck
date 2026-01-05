@@ -160,8 +160,8 @@
 
 /* Larger favicon */
 .osint-fav {
-    width: 150px !important;
-    height: 150px !important;
+    width: 50px !important;
+    height: 50px !important;
     border-radius: 20px !important;
     padding: 6px !important;
 }
@@ -448,4 +448,63 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 
 .osint-detected:hover {
     background: var(--osint-bg) !important;
+}
+
+/* Preview Hover Popup */
+.osint-preview-hover-popup {
+    position: absolute;
+    width: 320px;
+    height: 240px;
+    background: var(--osint-card);
+    border: 1px solid var(--osint-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-radius: 12px;
+    z-index: 999999;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.osint-preview-hover-popup.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.osint-preview-hover-popup iframe {
+    width: 400%;
+    height: 400%;
+    transform: scale(0.25);
+    transform-origin: top left;
+    border: none;
+    background: #fff; /* Most sites assume white bg */
+}
+
+.osint-preview-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    color: var(--osint-muted);
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.osint-preview-loader::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--osint-border);
+    border-top-color: var(--osint-accent);
+    border-radius: 50%;
+    animation: osint-spin 0.8s linear infinite;
+}
+
+@keyframes osint-spin {
+    to { transform: rotate(360deg); }
 }
