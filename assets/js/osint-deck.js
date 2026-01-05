@@ -734,7 +734,8 @@ function initOsintDeck(wrap) {
           // If open and not animating, ensure height matches content
           gsap.set(filterWrapRef, { height: "auto" });
        } else {
-          filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+          // Include margin-bottom (approx 24px) for shadow
+          filterWrapRef.style.height = (filtersBarRef.scrollHeight + 24) + "px";
        }
     }
   });
@@ -807,7 +808,7 @@ function initOsintDeck(wrap) {
          filterWrapRef.style.height = "0px";
          void filterWrapRef.getBoundingClientRect();
     
-         filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
+         filterWrapRef.style.height = (filtersBarRef.scrollHeight + 24) + "px";
     
          const onEnd = (e) => {
            if (e.propertyName !== "height") return;
@@ -866,13 +867,13 @@ function initOsintDeck(wrap) {
 
      } else {
          filterWrapRef.style.overflow = "hidden";
-         filterWrapRef.classList.add("is-closing");
-         filterWrapRef.classList.remove("is-open");
-         if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
-         filterWrapRef.setAttribute("aria-hidden", "true");
-    
-         filterWrapRef.style.height = filtersBarRef.scrollHeight + "px";
-         void filterWrapRef.getBoundingClientRect();
+          filterWrapRef.classList.add("is-closing");
+          filterWrapRef.classList.remove("is-open");
+          if (chatBarRef) chatBarRef.classList.remove("has-filters-open");
+          filterWrapRef.setAttribute("aria-hidden", "true");
+     
+          filterWrapRef.style.height = (filtersBarRef.scrollHeight + 24) + "px";
+          void filterWrapRef.getBoundingClientRect();
     
          requestAnimationFrame(() => {
            filterWrapRef.style.height = "0px";
