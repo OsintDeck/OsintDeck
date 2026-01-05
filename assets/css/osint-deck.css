@@ -500,7 +500,7 @@
 }
 .osint-btn-animated:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 255, 224, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .osint-btn-animated .text {

@@ -857,7 +857,7 @@ function initOsintDeck(wrap) {
 
          if (chatBarRef) {
              tl.to(chatBarRef, {
-                 marginBottom: "24px", // Approximate return value, or let clearProps handle it if we animate to something close?
+                 marginBottom: "20px", // Approximate return value, or let clearProps handle it if we animate to something close?
                  // If we animate to 20px, it looks smooth. If we just remove class, it might jump if we don't animate.
                  // We animate to 20px then clearProps.
                  duration: 0.4,
