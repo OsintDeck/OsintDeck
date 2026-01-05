@@ -502,28 +502,45 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     gap: 8px;
 }
 
-/* Filter Menu Integration */
+/* Filter Menu - Slide out from behind effect */
 .osint-chatbar {
-    transition: border-radius 0.2s ease, border-bottom 0.2s ease, margin-bottom 0.2s ease !important;
+    position: relative !important;
+    z-index: 50 !important;
+    transition: margin-bottom 0.3s ease !important;
 }
 
 .osint-chatbar.has-filters-open {
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    border-bottom: 1px solid transparent !important;
-    margin-bottom: 0 !important;
-    border-radius: 20px 20px 0 0 !important;
-    box-shadow: none !important; /* Optional: remove shadow when integrated */
-    z-index: 50 !important;
+    margin-bottom: 0 !important; /* Remove gap so filter bar can tuck in */
+    /* Keep original radius and shadow - SEPARATE look */
 }
 
 .osint-filter-bar.is-open {
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-    border-top: none !important;
-    margin-top: 0 !important;
-    box-shadow: var(--osint-shadow) !important;
-    z-index: 49 !important;
-    border-radius: 0 0 20px 20px !important;
     display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+    
+    position: relative !important;
+    z-index: 40 !important; /* Behind search bar */
+    width: 98% !important;
+    margin: -10px auto 20px !important; /* Tuck behind (-10px), center, bottom margin */
+    padding: 24px 16px 12px !important; /* Extra top padding so content clears the search bar overlap */
+    
+    background: var(--osint-card) !important;
+    border: 1px solid var(--osint-border) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--osint-shadow) !important;
+    
+    animation: osintSlideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes osintSlideOut {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }

@@ -3,7 +3,7 @@
  * Plugin Name: OSINT Deck
  * Plugin URI: https://osintdeck.github.io
  * Description: Plugin para centralizar herramientas OSINT y registrar logs para debugging.
- * Version: 0.3.14
+ * Version: 0.3.15
  * Author: Equipo OSINT Deck
  * Author URI: https://github.com/OsintDeck
  * License: GPL2
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'OSINT_DECK_VERSION', '0.3.14' );
+define( 'OSINT_DECK_VERSION', '0.3.15' );
 define( 'OSINT_DECK_PLUGIN_FILE', __FILE__ );
 define( 'OSINT_DECK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OSINT_DECK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
