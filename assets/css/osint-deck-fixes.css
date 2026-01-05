@@ -405,7 +405,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-detected {
     position: absolute !important;
     bottom: 100% !important;
-    left: 24px !important;
+    left: 50% !important;
     margin-bottom: 12px !important;
     background: var(--osint-card) !important;
     color: var(--osint-ink) !important;
@@ -418,7 +418,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     z-index: 100 !important;
     opacity: 0 !important;
     visibility: hidden !important;
-    transform: translateY(10px) !important;
+    transform: translateX(-50%) translateY(10px) !important;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     pointer-events: none !important;
     cursor: pointer !important;
@@ -431,7 +431,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 .osint-detected.active {
     opacity: 1 !important;
     visibility: visible !important;
-    transform: translateY(0) !important;
+    transform: translateX(-50%) translateY(0) !important;
     pointer-events: auto !important;
 }
 
