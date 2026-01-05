@@ -160,8 +160,8 @@
 
 /* Larger favicon */
 .osint-fav {
-    width: 50px !important;
-    height: 50px !important;
+    width: 150px !important;
+    height: 150px !important;
     border-radius: 20px !important;
     padding: 6px !important;
 }
@@ -375,6 +375,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 
     .osint-card {
         min-height: 360px !important;
+        padding: 16px !important;
     }
 
     /* CRITICAL: Disable card stacking effect on mobile */
@@ -398,4 +399,53 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     .osint-card {
         padding: 16px !important;
     }
+}
+
+/* Detected Tooltip above Search Bar */
+.osint-detected {
+    position: absolute !important;
+    bottom: 100% !important;
+    left: 24px !important;
+    margin-bottom: 12px !important;
+    background: var(--osint-card) !important;
+    color: var(--osint-ink) !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--osint-border) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    z-index: 100 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(10px) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    max-width: calc(100% - 48px) !important;
+}
+
+.osint-detected.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+}
+
+.osint-detected.is-pinned {
+    border-color: var(--osint-ink) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+.osint-detected.is-pinned::after {
+    content: "📌" !important;
+    font-size: 12px !important;
+    margin-left: 8px !important;
+}
+
+.osint-detected:hover {
+    background: var(--osint-bg) !important;
 }

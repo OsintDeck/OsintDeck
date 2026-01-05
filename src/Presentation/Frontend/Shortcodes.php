@@ -312,47 +312,17 @@ class Shortcodes {
         $category_map = [];
         foreach ( $categories as $cat ) {
             $code = $cat['code'] ?? '';
-            // Ensure label is clean and decoded
-            $label = html_entity_decode( $cat['label'] ?? ( $cat['name'] ?? $code ) );
-            $label = trim( $label );
-            
+            $label = $cat['label'] ?? ( $cat['name'] ?? $code );
             // Fix: use group_name column from database
             $group = $cat['group_name'] ?? '';
-            $group = trim( $group );
             
             if ( $code ) {
-                // Check if label already contains the group prefix (e.g. "Group / Child")
-                $has_group_prefix = false;
-                if ( $group && stripos( $label, $group ) === 0 ) {
-                    // Check if followed by separator or end of string
-                    $rest = substr( $label, strlen( $group ) );
-                    $rest = trim( $rest );
-                    // If rest starts with / or is empty, then it has the prefix
-                    if ( empty( $rest ) || strpos( $rest, '/' ) === 0 || strpos( $rest, '-' ) === 0 ) {
-                         $has_group_prefix = true;
-                    }
-                }
-
                 // If label has hierarchy (contains /), use it.
+                // Otherwise if we have a group, prepend it.
                 if ( strpos( $label, '/' ) !== false ) {
-                    // If it has hierarchy AND starts with group, it's perfect.
-                    // If it has hierarchy but NO group prefix, should we prepend?
-                    // E.g. Label="Sub / Detail", Group="Main". -> "Main / Sub / Detail".
-                    
-                    if ( $group && ! $has_group_prefix ) {
-                         $category_map[$code] = $group . ' / ' . $label;
-                    } else {
-                         $category_map[$code] = $label;
-                    }
+                    $category_map[$code] = $label;
                 } elseif ( $group ) {
-                    // No hierarchy in label.
-                    if ( $has_group_prefix ) {
-                        // Label is "Group Something".
-                        $category_map[$code] = $label;
-                    } else {
-                        // Prepend group
-                        $category_map[$code] = $group . ' / ' . $label;
-                    }
+                    $category_map[$code] = $group . ' / ' . $label;
                 } else {
                     $category_map[$code] = $label;
                 }

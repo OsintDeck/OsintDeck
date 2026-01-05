@@ -674,15 +674,11 @@ function initOsintDeck(wrap) {
           <div class="osint-submenu">
             ${subs
           .map(
-            (s) => {
-              const label = s || "General";
-              const value = s ? (parent + " / " + s) : parent;
-              return `
+            (s) => `
               <div class="osint-cat-item"
-                   data-value="${esc(value.toLowerCase())}">
-                ${esc(label)}
-              </div>`;
-            }
+                   data-value="${esc((parent + " / " + s).toLowerCase())}">
+                ${esc(s)}
+              </div>`
           )
           .join("")}
           </div>
@@ -1963,79 +1959,10 @@ function initOsintDeck(wrap) {
     }
   });
 
-  let detectedTimer = null;
-  let detectedPinned = false;
-
   function updateDetectedMessage(msg) {
     const el = document.getElementById(`${uid}-detected`);
     if (!el) return;
-
-    // Clear existing timer
-    if (detectedTimer) {
-      clearTimeout(detectedTimer);
-      detectedTimer = null;
-    }
-
-    if (!msg) {
-      if (!detectedPinned) {
-        el.classList.remove("show");
-        // Wait for transition before hiding
-        setTimeout(() => {
-             if(!el.classList.contains("show")) el.style.display = 'none';
-        }, 200);
-      }
-      return;
-    }
-
-    const currentText = el.querySelector('.osint-msg-text')?.textContent;
-    
-    // If message changed, reset pin (unless we want to keep it? User said "solo para este caso")
-    // Assuming new detection = new context = reset pin
-    if (currentText !== msg) {
-        detectedPinned = false;
-        
-        el.innerHTML = `
-            <span class="osint-msg-text">${esc(msg)}</span>
-            <button type="button" class="osint-pin-btn" title="Fijar mensaje">
-                <i class="ri-pushpin-line"></i>
-            </button>
-        `;
-        
-        const pinBtn = el.querySelector('.osint-pin-btn');
-        pinBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            detectedPinned = !detectedPinned;
-            pinBtn.classList.toggle('active', detectedPinned);
-            const icon = pinBtn.querySelector('i');
-            icon.className = detectedPinned ? "ri-pushpin-fill" : "ri-pushpin-line";
-            
-            if (detectedPinned) {
-                if (detectedTimer) clearTimeout(detectedTimer);
-            } else {
-                // Resume timer to hide
-                detectedTimer = setTimeout(() => {
-                    el.classList.remove("show");
-                    setTimeout(() => {
-                        if(!detectedPinned) el.style.display = 'none';
-                    }, 200);
-                }, 3000);
-            }
-        });
-    }
-
-    el.style.display = 'flex';
-    // Force reflow
-    void el.offsetWidth;
-    el.classList.add("show");
-
-    if (!detectedPinned) {
-        detectedTimer = setTimeout(() => {
-            el.classList.remove("show");
-            setTimeout(() => {
-                if(!detectedPinned) el.style.display = 'none';
-            }, 200);
-        }, 3000);
-    }
+    el.textContent = msg || "";
   }
 
   /* =========================================================
@@ -2073,10 +2000,60 @@ function initOsintDeck(wrap) {
       .catch(() => ({ success: false }));
   }
 
+  /* =========================================================
+   * DETECCIÓN VISUAL (TOOLTIP PINNABLE)
+   * ========================================================= */
+  const detectedEl = document.getElementById(`${uid}-detected`);
+  let detectedTimer;
+
+  if (detectedEl) {
+    detectedEl.addEventListener("click", () => {
+       const wasPinned = detectedEl.classList.contains("is-pinned");
+       if (wasPinned) {
+         detectedEl.classList.remove("is-pinned");
+         // Resume auto-hide
+         clearTimeout(detectedTimer);
+         detectedTimer = setTimeout(() => {
+           detectedEl.classList.remove("active");
+         }, 3000);
+       } else {
+         detectedEl.classList.add("is-pinned");
+         clearTimeout(detectedTimer);
+       }
+    });
+  }
+
+  function showDetectedMessage(text) {
+    if (!detectedEl) return;
+    
+    if (!text) {
+      detectedEl.classList.remove("active");
+      return;
+    }
+    
+    // Update content
+    detectedEl.innerHTML = `<span>${text}</span>`;
+    detectedEl.classList.add("active");
+    
+    // If pinned, stay visible
+    if (detectedEl.classList.contains("is-pinned")) return;
+    
+    // Auto-hide
+    clearTimeout(detectedTimer);
+    detectedTimer = setTimeout(() => {
+      if (!detectedEl.classList.contains("is-pinned")) {
+        detectedEl.classList.remove("active");
+      }
+    }, 3000);
+  }
+
   async function onInput() {
     const val = (q.value || "").trim();
     const d = detectRichInput(val);
-    if (d.msg) showTooltip(d.msg);
+    
+    // Usar nuevo tooltip dedicado
+    showDetectedMessage(d.msg);
+
     applyFilters();
     toggleSmart();
 

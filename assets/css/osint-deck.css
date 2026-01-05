@@ -1,36 +1,941 @@
+/* ============================================================
+ * OSINT Deck — CSS v3
+ * Limpio, compatible con Bootstrap, mazo estable
+ * ============================================================ */
 
-/* Category Hierarchy */
-.osint-cat-parent {
-    padding: 4px 0;
+/* ------------------------------------------------------------
+ * 1. Variables base (modo oscuro por defecto)
+ * ------------------------------------------------------------ */
+:root {
+  --osint-bg: #0a0c0f;
+  --osint-card: #16181d;
+  --osint-border: #23252a;
+  --osint-ink: #f2f4f8;
+  --osint-ink-sub: #a9b0bb;
+  --osint-accent: #00ffe0;
+  --osint-muted: #9ca3af;
+  --osint-btn-bg: #00ffe0;
+  --osint-btn-text: #0a0c0f;
+
+  --osint-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
+  --osint-shadow-strong: 0 12px 32px rgba(0, 0, 0, 0.8);
+
+  --osd-tooltip-bg: rgba(255, 255, 255, 0.1);
+  --osd-tooltip-text: #fff;
+
+  --osint-radius-sm: 8px;
+  --osint-radius-md: 12px;
+  --osint-radius-lg: 16px;
+  --osint-radius-full: 9999px;
+
+  --osint-input-h: 44px;
+  --osint-btn-h: 40px;
+
+  --osint-font: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
 }
-.osint-cat-parent > span {
-    display: block;
-    padding: 8px 12px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--osint-muted);
-    font-weight: 600;
-    pointer-events: none;
+
+/* ------------------------------------------------------------
+ * 2. Modo claro / oscuro si el sitio expone [data-site-skin]
+ * ------------------------------------------------------------ */
+[data-site-skin="dark"] {
+  --osint-bg: #0a0c0f;
+  --osint-card: #16181d;
+  --osint-border: #23252a;
+  --osint-ink: #f2f4f8;
+  --osint-ink-sub: #a9b0bb;
+  --osint-accent: #00ffe0;
+  --osint-muted: #9ca3af;
+  --osint-btn-bg: #00ffe0;
+  --osint-btn-text: #0a0c0f;
+
+  --osint-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
+  --osint-shadow-strong: 0 12px 32px rgba(0, 0, 0, 0.8);
+
+  --osd-tooltip-bg: rgba(255, 255, 255, 0.1);
+  --osd-tooltip-text: #fff;
 }
-.osint-submenu {
-    padding-left: 0;
+
+[data-site-skin="light"] {
+  --osint-bg: #f8f9fb;
+  --osint-card: #ffffff;
+  --osint-border: #d7dbe1;
+  --osint-ink: #111111;
+  --osint-ink-sub: #5f6672;
+  --osint-accent: #111111;
+  --osint-muted: #9aa1ac;
+  --osint-btn-bg: #111111;
+  --osint-btn-text: #ffffff;
+
+  --osint-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  --osint-shadow-strong: 0 12px 32px rgba(0, 0, 0, 0.15);
+
+  --osd-tooltip-bg: rgba(255, 255, 255, 0.95);
+  --osd-tooltip-text: #111;
 }
-.osint-submenu .osint-cat-item {
-    padding-left: 24px;
+/* Override local por contenedor: <div class="osint-wrap" data-theme="dark|light"> */
+.osint-wrap[data-theme="dark"] {
+  --osint-bg: #0a0c0f;
+  --osint-card: #16181d;
+  --osint-border: #23252a;
+  --osint-ink: #f2f4f8;
+  --osint-ink-sub: #a9b0bb;
+  --osint-accent: #00ffe0;
+  --osint-muted: #9ca3af;
+  --osint-btn-bg: #00ffe0;  --osint-btn-text: #0a0c0f;
+}
+
+.osint-wrap[data-theme="light"] {
+  --osint-bg: #f8f9fb;
+  --osint-card: #ffffff;
+  --osint-border: #d7dbe1;
+  --osint-ink: #111111;
+  --osint-ink-sub: #5f6672;
+  --osint-accent: #111111;
+  --osint-muted: #9aa1ac;
+  --osint-btn-bg: #111111;  --osint-btn-text: #ffffff;
+}
+
+/* ------------------------------------------------------------
+ * 3. Layout General
+ * ------------------------------------------------------------ */
+.osint-wrap {
+  font-family: var(--osint-font);
+  background: var(--osint-bg);
+  color: var(--osint-ink);
+  line-height: 1.5;
+  padding: 40px 20px;
+  border-radius: var(--osint-radius-lg);
+  position: relative;
+  isolation: isolate;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+.osint-wrap *, .osint-wrap *::before, .osint-wrap *::after {
+  box-sizing: border-box;
+}
+
+/* Chatbar */
+.osint-chatbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--osint-card);
+  border: 1px solid var(--osint-border);
+  border-radius: var(--osint-radius-full);
+  padding: 8px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--osint-shadow);
+  position: relative;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+.osint-chatbar:focus-within {
+  border-color: var(--osint-accent);
+  box-shadow: var(--osint-shadow-strong);
+}
+
+.osint-input-group {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 12px;
+}
+.osint-icon-static {
+  color: var(--osint-muted);
+  display: flex;
+  align-items: center;
+}
+.osint-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--osint-ink);
+  font-size: 16px;
+  height: var(--osint-input-h);
+  outline: none;
+}
+.osint-input::placeholder { color: var(--osint-ink-sub); opacity: 0.6; }
+
+.osint-btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--osint-ink-sub);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.osint-btn-ghost:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+}
+
+/* Detection Pill */
+.osint-detected {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--osint-ink);
+  background: rgba(0, 255, 224, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 255, 224, 0.2);
+  white-space: nowrap;
+}
+.osint-detected.has-detection { display: flex; }
+
+/* Filters */
+.osint-filter-bar {
+  display: none; /* Toggle via JS */
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 0 12px;
+}
+.osint-filter-bar.show { display: flex; }
+
+.osint-filter-dropdown { position: relative; }
+.osint-filter-btn {
+  background: var(--osint-card);
+  border: 1px solid var(--osint-border);
+  color: var(--osint-ink-sub);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.osint-filter-btn:hover, .osint-filter-btn.active {
+  border-color: var(--osint-accent);
+  color: var(--osint-ink);
+}
+.osint-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: var(--osint-card);
+  border: 1px solid var(--osint-border);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 180px;
+  display: none;
+  flex-direction: column;
+  box-shadow: var(--osint-shadow);
+  z-index: 50;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.osint-dropdown-menu.show { display: flex; }
+.osint-dropdown-menu button {
+  background: transparent;
+  border: none;
+  color: var(--osint-ink-sub);
+  padding: 8px 12px;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.osint-dropdown-menu button:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+}
+
+/* Filter Actions (Right aligned) */
+.osint-filter-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.osint-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--osint-border);
+  background: var(--osint-card);
+  color: var(--osint-ink-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  font-size: 16px; /* Icon size */
+}
+
+.osint-action-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+  border-color: var(--osint-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.osint-action-btn.active {
+  background: rgba(255, 165, 2, 0.15);
+  color: #ffa502;
+  border-color: #ffa502;
+  box-shadow: 0 0 12px rgba(255, 165, 2, 0.2);
+}
+
+/* Custom Scrollbar for Dropdown */
+.osint-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.osint-dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.osint-dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: var(--osint-border);
+  border-radius: 4px;
+}
+.osint-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: var(--osint-muted);
+}
+
+/* ------------------------------------------------------------
+ * 4. Grid & Cards (Deck Stack Effect)
+ * ------------------------------------------------------------ */
+.osint-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+  padding-bottom: 60px;
+}
+
+.osint-deck {
+  position: relative;
+  /* El padre define el espacio, las cartas se apilan absolute */
+  min-height: 280px; 
+  perspective: 1000px;
+  cursor: pointer;
+  /* Hover lift effect for whole deck */
+  transition: transform 0.3s ease;
+}
+.osint-deck:hover {
+  transform: translateY(-5px);
+  z-index: 100;
+}
+
+.osint-card {
+  background: var(--osint-card);
+  border: 1px solid var(--osint-border);
+  border-radius: var(--osint-radius-lg);
+  padding: 24px;
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: var(--osint-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layering effect */
+.osint-card.layer-1 { top: 4px; left: 4px; z-index: 9; opacity: 0.8; transform: scale(0.98); }
+.osint-card.layer-2 { top: 8px; left: 8px; z-index: 8; opacity: 0.6; transform: scale(0.96); }
+.osint-card.layer-3 { top: 12px; left: 12px; z-index: 7; opacity: 0.4; transform: scale(0.94); }
+.osint-card.layer-4 { top: 16px; left: 16px; z-index: 6; opacity: 0.2; transform: scale(0.92); }
+.osint-card.main-card {
+  z-index: 10;
+  position: relative; /* ocupa espacio en el flujo si queremos, pero en grid es mejor que el deck lo ocupe */
+  height: auto;
+  min-height: 100%;
+}
+
+/* Card Content */
+.osint-card-hdr {
+  margin-bottom: 16px;
+}
+.osint-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.osint-fav {
+  width: 50px; height: 50px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--osint-bg);
+  flex-shrink: 0;
+  border: 1px solid var(--osint-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.osint-fav img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0;
+}
+
+.osint-title-wrap { flex: 1; min-width: 0; }
+.osint-ttl {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--osint-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.osint-category-label {
+  font-size: 11px;
+  color: var(--osint-ink-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.osint-status { display: flex; gap: 4px; }
+.osd-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--osint-muted);
+}
+.osd-status-dot.active { background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.4); }
+
+.osint-mini-meta {
+  display: flex;
+  gap: 8px;
+}
+.osd-chip {
+  font-size: 11px;
+  background: rgba(255,255,255,0.03);
+  padding: 2px 8px;  border-radius: 4px;
+  color: var(--osint-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.osint-main-desc {
+  flex: 1;
+  font-size: 14px;
+  color: var(--osint-ink-sub);
+  margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer & Actions */
+.osint-deck-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--osint-border);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.osd-meta-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.osd-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.osd-badge:hover { opacity: 0.8; }
+
+/* Colors for badges */
+.osd-badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.osd-badge-yellow { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+.osd-badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.osd-badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+.osint-deck-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Action Buttons */
+.osint-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.osint-hidden { display: none !important; }
+
+.osint-btn-animated {
+  background: var(--osint-btn-bg);
+  color: var(--osint-btn-text);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.osint-btn-animated:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 255, 224, 0.2);
+}
+
+.osint-btn-animated .text {
+  flex: 1;
+  text-align: left;
+}
+
+.osint-btn-animated .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--osint-ink);
+  color: var(--osint-bg);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.osint-act-go {
+  flex: 1;
+  justify-content: space-between;
+}
+
+/* Light theme: white button, light gray arrow background, dark text */
+.osint-wrap[data-theme="light"] .osint-act-go,
+html:not([data-site-skin="dark"]) .osint-act-go {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #d7dbe1;
+}
+.osint-wrap[data-theme="light"] .osint-act-go .icon,
+html:not([data-site-skin="dark"]) .osint-act-go .icon {
+  background: #e5e7eb; /* light gray */
+  color: #111111;      /* arrow icon color */
+}
+
+/* Dark theme: dark gray button, black border, white text; arrow: white on black circle */
+.osint-wrap[data-theme="dark"] .osint-act-go,
+html[data-site-skin="dark"] .osint-act-go {
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+.osint-wrap[data-theme="dark"] .osint-act-go .icon,
+html[data-site-skin="dark"] .osint-act-go .icon {
+  background: #000000; /* black circle */
+  color: #ffffff;      /* white arrow */
+}
+
+@keyframes osd-charge-black {
+  0% { left: -100%; opacity: 0; }
+  10% { left: -100%; opacity: 0.25; }
+  60% { left: 0; opacity: 0.15; }
+  100% { left: 0; opacity: 0; }
+}
+.osint-wrap[data-theme="dark"] .osint-act-go::before,
+html[data-site-skin="dark"] .osint-act-go::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0) 100%);
+  border-radius: 20px;
+  z-index: 0;
+}
+.osint-wrap[data-theme="dark"] .osint-act-go:hover::before,
+html[data-site-skin="dark"] .osint-act-go:hover::before {
+  animation: osd-charge-black 900ms ease-out 1;
+}
+
+.osint-act-preview, .osint-act-share {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--osint-ink-sub);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.osint-act-preview:hover, .osint-act-share:hover {
+  background: var(--osint-ink);
+  color: var(--osint-bg);
+}
+
+/* Share Menu */
+.osint-share-wrapper { position: relative; }
+.osint-share-menu {
+  position: absolute;
+  bottom: 110%; left: 0;
+  background: var(--osint-card);
+  border: 1px solid var(--osint-border);
+  border-radius: 8px;
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+  box-shadow: var(--osint-shadow-strong);
+  z-index: 20;
+}
+.osint-share-wrapper:hover .osint-share-menu,
+.osint-share-menu.active { display: flex; }
+
+.osint-share-item {
+  background: transparent;
+  border: none;
+  color: var(--osint-ink-sub);
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.osint-share-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+}
+
+
+
+/* ------------------------------------------------------------
+ * 5. Overlay / Modal
+ * ------------------------------------------------------------ */
+.osint-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.osint-overlay[aria-hidden="false"] {
+  opacity: 1; pointer-events: auto;
+}
+
+.osint-sheet {
+  background: var(--osint-card);
+  width: 90%; max-width: 800px;
+  max-height: 90vh;
+  border-radius: var(--osint-radius-lg);
+  border: 1px solid var(--osint-border);
+  box-shadow: var(--osint-shadow-strong);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.osint-sheet-hdr {
+  padding: 24px;
+  border-bottom: 1px solid var(--osint-border);
+}
+.osint-sheet-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--osint-ink-sub);
+  font-size: 24px;
+  cursor: pointer;
+}
+.osint-sheet-title { font-size: 24px; font-weight: 700; color: var(--osint-ink); margin-bottom: 8px; }
+.osint-sheet-sub { font-size: 14px; color: var(--osint-accent); margin-bottom: 16px; }
+.osint-sheet-desc { color: var(--osint-ink-sub); line-height: 1.6; }
+
+.osint-sheet-grid {
+  padding: 24px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.osint-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  margin-left: 4px;
+}
+.osint-badge-new { background: #facc15; color: #000; }
+.osint-badge-tip { background: #00ffe0; color: #000; }
+.osint-badge-warn { background: #f87171; color: #fff; }
+
+/* Toast */
+.osint-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--osint-card);
+  color: var(--osint-ink);
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: var(--osint-shadow-strong);
+  border: 1px solid var(--osint-border);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 10000;
+  font-size: 14px;
+  font-weight: 500;
+}
+.osint-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Tooltip */
+.osd-tooltip {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.osd-tooltip.show { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .osint-grid { grid-template-columns: 1fr; }
+  .osint-chatbar { flex-direction: column; }
+}
+
+/* Animations */
+@keyframes osintFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.osint-deck.osint-animate-in {
+  animation: osintFadeInUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0; /* Start hidden */
+}
+
+/* Layout Wrapper */
+.osint-actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* Row 1: Primary Actions (Analizar, Preview, Share) */
+.osint-actions-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Row 2: Secondary Actions (Like, Fav, Stats, Report) - Centered */
+.osint-actions-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid var(--osint-border);
+}
+
+/* Unified Button Styles for Secondary Row */
+.osint-act-like,
+.osint-act-favorite,
+.osint-stat-clicks,
+.osint-report {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--osint-ink-sub);
+    font-size: 0.9em;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--osint-radius-sm);
+    transition: all 0.2s ease;
+}
+
+/* Specific Hover Effects */
+.osint-act-like:hover {
+    color: #ff4757;
+    background: rgba(255, 71, 87, 0.1);
+}
+
+.osint-act-favorite:hover {
+    color: #ffa502;
+    background: rgba(255, 165, 2, 0.1);
+}
+
+.osint-stat-clicks {
+    cursor: default;
+}
+
+.osint-stat-clicks:hover {
+    color: var(--osint-ink);
+    background: rgba(0,0,0,0.05);
+}
+
+.osint-report:hover {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+}
+
+/* Active states */
+.osint-act-like.liked { color: #ff4757; }
+.osint-act-favorite.favorited { color: #ffa502; }
+.osint-report.sent { color: #f87171; opacity: 0.5; pointer-events: none; }
+
+/* ------------------------------------------------------------
+ * 5. Custom Tooltips
+ * ------------------------------------------------------------ */
+[data-title] {
     position: relative;
 }
-.osint-submenu .osint-cat-item::before {
-    content: "";
+
+[data-title]::after {
+    content: attr(data-title);
     position: absolute;
-    left: 12px;
-    top: 50%;
-    width: 4px;
-    height: 4px;
-    background: var(--osint-border);
-    border-radius: 50%;
-    transform: translateY(-50%);
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--osint-card);
+    color: var(--osint-ink);
+    border: 1px solid var(--osint-border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 2147483647;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    font-weight: 500;
 }
-.osint-submenu .osint-cat-item:hover::before {
-    background: var(--osint-accent);
+
+[data-title]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-8px);
+}
+
+/* Force tooltips to bottom for top bars (Chatbar & Filterbar) to avoid clipping */
+.osint-chatbar [data-title]::after,
+.osint-filter-bar [data-title]::after {
+    bottom: auto;
+    top: 100%;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.osint-chatbar [data-title]:hover::after,
+.osint-filter-bar [data-title]:hover::after {
+    transform: translateX(-50%) translateY(8px);
+}
+
+/* ------------------------------------------------------------
+ * 6. Category Dropdown Hierarchy
+ * ------------------------------------------------------------ */
+.osint-cat-parent {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.osint-cat-parent > span {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--osint-muted);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  background: rgba(255,255,255,0.03);
+  border-radius: 4px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.osint-submenu {
+  display: flex;
+  flex-direction: column;
+  padding-left: 16px;
+  border-left: 2px solid var(--osint-border);
+  margin-left: 10px;
+  margin-top: 2px;
+}
+
+.osint-cat-item {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--osint-ink-sub);
+  font-size: 13px;
+  transition: all 0.2s;
+  display: block;
+  position: relative;
+}
+
+.osint-cat-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--osint-accent);
+  padding-left: 16px;
 }
