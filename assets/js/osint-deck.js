@@ -745,7 +745,8 @@ function initOsintDeck(wrap) {
   if (filterWrapRef) {
       if (typeof gsap !== 'undefined') {
           gsap.set(filterWrapRef, { height: 0 });
-          gsap.set(filtersBarRef, { y: -12, opacity: 0, scale: 0.99 });
+          // Slide from slightly behind (-30px) instead of just -12px, no scale
+          gsap.set(filtersBarRef, { y: -30, opacity: 0 });
       } else {
           filterWrapRef.style.height = "0px";
       }
@@ -794,9 +795,9 @@ function initOsintDeck(wrap) {
           tl.to(filtersBarRef, {
               y: 0,
               opacity: 1,
-              scale: 1,
+              // No scale, integrated feel
               duration: 0.42,
-              ease: "back.out(1.2)"
+              ease: "circ.out"
           }, "<0.1"); 
 
      } else {
@@ -842,9 +843,8 @@ function initOsintDeck(wrap) {
          });
 
          tl.to(filtersBarRef, {
-             y: -12,
+             y: -30,
              opacity: 0,
-             scale: 0.99,
              duration: 0.3,
              ease: "power2.in"
          });
