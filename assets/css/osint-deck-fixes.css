@@ -515,7 +515,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
 /* WRAPPER: animates HEIGHT */
 .osint-filter-wrap {
    width: 100% !important;
-   margin: -10px 0 20px !important;
+   margin: -6px 0 20px !important;
    height: 0;
    overflow: hidden; /* JS toggles this */
    position: relative !important;
@@ -538,7 +538,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
    /* Softer Shadow */
    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.04) !important;
    
-   padding: 24px 16px 12px !important;
+   padding: 34px 16px 14px !important;
    
    /* Extra margin bottom to prevent shadow clipping during animation */
    margin-bottom: 20px !important; 
