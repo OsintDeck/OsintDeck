@@ -775,30 +775,30 @@ function initOsintDeck(wrap) {
              }
          });
 
-         // Animate Search Bar Margin
-         if (chatBarRef) {
-             tl.to(chatBarRef, {
-                 marginBottom: 0,
-                 duration: 0.5,
-                 ease: "expo.out"
-             }, 0);
-         }
-         
-         // Animate Wrapper Height
-         tl.to(filterWrapRef, {
-             height: "auto",
-             duration: 0.5,
-             ease: "expo.out"
-         }, "<");
+          // Animate Search Bar Margin
+          if (chatBarRef) {
+              tl.to(chatBarRef, {
+                  marginBottom: 0,
+                  duration: 0.62,
+                  ease: "power2.out"
+              }, 0);
+          }
+          
+          // Animate Wrapper Height
+          tl.to(filterWrapRef, {
+              height: "auto",
+              duration: 0.64,
+              ease: "power2.out"
+          }, "<");
 
-         // Animate Filter Bar
-         tl.to(filtersBarRef, {
-             y: 0,
-             opacity: 1,
-             scale: 1,
-             duration: 0.5,
-             ease: "expo.out"
-         }, "<0.1"); 
+          // Animate Filter Bar
+          tl.to(filtersBarRef, {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.6,
+              ease: "power2.out"
+          }, "<0.1"); 
 
      } else {
          // Fallback
@@ -846,21 +846,21 @@ function initOsintDeck(wrap) {
             y: -16,
             opacity: 0,
             scale: 0.99,
-            duration: 0.28,
-            ease: "expo.in"
+            duration: 0.42,
+            ease: "power2.in"
         });
 
         tl.to(filterWrapRef, {
             height: 0,
-            duration: 0.36,
-            ease: "expo.in"
-        }, "-=0.16");
+            duration: 0.48,
+            ease: "power2.in"
+        }, "-=0.2");
 
         if (chatBarRef) {
             tl.to(chatBarRef, {
                 marginBottom: "20px",
-                duration: 0.36,
-                ease: "expo.in"
+                duration: 0.48,
+                ease: "power2.in"
             }, "<");
         }
 
