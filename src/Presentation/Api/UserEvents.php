@@ -97,8 +97,12 @@ class UserEvents {
                 break;
 
             case 'favorite':
-                $count = $this->track_favorite( $tool, $fp );
-                wp_send_json( array( 'ok' => true, 'count' => $count ) );
+                $result = $this->track_favorite( $tool, $fp );
+                if ( is_array( $result ) ) {
+                    wp_send_json( array( 'ok' => true, 'count' => $result['count'], 'favorited' => $result['favorited'] ) );
+                } else {
+                    wp_send_json( array( 'ok' => true, 'count' => $result ) );
+                }
                 break;
 
             case 'report':

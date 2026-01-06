@@ -23,11 +23,14 @@ class MockToolRepo implements ToolRepositoryInterface {
     public function search_tools( $query ) { return []; }
     public function increment_clicks( $id ) {}
     public function increment_likes( $id ) {}
+    public function increment_favorites( $id ) {}
+    public function decrement_favorites( $id ) {}
     public function increment_reports( $id ) {}
     public function delete_tool( $id ) {}
     public function save_tool( $data ) {}
     public function import_from_json( $json_data ) {}
     public function count_tools() { return 0; }
+    public function count_total_reports() { return 0; }
     public function export_to_json( $id ) { return ""; }
     public function seed_defaults() {}
 }

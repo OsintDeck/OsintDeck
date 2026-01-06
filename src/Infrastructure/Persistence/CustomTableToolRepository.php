@@ -92,28 +92,52 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
     }
 
     /**
-     * Increment report count
+     * Increment favorite count
      * 
      * @param int $id Tool ID.
-     * @return int New report count.
+     * @return int New favorite count.
      */
-    public function increment_reports( $id ) {
+    public function increment_favorites( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
             return 0;
         }
 
-        if ( ! isset( $tool['stats']['reports'] ) ) {
-            $tool['stats']['reports'] = 0;
+        if ( ! isset( $tool['stats']['favorites'] ) ) {
+            $tool['stats']['favorites'] = 0;
         }
-        $tool['stats']['reports']++;
+        $tool['stats']['favorites']++;
 
         ToolsTable::upsert( $tool );
-        return $tool['stats']['reports'];
+        return $tool['stats']['favorites'];
     }
 
     /**
-     * Increment favorite count
+     * Decrement favorite count
+     * 
+     * @param int $id Tool ID.
+     * @return int New favorite count.
+     */
+    public function decrement_favorites( $id ) {
+        $tool = ToolsTable::get_by_id( $id );
+        if ( ! $tool ) {
+            return 0;
+        }
+
+        if ( ! isset( $tool['stats']['favorites'] ) ) {
+            $tool['stats']['favorites'] = 0;
+        }
+        
+        if ( $tool['stats']['favorites'] > 0 ) {
+            $tool['stats']['favorites']--;
+        }
+
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['favorites'];
+    }
+
+    /**
+     * Increment report count
      * 
      * @param int $id Tool ID.
      * @return int New favorite count.

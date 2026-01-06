@@ -65,6 +65,13 @@ class AjaxHandler {
         add_action( 'wp_ajax_osint_deck_force_download_icons', array( $this, 'handle_force_download_icons' ) );
         add_action( 'wp_ajax_osint_deck_import_tool', array( $this, 'handle_import_tool' ) );
         add_action( 'wp_ajax_osint_deck_export_tool', array( $this, 'handle_export_tool' ) );
+
+        add_action( 'wp_ajax_osint_deck_auth_google', array( $this, 'handle_auth_google' ) );
+        add_action( 'wp_ajax_nopriv_osint_deck_auth_google', array( $this, 'handle_auth_google' ) );
+        add_action( 'wp_ajax_osint_deck_get_user', array( $this, 'handle_get_user' ) );
+        add_action( 'wp_ajax_nopriv_osint_deck_get_user', array( $this, 'handle_get_user' ) );
+        add_action( 'wp_ajax_osint_deck_logout', array( $this, 'handle_logout' ) );
+        add_action( 'wp_ajax_nopriv_osint_deck_logout', array( $this, 'handle_logout' ) );
     }
 
     /**
@@ -328,5 +335,128 @@ class AjaxHandler {
             'json' => $json_data,
             'filename' => sanitize_title( $json_data['name'] ) . '.json',
         ) );
+    }
+
+    private function set_user_cookie( $user_id ) {
+        $name = 'osd_user';
+        $sig = hash_hmac( 'sha256', (string) $user_id, wp_salt( 'auth' ) );
+        $value = $user_id . '.' . $sig;
+        $expire = time() + 7 * DAY_IN_SECONDS;
+        setcookie( $name, $value, $expire, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true );
+    }
+
+    private function read_user_cookie() {
+        $name = 'osd_user';
+        if ( empty( $_COOKIE[ $name ] ) ) {
+            return 0;
+        }
+        $parts = explode( '.', $_COOKIE[ $name ] );
+        if ( count( $parts ) !== 2 ) {
+            return 0;
+        }
+        $user_id = intval( $parts[0] );
+        $sig = $parts[1];
+        $expected = hash_hmac( 'sha256', (string) $user_id, wp_salt( 'auth' ) );
+        if ( ! hash_equals( $expected, $sig ) ) {
+            return 0;
+        }
+        return $user_id;
+    }
+
+    public function handle_auth_google() {
+        check_ajax_referer( 'osint_deck_public', 'nonce' );
+        $enabled = (bool) get_option( 'osint_deck_sso_enabled', false );
+        if ( ! $enabled ) {
+            wp_send_json_error( array( 'message' => __( 'SSO deshabilitado', 'osint-deck' ) ) );
+        }
+
+        $client_id = get_option( 'osint_deck_google_client_id', '' );
+        $id_token = isset( $_POST['id_token'] ) ? sanitize_text_field( $_POST['id_token'] ) : '';
+        if ( empty( $id_token ) ) {
+            wp_send_json_error( array( 'message' => __( 'Token inválido', 'osint-deck' ) ) );
+        }
+
+        $resp = wp_remote_get( 'https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode( $id_token ), array( 'timeout' => 10, 'sslverify' => false ) );
+        if ( is_wp_error( $resp ) ) {
+            wp_send_json_error( array( 'message' => __( 'Error verificando token', 'osint-deck' ) ) );
+        }
+        $body = json_decode( wp_remote_retrieve_body( $resp ), true );
+        if ( ! is_array( $body ) || empty( $body['aud'] ) || $body['aud'] !== $client_id ) {
+            wp_send_json_error( array( 'message' => __( 'Cliente no coincide', 'osint-deck' ) ) );
+        }
+        if ( empty( $body['email'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'Email no disponible', 'osint-deck' ) ) );
+        }
+
+        $email = sanitize_email( $body['email'] );
+        $name = isset( $body['name'] ) ? sanitize_text_field( $body['name'] ) : '';
+        $picture = isset( $body['picture'] ) ? esc_url_raw( $body['picture'] ) : '';
+        $user = get_user_by( 'email', $email );
+        if ( ! $user ) {
+            $login = sanitize_user( current( explode( '@', $email ) ), true );
+            $login = $login ? $login : 'user' . wp_rand( 1000, 9999 );
+            $user_id = wp_insert_user( array(
+                'user_login' => $login,
+                'user_pass'  => wp_generate_password( 20 ),
+                'user_email' => $email,
+                'display_name' => $name ? $name : $login,
+            ) );
+            if ( is_wp_error( $user_id ) ) {
+                wp_send_json_error( array( 'message' => __( 'No se pudo crear usuario', 'osint-deck' ) ) );
+            }
+            $user = get_user_by( 'id', $user_id );
+        }
+        if ( $picture ) {
+            update_user_meta( $user->ID, 'osint_deck_avatar', $picture );
+        }
+        $this->set_user_cookie( $user->ID );
+
+        $favorites = get_user_meta( $user->ID, 'osd_favorites', true );
+        if ( ! is_array( $favorites ) ) {
+            $favorites = array();
+        }
+
+        wp_send_json_success( array(
+            'id' => $user->ID,
+            'name' => $user->display_name,
+            'email' => $user->user_email,
+            'avatar' => get_user_meta( $user->ID, 'osint_deck_avatar', true ),
+            'favorites' => $favorites,
+        ) );
+    }
+
+    public function handle_get_user() {
+        if ( isset( $_POST['nonce'] ) ) {
+            check_ajax_referer( 'osint_deck_public', 'nonce' );
+        }
+        $user_id = $this->read_user_cookie();
+        if ( ! $user_id ) {
+            wp_send_json_success( array( 'logged_in' => false ) );
+        }
+        $user = get_user_by( 'id', $user_id );
+        if ( ! $user ) {
+            wp_send_json_success( array( 'logged_in' => false ) );
+        }
+
+        $favorites = get_user_meta( $user->ID, 'osd_favorites', true );
+        if ( ! is_array( $favorites ) ) {
+            $favorites = array();
+        }
+
+        wp_send_json_success( array(
+            'logged_in' => true,
+            'id' => $user->ID,
+            'name' => $user->display_name,
+            'email' => $user->user_email,
+            'avatar' => get_user_meta( $user->ID, 'osint_deck_avatar', true ),
+            'favorites' => $favorites,
+        ) );
+    }
+
+    public function handle_logout() {
+        check_ajax_referer( 'osint_deck_public', 'nonce' );
+        $name = 'osd_user';
+        setcookie( $name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true );
+        wp_send_json_success();
     }
 }

@@ -96,7 +96,7 @@ class Settings {
      * @return void
      */
     public function render() {
-        $allowed_tabs = array( 'general', 'data', 'tlds', 'logs', 'support' );
+        $allowed_tabs = array( 'general', 'data', 'tlds', 'logs', 'support', 'auth' );
         $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
         
         if ( ! in_array( $active_tab, $allowed_tabs ) ) {
@@ -114,6 +114,7 @@ class Settings {
                 <a href="?page=osint-deck-settings&tab=data" class="nav-tab <?php echo $active_tab == 'data' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Datos', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=tlds" class="nav-tab <?php echo $active_tab == 'tlds' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Dominios / TLDs', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=logs" class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', 'osint-deck' ); ?></a>
+                <a href="?page=osint-deck-settings&tab=auth" class="nav-tab <?php echo $active_tab == 'auth' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Autenticación', 'osint-deck' ); ?></a>
             </h2>
 
             <div class="tab-content">
@@ -131,6 +132,9 @@ class Settings {
                     case 'support':
                         $this->render_support_tab();
                         break;
+                    case 'auth':
+                        $this->render_auth_tab();
+                        break;
                     case 'general':
                     default:
                         $this->render_general_tab();
@@ -139,6 +143,93 @@ class Settings {
                 ?>
             </div>
         </div>
+        <?php
+    }
+
+    /**
+     * Render Auth Tab
+     */
+    private function render_auth_tab() {
+        if ( isset( $_POST['osint_deck_auth_submit'] ) ) {
+            check_admin_referer( 'osint_deck_auth' );
+            $enabled = isset( $_POST['sso_enabled'] ) ? (bool) $_POST['sso_enabled'] : false;
+            $client_id = isset( $_POST['google_client_id'] ) ? sanitize_text_field( $_POST['google_client_id'] ) : '';
+            update_option( 'osint_deck_sso_enabled', $enabled, false );
+            update_option( 'osint_deck_google_client_id', $client_id, false );
+            add_settings_error( 'osint_deck', 'auth_saved', __( 'Configuración guardada.', 'osint-deck' ), 'updated' );
+        }
+
+        $enabled = (bool) get_option( 'osint_deck_sso_enabled', false );
+        $client_id = get_option( 'osint_deck_google_client_id', '' );
+        $origin_url = site_url();
+        ?>
+        <form method="post" action="">
+            <?php wp_nonce_field( 'osint_deck_auth' ); ?>
+
+            <h2><?php _e( 'Autenticación (SSO)', 'osint-deck' ); ?></h2>
+            <p><?php _e( 'Configura el inicio de sesión con Google para permitir a los usuarios guardar favoritos y reportar herramientas.', 'osint-deck' ); ?></p>
+
+            <div class="card" style="max-width: 100%; margin-top: 20px; padding: 0;">
+                <h3 class="hndle" style="padding: 15px; margin: 0; border-bottom: 1px solid #ccd0d4; background: #f9f9f9;">
+                    <?php _e( 'Guía de Configuración Rápida', 'osint-deck' ); ?>
+                </h3>
+                <div class="inside" style="padding: 15px;">
+                    <ol style="margin-top: 0;">
+                        <li>
+                            <?php _e( 'Ve a la', 'osint-deck' ); ?> 
+                            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">
+                                <strong>Google Cloud Console (Credenciales)</strong> <span class="dashicons dashicons-external"></span>
+                            </a>.
+                        </li>
+                        <li><?php _e( 'Crea un nuevo proyecto o selecciona uno existente.', 'osint-deck' ); ?></li>
+                        <li><?php _e( 'Haz clic en <strong>"Crear Credenciales"</strong> > <strong>"ID de cliente de OAuth"</strong>.', 'osint-deck' ); ?></li>
+                        <li><?php _e( 'Si es necesario, configura la "Pantalla de consentimiento de OAuth" (tipo: Externo).', 'osint-deck' ); ?></li>
+                        <li><?php _e( 'En tipo de aplicación, selecciona <strong>"Aplicación web"</strong>.', 'osint-deck' ); ?></li>
+                        <li>
+                            <?php _e( 'En <strong>"Orígenes autorizados de JavaScript"</strong>, agrega exactamente esta URL:', 'osint-deck' ); ?>
+                            <br>
+                            <code style="display: inline-block; background: #f0f0f1; padding: 5px 10px; margin: 5px 0; border: 1px solid #ccc; user-select: all;">
+                                <?php echo esc_url( $origin_url ); ?>
+                            </code>
+                            <br>
+                            <small class="description"><?php _e( 'Es importante que no tenga barra al final (/)', 'osint-deck' ); ?></small>
+                        </li>
+                        <li>
+                            <?php _e( 'En <strong>"URI de redireccionamiento autorizados"</strong>, no es estrictamente necesario para el botón "Sign In With Google", pero puedes agregar la misma URL por compatibilidad:', 'osint-deck' ); ?>
+                            <br>
+                            <code style="display: inline-block; background: #f0f0f1; padding: 5px 10px; margin: 5px 0; border: 1px solid #ccc; user-select: all;">
+                                <?php echo esc_url( $origin_url ); ?>
+                            </code>
+                        </li>
+                        <li><?php _e( 'Haz clic en "Crear" y copia el <strong>"ID de cliente"</strong> generado.', 'osint-deck' ); ?></li>
+                    </ol>
+                </div>
+            </div>
+
+            <table class="form-table">
+                <tr>
+                    <th><label for="sso_enabled"><?php _e( 'Habilitar SSO', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <label class="switch">
+                            <input type="checkbox" name="sso_enabled" id="sso_enabled" value="1" <?php checked( $enabled, true ); ?>>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="description" style="vertical-align: super; margin-left: 5px;"><?php _e( 'Activar inicio de sesión con Google', 'osint-deck' ); ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="google_client_id"><?php _e( 'Google Client ID', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <input type="text" name="google_client_id" id="google_client_id" value="<?php echo esc_attr( $client_id ); ?>" class="regular-text code">
+                        <p class="description"><?php _e( 'Pega aquí el ID de cliente que obtuviste en el paso 8 (termina en .apps.googleusercontent.com).', 'osint-deck' ); ?></p>
+                    </td>
+                </tr>
+            </table>
+
+            <p class="submit">
+                <input type="submit" name="osint_deck_auth_submit" class="button button-primary" value="<?php _e( 'Guardar Cambios', 'osint-deck' ); ?>">
+            </p>
+        </form>
         <?php
     }
 

@@ -14,6 +14,7 @@ interface ToolRepositoryInterface {
     public function increment_clicks( $id );
     public function increment_likes( $id );
     public function increment_favorites( $id );
+    public function decrement_favorites( $id );
     public function increment_reports( $id );
     public function delete_tool( $id );
     public function save_tool( $data );

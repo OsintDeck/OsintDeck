@@ -411,6 +411,19 @@ function initOsintDeck(wrap) {
             <span class="dashicons dashicons-admin-page"></span>
           </span>
         </button>
+
+        <button type="button"
+                class="osint-btn-ghost osint-sso-btn"
+                id="${uid}-ssoBtn"
+                aria-label="Acceder con Google"
+                data-title="Acceder">
+          <svg width="20" height="20" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#EA4335" d="M130.6 119.1v24.9h70.9c-2.9 18.7-21.4 54.8-70.9 54.8-42.7 0-77.5-35.1-77.5-78s34.8-78 77.5-78c24.3 0 41 10.4 50.5 19.4l17.3-17.3C184 27.7 159.9 16 130.6 16 67.5 16 16 67.5 16 130.8S67.5 245.6 130.6 245.6c63.3 0 109.9-44.5 109.9-107.1 0-7.2-.8-12.6-1.9-19.4H130.6z"/>
+            <path fill="#4285F4" d="M240.5 119.1H130.6v24.9h61.3c-5.7 36.4-35.5 54.8-61.3 54.8-36.1 0-65.6-29.5-65.6-65.6s29.5-65.6 65.6-65.6c19.3 0 35.6 8.2 46.8 21.2l17.3-17.3C178.9 52.4 156.7 41 130.6 41c-49.7 0-89.9 40.2-89.9 89.9s40.2 89.9 89.9 89.9c51.9 0 88.4-36.4 88.4-89.9 0-6-1-12.5-2.4-17.8z"/>
+            <path fill="#FBBC05" d="M65.7 96.2l20.4 15c11.1-29.2 37.9-50.1 69.8-50.1 19.3 0 35.6 8.2 46.8 21.2l17.3-17.3C178.9 52.4 156.7 41 130.6 41c-36.4 0-68 21.2-84.9 52z"/>
+            <path fill="#34A853" d="M130.6 245.6c36.7 0 67.6-15.5 88.3-40.3l-20.5-16c-15.1 14.3-35.2 23.6-58 23.6-36.1 0-65.6-29.5-65.6-65.6H57.2c0 51.7 41.7 98.3 73.4 98.3z"/>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -441,11 +454,14 @@ function initOsintDeck(wrap) {
         <div class="osint-dropdown-menu" data-for="category"></div>
       </div>
       
-      <!-- GRUPO CENTRAL (Counter + Star) -->
+      <!-- GRUPO CENTRAL (Counter + Star + Heart) -->
       <div style="display:flex; align-items:center; gap:12px; margin: 0 auto;">
         <div class="osint-counter" id="${uid}-counter" style="font-size: 0.85em; opacity: 0.7;"></div>
         <button class="osint-action-btn osint-popular-toggle" id="${uid}-popular-btn" aria-label="Solo populares" data-title="Solo populares">
           <i class="ri-star-line"></i>
+        </button>
+        <button class="osint-action-btn osint-favorites-toggle" id="${uid}-favorites-btn" aria-label="Solo favoritos" data-title="Solo favoritos">
+          <i class="ri-heart-line"></i>
         </button>
       </div>
 
@@ -494,8 +510,10 @@ function initOsintDeck(wrap) {
   let filteredCache = [];
   let currentDetection = null;
   let filterPopularOnly = false;
+  let filterFavoritesOnly = false;
 
   const ajaxCfg = window.osintDeckAjax || window.OSINT_DECK_AJAX || {};
+  const ajaxUrl = ajaxCfg.url || ajaxCfg.ajaxUrl || "";
   const fpCache = (() => {
     try {
       const parts = [
@@ -960,6 +978,165 @@ function initOsintDeck(wrap) {
     });
   }
 
+  const ssoCfg = (typeof osintDeckAjax !== "undefined" && osintDeckAjax.auth) ? osintDeckAjax.auth : { enabled: false, googleClientId: "" };
+  let currentUser = null;
+  const btnSso = wrap.querySelector(`#${uid}-ssoBtn`);
+  let ssoMenu = null;
+  function decodeJwt(t) {
+    try {
+      const p = t.split(".")[1];
+      const json = atob(p.replace(/-/g, "+").replace(/_/g, "/"));
+      return JSON.parse(json);
+    } catch (e) {
+      return {};
+    }
+  }
+  function ensureGis(cb) {
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      cb();
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = "https://accounts.google.com/gsi/client";
+    s.async = true;
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+  function showSsoSpinner(show) {
+    if (!btnSso) return;
+    btnSso.classList.toggle("loading", !!show);
+  }
+  function renderSsoMenu() {
+    if (ssoMenu) ssoMenu.remove();
+    ssoMenu = document.createElement("div");
+    ssoMenu.className = "osint-sso-menu";
+    const name = (currentUser && currentUser.name) || "";
+    const email = (currentUser && currentUser.email) || "";
+    ssoMenu.innerHTML = `
+      <div class="osint-sso-hdr">
+        <div class="osint-sso-name">${name}</div>
+        <div class="osint-sso-email">${email}</div>
+      </div>
+      <button class="osint-sso-act" data-act="history">Historial</button>
+      <button class="osint-sso-act" data-act="switch">Cambiar de cuenta</button>
+      <button class="osint-sso-act" data-act="logout">Desconectar</button>
+    `;
+    ssoMenu.style.position = "absolute";
+    ssoMenu.style.right = "10px";
+    ssoMenu.style.top = "48px";
+    ssoMenu.style.zIndex = "200";
+    wrap.querySelector(".osint-chatbar").appendChild(ssoMenu);
+    ssoMenu.addEventListener("click", (e) => {
+      const act = e.target.getAttribute("data-act");
+      if (act === "history") {
+        alert("Historial próximamente");
+      } else if (act === "switch") {
+        startLogin(true);
+      } else if (act === "logout") {
+        logout();
+      }
+    });
+    document.addEventListener("click", (ev) => {
+      if (ssoMenu && !ssoMenu.contains(ev.target) && ev.target !== btnSso) {
+        ssoMenu.remove();
+        ssoMenu = null;
+      }
+    }, { once: true });
+  }
+  function setUserUI(u) {
+    currentUser = u;
+    if (!btnSso) return;
+    if (u && u.name) {
+      const initials = u.name.split(" ").map(x => x[0]).join("").substring(0,2).toUpperCase();
+      if (u.avatar) {
+        btnSso.innerHTML = `<img src="${u.avatar}" alt="${u.name}" style="width:20px;height:20px;border-radius:50%;">`;
+      } else {
+        btnSso.innerHTML = `<span class="osint-sso-initials">${initials}</span>`;
+      }
+      btnSso.setAttribute("aria-label", u.name);
+    } else {
+      btnSso.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#EA4335" d="M130.6 119.1v24.9h70.9c-2.9 18.7-21.4 54.8-70.9 54.8-42.7 0-77.5-35.1-77.5-78s34.8-78 77.5-78c24.3 0 41 10.4 50.5 19.4l17.3-17.3C184 27.7 159.9 16 130.6 16 67.5 16 16 67.5 16 130.8S67.5 245.6 130.6 245.6c63.3 0 109.9-44.5 109.9-107.1 0-7.2-.8-12.6-1.9-19.4H130.6z"/>
+          <path fill="#4285F4" d="M240.5 119.1H130.6v24.9h61.3c-5.7 36.4-35.5 54.8-61.3 54.8-36.1 0-65.6-29.5-65.6-65.6s29.5-65.6 65.6-65.6c19.3 0 35.6 8.2 46.8 21.2l17.3-17.3C178.9 52.4 156.7 41 130.6 41c-49.7 0-89.9 40.2-89.9 89.9s40.2 89.9 89.9 89.9c51.9 0 88.4-36.4 88.4-89.9 0-6-1-12.5-2.4-17.8z"/>
+          <path fill="#FBBC05" d="M65.7 96.2l20.4 15c11.1-29.2 37.9-50.1 69.8-50.1 19.3 0 35.6 8.2 46.8 21.2l17.3-17.3C178.9 52.4 156.7 41 130.6 41c-36.4 0-68 21.2-84.9 52z"/>
+          <path fill="#34A853" d="M130.6 245.6c36.7 0 67.6-15.5 88.3-40.3l-20.5-16c-15.1 14.3-35.2 23.6-58 23.6-36.1 0-65.6-29.5-65.6-65.6H57.2c0 51.7 41.7 98.3 73.4 98.3z"/>
+        </svg>
+      `;
+      btnSso.setAttribute("aria-label", "Acceder con Google");
+    }
+    if (typeof applyFilters === "function") {
+      applyFilters();
+    }
+  }
+  function startLogin(force) {
+    if (!ssoCfg.enabled || !btnSso) return;
+    showSsoSpinner(true);
+    ensureGis(() => {
+      window.google.accounts.id.initialize({
+        client_id: ssoCfg.googleClientId,
+        callback: (resp) => {
+          const payload = decodeJwt(resp.credential || "");
+          const data = new URLSearchParams();
+          data.append("action", "osint_deck_auth_google");
+          data.append("nonce", ajaxCfg.nonce);
+          data.append("id_token", resp.credential || "");
+          fetch(ajaxUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: data.toString(),
+            credentials: "same-origin",
+          }).then(r => r.json()).then((out) => {
+            if (out && out.success && out.data) {
+              setUserUI(out.data);
+            }
+            showSsoSpinner(false);
+            renderSsoMenu();
+          }).catch(() => {
+            showSsoSpinner(false);
+          });
+        }
+      });
+      window.google.accounts.id.prompt();
+    });
+  }
+  function logout() {
+    const data = new URLSearchParams();
+    data.append("action", "osint_deck_logout");
+    data.append("nonce", ajaxCfg.nonce);
+    fetch(ajaxUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: data.toString(),
+      credentials: "same-origin",
+    }).then(r => r.json()).then(() => {
+      setUserUI(null);
+      if (ssoMenu) { ssoMenu.remove(); ssoMenu = null; }
+    });
+  }
+  if (btnSso && ssoCfg.enabled) {
+    btnSso.addEventListener("click", () => {
+      if (currentUser) {
+        renderSsoMenu();
+      } else {
+        startLogin(false);
+      }
+    });
+    const data = new URLSearchParams();
+    data.append("action", "osint_deck_get_user");
+    data.append("nonce", ajaxCfg.nonce);
+    fetch(ajaxUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: data.toString(),
+      credentials: "same-origin",
+    }).then(r => r.json()).then((out) => {
+      if (out && out.success && out.data && out.data.logged_in) {
+        setUserUI(out.data);
+      }
+    });
+  }
+
   /* =========================================================
    * ESTADO DE FILTROS
    * ========================================================= */
@@ -1125,6 +1302,24 @@ function initOsintDeck(wrap) {
       currentCat = "";
       currentTag = "";
       q.value = "";
+
+      // Reset Toggles
+      filterPopularOnly = false;
+      filterFavoritesOnly = false;
+
+      const popBtn = document.getElementById(`${uid}-popular-btn`);
+      if (popBtn) {
+          popBtn.classList.remove("active");
+          const icon = popBtn.querySelector("i");
+          if (icon) icon.className = "ri-star-line";
+      }
+
+      const favBtn = document.getElementById(`${uid}-favorites-btn`);
+      if (favBtn) {
+          favBtn.classList.remove("active");
+          const icon = favBtn.querySelector("i");
+          if (icon) icon.className = "ri-heart-line";
+      }
 
       wrap
         .querySelectorAll(".osint-filter-btn")
@@ -1623,6 +1818,11 @@ function initOsintDeck(wrap) {
     const likes = parseInt(stats.likes || 0);
     const favorites = parseInt(stats.favorites || 0);
     const clicks = parseInt(stats.clicks || 0);
+    const favId = (t && (t._db_id || t.id)) || null;
+    const isFav = !!(currentUser && Array.isArray(currentUser.favorites) && favId && currentUser.favorites.includes(favId));
+    const favIcon = isFav ? "ri-star-fill" : "ri-star-line";
+    const favBtnCls = isFav ? "osint-act-favorite active" : "osint-act-favorite";
+    const favTitle = isFav ? "Quitar de favoritos" : "Favorito";
 
     return `
       <div class="osint-actions-wrapper">
@@ -1661,8 +1861,8 @@ function initOsintDeck(wrap) {
            <button class="osint-act-like" data-title="Me gusta">
               <i class="ri-heart-line"></i> <span class="count">${likes}</span>
            </button>
-           <button class="osint-act-favorite" data-title="Favorito">
-              <i class="ri-star-line"></i> <span class="count">${favorites}</span>
+           <button class="${favBtnCls}" data-title="${favTitle}">
+              <i class="${favIcon}"></i> <span class="count">${favorites}</span>
            </button>
            <span class="osint-stat-clicks" data-title="Usos">
               <i class="ri-bar-chart-line"></i> <span class="count">${clicks}</span>
@@ -1718,6 +1918,12 @@ function initOsintDeck(wrap) {
 
     const favBtn = card.querySelector(".osint-act-favorite");
     if (favBtn) {
+        const favIconEl = favBtn.querySelector("i");
+        const favCntEl = favBtn.querySelector(".count");
+        const initialFav = !!(currentUser && Array.isArray(currentUser.favorites) && (tool._db_id || tool.id) && currentUser.favorites.includes(tool._db_id || tool.id));
+        favBtn.classList.toggle("active", initialFav);
+        if (favIconEl) favIconEl.className = initialFav ? "ri-star-fill" : "ri-star-line";
+        favBtn.setAttribute("data-title", initialFav ? "Quitar de favoritos" : "Favorito");
         favBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             if (favBtn.disabled) return;
@@ -1725,9 +1931,16 @@ function initOsintDeck(wrap) {
 
             sendEvent("favorite", { tool_id: tool.id || tool._db_id }).then(res => {
                 if(res.ok && res.count !== undefined) {
-                    const cnt = favBtn.querySelector(".count");
-                    if(cnt) cnt.textContent = res.count;
-                    toast("Añadido a favoritos");
+                    if (favCntEl) favCntEl.textContent = res.count;
+                    if (typeof res.favorited === "boolean") {
+                        const nowFav = res.favorited;
+                        favBtn.classList.toggle("active", nowFav);
+                        if (favIconEl) favIconEl.className = nowFav ? "ri-star-fill" : "ri-star-line";
+                        favBtn.setAttribute("data-title", nowFav ? "Quitar de favoritos" : "Favorito");
+                        toast(nowFav ? "Añadido a favoritos" : "Eliminado de favoritos");
+                    } else {
+                        toast("Añadido a favoritos");
+                    }
                 } else {
                     toast("Error al añadir a favoritos");
                 }
@@ -1958,9 +2171,22 @@ function initOsintDeck(wrap) {
     if (oldPagination) oldPagination.remove();
     grid.innerHTML = "";
 
-    filteredCache = (filterPopularOnly && !ignoreFilters)
-      ? (list || []).filter((t) => t.isHelpCard || (t.meta && t.meta.badges || t.badges || []).join(" ").includes("Popular"))
-      : (list || []);
+    // Filter Logic
+    let candidates = list || [];
+    if (!ignoreFilters) {
+        if (filterPopularOnly) {
+            candidates = candidates.filter((t) => t.isHelpCard || (t.meta && t.meta.badges || t.badges || []).join(" ").includes("Popular"));
+        }
+        if (filterFavoritesOnly) {
+             const favs = (currentUser && currentUser.favorites) || [];
+             candidates = candidates.filter((t) => {
+                 if (t.isHelpCard) return true;
+                 const tid = t.id || t._db_id;
+                 return tid && favs.some(f => String(f) === String(tid));
+             });
+        }
+    }
+    filteredCache = candidates;
 
     currentDetection = detection || detectRichInput(q.value || "");
     renderedCount = 0;
@@ -2100,7 +2326,7 @@ function initOsintDeck(wrap) {
     if (ajaxCfg.nonce) data.append("nonce", ajaxCfg.nonce);
     data.append("urls", JSON.stringify(uniqueUrls));
 
-    fetch(ajaxCfg.url, {
+    fetch(ajaxUrl, {
       method: "POST",
       body: data
     })
@@ -2423,6 +2649,25 @@ function initOsintDeck(wrap) {
       const icon = popularToggle.querySelector("i");
       if (icon) {
         icon.className = filterPopularOnly ? "ri-star-fill" : "ri-star-line";
+      }
+      applyFilters();
+    });
+  }
+
+  // Botón Favoritos (Seleccionado del DOM)
+  const favToggle = document.getElementById(`${uid}-favorites-btn`);
+  if (favToggle) {
+    favToggle.addEventListener("click", () => {
+      if (!currentUser) {
+          toast("Debes iniciar sesión para ver tus favoritos");
+          startLogin(false);
+          return;
+      }
+      filterFavoritesOnly = !filterFavoritesOnly;
+      favToggle.classList.toggle("active", filterFavoritesOnly);
+      const icon = favToggle.querySelector("i");
+      if (icon) {
+        icon.className = filterFavoritesOnly ? "ri-heart-fill" : "ri-heart-line";
       }
       applyFilters();
     });

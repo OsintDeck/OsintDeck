@@ -566,6 +566,80 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
      transition: none !important;
      transform: none !important;
      opacity:  !important;
-     height: auto !important;
-   }
+    height: auto !important;
+  }
+}
+
+.osint-sso-btn {
+    position: relative !important;
+}
+.osint-sso-btn.loading svg,
+.osint-sso-btn.loading img,
+.osint-sso-btn.loading .osint-sso-initials {
+    opacity: 0 !important;
+}
+.osint-sso-btn.loading::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 18px !important;
+    height: 18px !important;
+    transform: translate(-50%, -50%) !important;
+    border-radius: 50% !important;
+    border: 3px solid transparent !important;
+    border-top-color: #4285F4 !important;
+    border-right-color: #EA4335 !important;
+    border-bottom-color: #34A853 !important;
+    border-left-color: #FBBC05 !important;
+    animation: osd-spin .8s linear infinite !important;
+}
+@keyframes osd-spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.osint-sso-initials {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    background: var(--osint-ink) !important;
+    color: var(--osint-bg) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+.osint-sso-menu {
+    min-width: 220px !important;
+    background: var(--osint-card) !important;
+    border: 1px solid var(--osint-border) !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+    box-shadow: var(--osint-shadow) !important;
+}
+.osint-sso-hdr {
+    padding: 6px 8px !important;
+    border-bottom: 1px solid var(--osint-border) !important;
+    margin-bottom: 8px !important;
+}
+.osint-sso-name {
+    font-weight: 600 !important;
+    color: var(--osint-ink) !important;
+}
+.osint-sso-email {
+    font-size: 12px !important;
+    color: var(--osint-ink-sub) !important;
+}
+.osint-sso-act {
+    width: 100% !important;
+    text-align: left !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--osint-border) !important;
+    background: transparent !important;
+    color: var(--osint-ink) !important;
+    margin-bottom: 6px !important;
+}
+.osint-sso-act:hover {
+    background: rgba(255,255,255,0.05) !important;
 }

@@ -350,6 +350,10 @@ class Bootstrap {
                     'title' => get_option( 'osint_deck_help_card_title', 'Soporte OSINT Deck' ),
                     'desc' => get_option( 'osint_deck_help_card_desc', '¿Encontraste un error o necesitas reportar algo? Contactanos directamente.' ),
                     'buttons' => json_decode( get_option( 'osint_deck_help_buttons', '[]' ), true )
+                ),
+                'auth' => array(
+                    'enabled' => (bool) get_option( 'osint_deck_sso_enabled', false ),
+                    'googleClientId' => get_option( 'osint_deck_google_client_id', '' )
                 )
             )
         );
