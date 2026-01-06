@@ -322,6 +322,14 @@ class Bootstrap {
             time()
         );
 
+        // Enqueue help fixes CSS
+        wp_enqueue_style(
+            'osint-deck-help-fixes',
+            plugin_dir_url( OSINT_DECK_PLUGIN_FILE ) . 'assets/css/osint-deck-help-fixes.css',
+            array( 'osint-deck-fixes' ),
+            time()
+        );
+
         // Enqueue legacy JavaScript
         wp_enqueue_script(
             'osint-deck-main',

@@ -1,0 +1,13 @@
+
+/* Fix for Help Card Buttons */
+.osint-help-deck .osint-btn-animated {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+.osint-help-deck .osint-btn-animated:hover {
+    color: #000 !important;
+}
+.osint-help-deck .osint-btn-animated:hover i,
+.osint-help-deck .osint-btn-animated:hover span {
+    color: #000 !important;
+}
