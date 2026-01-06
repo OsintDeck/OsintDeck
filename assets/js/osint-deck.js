@@ -745,7 +745,7 @@ function initOsintDeck(wrap) {
   if (filterWrapRef) {
       if (typeof gsap !== 'undefined') {
           gsap.set(filterWrapRef, { height: 0 });
-          gsap.set(filtersBarRef, { y: -12, opacity: 0, scale: 0.99 });
+          gsap.set(filtersBarRef, { y: -16, opacity: 0, scale: 0.99 });
       } else {
           filterWrapRef.style.height = "0px";
       }
@@ -761,43 +761,44 @@ function initOsintDeck(wrap) {
      showFilters = true;
 
      // Check for GSAP
-     if (typeof gsap !== 'undefined') {
-          filterWrapRef.classList.add("is-open");
-          if (chatBarRef) chatBarRef.classList.add("has-filters-open");
-          filterWrapRef.setAttribute("aria-hidden", "false");
+    if (typeof gsap !== 'undefined') {
+         gsap.set(filterWrapRef, { overflow: "hidden" });
+         filterWrapRef.classList.add("is-open");
+         if (chatBarRef) chatBarRef.classList.add("has-filters-open");
+         filterWrapRef.setAttribute("aria-hidden", "false");
 
-          const tl = gsap.timeline({
-              onComplete: () => {
-                  isAnimating = false;
-                  // Ensure height is set to auto for responsiveness
-                  gsap.set(filterWrapRef, { height: "auto", overflow: "visible" });
-              }
-          });
+         const tl = gsap.timeline({
+             onComplete: () => {
+                 isAnimating = false;
+                 // Ensure height is set to auto for responsiveness
+                 gsap.set(filterWrapRef, { height: "auto", overflow: "visible" });
+             }
+         });
 
-          // Animate Search Bar Margin
-          if (chatBarRef) {
-              tl.to(chatBarRef, {
-                  marginBottom: 0,
-                  duration: 0.42,
-                  ease: "power2.out"
-              }, 0);
-          }
-          
-          // Animate Wrapper Height
-          tl.to(filterWrapRef, {
-              height: "auto",
-              duration: 0.42,
-              ease: "power2.out"
-          }, "<");
+         // Animate Search Bar Margin
+         if (chatBarRef) {
+             tl.to(chatBarRef, {
+                 marginBottom: 0,
+                 duration: 0.5,
+                 ease: "expo.out"
+             }, 0);
+         }
+         
+         // Animate Wrapper Height
+         tl.to(filterWrapRef, {
+             height: "auto",
+             duration: 0.5,
+             ease: "expo.out"
+         }, "<");
 
-          // Animate Filter Bar
-          tl.to(filtersBarRef, {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 0.42,
-              ease: "back.out(1.2)"
-          }, "<0.1"); 
+         // Animate Filter Bar
+         tl.to(filtersBarRef, {
+             y: 0,
+             opacity: 1,
+             scale: 1,
+             duration: 0.5,
+             ease: "expo.out"
+         }, "<0.1"); 
 
      } else {
          // Fallback
@@ -841,29 +842,27 @@ function initOsintDeck(wrap) {
              }
          });
 
-         tl.to(filtersBarRef, {
-             y: -12,
-             opacity: 0,
-             scale: 0.99,
-             duration: 0.3,
-             ease: "power2.in"
-         });
+        tl.to(filtersBarRef, {
+            y: -16,
+            opacity: 0,
+            scale: 0.99,
+            duration: 0.28,
+            ease: "expo.in"
+        });
 
-         tl.to(filterWrapRef, {
-             height: 0,
-             duration: 0.4,
-             ease: "power3.inOut"
-         }, "-=0.2");
+        tl.to(filterWrapRef, {
+            height: 0,
+            duration: 0.36,
+            ease: "expo.in"
+        }, "-=0.16");
 
-         if (chatBarRef) {
-             tl.to(chatBarRef, {
-                 marginBottom: "20px", // Approximate return value, or let clearProps handle it if we animate to something close?
-                 // If we animate to 20px, it looks smooth. If we just remove class, it might jump if we don't animate.
-                 // We animate to 20px then clearProps.
-                 duration: 0.4,
-                 ease: "power3.inOut"
-             }, "<");
-         }
+        if (chatBarRef) {
+            tl.to(chatBarRef, {
+                marginBottom: "20px",
+                duration: 0.36,
+                ease: "expo.in"
+            }, "<");
+        }
 
      } else {
          filterWrapRef.style.overflow = "hidden";
