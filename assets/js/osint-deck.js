@@ -1245,7 +1245,7 @@ function initOsintDeck(wrap) {
                 }
 
                 return `
-                    <a href="${esc(btn.url)}" class="osint-btn-animated" target="_blank" rel="noopener" style="width:100%; justify-content: center; margin-bottom: 8px;">
+                    <a href="${esc(btn.url)}" class="osint-btn-animated" target="_blank" rel="noopener" style="width:100%; justify-content: center; margin-bottom: 8px; color: #fff !important; text-decoration: none !important;">
                         <span class="text">${esc(btn.label)}</span>
                         ${iconHtml}
                     </a>
