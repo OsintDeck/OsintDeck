@@ -1,124 +1,21 @@
-/* OSINT Deck - CSS Fixes for Card Layout */
 
-/* Override card grid for better layout - NO STRETCH */
-.osint-grid {
-    margin: 2rem auto 2rem !important;
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 320px)) !important;
-    gap: 1.5rem !important;
-    align-items: stretch !important;
-    justify-content: center !important;
-    padding-bottom: 2rem !important;
+/* Help Card Buttons Styling Fix */
+.osint-help-deck .osint-btn-animated {
+    color: #fff !important; /* Force white text by default */
+    text-decoration: none !important;
 }
 
-/* Fix deck container - CONTAIN the stack effect */
-.osint-deck {
-    position: relative !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    min-height: auto !important;
-    height: auto !important;
-    display: flex !important;
-    padding: 10px !important;
-    margin: 0 auto !important;
+.osint-help-deck .osint-btn-animated i, 
+.osint-help-deck .osint-btn-animated span {
+    color: #fff !important; /* Force white icon/text by default */
 }
 
-.osint-deck:hover {
-    z-index: 100 !important;
+.osint-help-deck .osint-btn-animated:hover {
+    background: #fff !important; /* Ensure background is white on hover */
+    color: #000 !important; /* Text black on hover */
 }
 
-/* Fix card to be flexible height */
-.osint-card {
-    width: 100% !important;
-    height: auto !important;
-    min-height: 400px !important;
-    max-height: none !important;
-    padding: 20px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-}
-
-/* CORRECT stack effect - visible right edges with depth - UP TO 5 LAYERS */
-.osint-card.layer-0 {
-    position: relative !important;
-    z-index: 6 !important;
-    pointer-events: auto !important;
-}
-
-.osint-card.layer-1 {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
-    min-height: 400px !important;
-    padding: 20px !important;
-    transform: translateX(2px) translateY(1px) !important;
-    opacity: 1 !important;
-    filter: brightness(0.97) !important;
-    z-index: 5 !important;
-    pointer-events: none !important;
-    border: 1px solid var(--osint-border) !important;
-    background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
-}
-
-.osint-card.layer-2 {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
-    min-height: 400px !important;
-    padding: 20px !important;
-    transform: translateX(4px) translateY(2px) !important;
-    opacity: 1 !important;
-    filter: brightness(0.94) !important;
-    z-index: 4 !important;
-    pointer-events: none !important;
-    border: 1px solid var(--osint-border) !important;
-    background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
-}
-
-.osint-card.layer-3 {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: calc(100% - 20px) !important;
-    margin: 10px !important;
-    min-height: 400px !important;
-    padding: 20px !important;
-    transform: translateX(6px) translateY(3px) !important;
-    opacity: 1 !important;
-    filter: brightness(0.91) !important;
-    z-index: 3 !important;
-    pointer-events: none !important;
-    border: 1px solid var(--osint-border) !important;
-    background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
-}
-
-/* Help Card Button Styles */
-.osint-btn-help {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 8px;
-    background-color: #0a0c0f !important; /* Dark background default */
-    color: #ffffff !important; /* White text default */
-    border: 1px solid var(--osint-border) !important;
-    transition: all 0.3s ease !important;
-}
-
-.osint-btn-help:hover {
-    background-color: #ffffff !important; /* White background on hover */
-    color: #000000 !important; /* Black text on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-}
-
-.osint-btn-help i, 
-.osint-btn-help span {
-    color: inherit !important; /* Ensure icons and text follow the parent color */
+.osint-help-deck .osint-btn-animated:hover i,
+.osint-help-deck .osint-btn-animated:hover span {
+    color: #000 !important; /* Icon and text black on hover */
 }
