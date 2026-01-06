@@ -1062,8 +1062,24 @@ function initOsintDeck(wrap) {
       return true;
     });
 
-    if (filtered.length === 0 && (q.value || "").trim().length > 0) {
+    // Prevent "No results" message if intent is help, because we will show the Help Card
+    if (filtered.length === 0 && (q.value || "").trim().length > 0 && (!detection || detection.intent !== "help")) {
       showDetectedMessage("No se encontraron herramientas para esa consulta. Si crees que es un error, escribi 'ayuda' para reportarlo/notificarnos.");
+    }
+
+    // Special logic for Help Card
+    if (detection && detection.intent === "help") {
+       const helpCard = {
+           isHelpCard: true,
+           name: "Soporte OSINT Deck",
+           desc: "¿Encontraste un error o necesitas reportar algo? Contactanos directamente.",
+           url: "https://osint.com.ar/contacto", 
+           category: "Soporte",
+           info: { tipo: "Sistema", acceso: "Public", licencia: "Free" },
+           cards: [] // Empty cards array to satisfy potential checks elsewhere
+       };
+       // Ensure it's the only thing or at top
+       filtered.unshift(helpCard);
     }
 
     renderDecks(filtered, detection);
@@ -1202,6 +1218,45 @@ function initOsintDeck(wrap) {
   }
 
   function renderDeckElement(t) {
+    if (t.isHelpCard) {
+        const deck = document.createElement("div");
+        deck.className = "osint-deck osint-help-deck"; 
+        
+        const card = document.createElement("div");
+        card.className = "osint-card layer-0";
+        card.style.zIndex = "20";
+        card.style.border = "1px solid var(--osint-accent)"; // Highlight
+        
+        card.innerHTML = `
+            <div class="osint-card-hdr">
+                 <div class="osint-top-row">
+                    <div class="osint-fav">
+                        <div style="width:32px;height:32px;border-radius:50%;background:var(--osint-accent);display:flex;align-items:center;justify-content:center;color:#fff;">
+                            <i class="ri-customer-service-2-fill"></i>
+                        </div>
+                    </div>
+                    <div class="osint-title-wrap">
+                        <h4 class="osint-ttl">${esc(t.name)}</h4>
+                        <div class="osint-category-label"><i class="ri-question-line"></i> Soporte</div>
+                    </div>
+                 </div>
+            </div>
+            <div class="osint-sub osint-main-desc">
+                ${esc(t.desc)}
+            </div>
+            <div class="osint-deck-footer">
+                <div class="osint-deck-footer-actions">
+                     <a href="${esc(t.url)}" class="osint-btn-animated" target="_blank" rel="noopener">
+                        <span class="text">Contactar Soporte</span>
+                        <span class="icon">🡭</span>
+                     </a>
+                </div>
+            </div>
+        `;
+        deck.appendChild(card);
+        return deck;
+    }
+
     const detected = currentDetection || detectRichInput(q.value || "");
     const deck = document.createElement("div");
     deck.className = "osint-deck";
@@ -1840,7 +1895,7 @@ function initOsintDeck(wrap) {
     grid.innerHTML = "";
 
     filteredCache = (filterPopularOnly && !ignoreFilters)
-      ? (list || []).filter((t) => (t.meta && t.meta.badges || t.badges || []).join(" ").includes("Popular"))
+      ? (list || []).filter((t) => t.isHelpCard || (t.meta && t.meta.badges || t.badges || []).join(" ").includes("Popular"))
       : (list || []);
 
     currentDetection = detection || detectRichInput(q.value || "");
