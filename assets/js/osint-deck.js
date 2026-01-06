@@ -1062,6 +1062,10 @@ function initOsintDeck(wrap) {
       return true;
     });
 
+    if (filtered.length === 0 && (q.value || "").trim().length > 0) {
+      showDetectedMessage("No se encontraron herramientas para esa consulta. Si crees que es un error, escribi 'ayuda' para reportarlo/notificarnos.");
+    }
+
     renderDecks(filtered, detection);
   }
 
