@@ -1238,10 +1238,10 @@ function initOsintDeck(wrap) {
                 
                 let iconHtml = '';
                 if (iconClass.includes('dashicons')) {
-                    iconHtml = `<span class="${esc(iconClass)}"></span>`;
+                    iconHtml = `<span class="${esc(iconClass)} osint-btn-icon"></span>`;
                 } else {
                     // Default to RemixIcon
-                    iconHtml = `<i class="${esc(iconClass)}"></i>`;
+                    iconHtml = `<i class="${esc(iconClass)} osint-btn-icon"></i>`;
                 }
 
                 return `

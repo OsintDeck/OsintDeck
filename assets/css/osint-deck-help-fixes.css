@@ -7,7 +7,6 @@
 .osint-help-deck .osint-btn-animated:hover {
     color: #000 !important;
 }
-.osint-help-deck .osint-btn-animated:hover i,
-.osint-help-deck .osint-btn-animated:hover span {
+.osint-help-deck .osint-btn-animated:hover .osint-btn-icon {
     color: #000 !important;
 }
