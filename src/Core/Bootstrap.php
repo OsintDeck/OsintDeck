@@ -338,6 +338,11 @@ class Bootstrap {
             array(
                 'ajaxUrl' => admin_url( 'admin-ajax.php' ),
                 'nonce'   => wp_create_nonce( 'osint_deck_public' ),
+                'helpCard' => array(
+                    'title' => get_option( 'osint_deck_help_card_title', 'Soporte OSINT Deck' ),
+                    'desc' => get_option( 'osint_deck_help_card_desc', '¿Encontraste un error o necesitas reportar algo? Contactanos directamente.' ),
+                    'buttons' => json_decode( get_option( 'osint_deck_help_buttons', '[]' ), true )
+                )
             )
         );
     }

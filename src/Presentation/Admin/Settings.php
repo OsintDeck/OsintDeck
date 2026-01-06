@@ -96,7 +96,7 @@ class Settings {
      * @return void
      */
     public function render() {
-        $allowed_tabs = array( 'general', 'data', 'tlds', 'logs' );
+        $allowed_tabs = array( 'general', 'data', 'tlds', 'logs', 'support' );
         $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
         
         if ( ! in_array( $active_tab, $allowed_tabs ) ) {
@@ -110,6 +110,7 @@ class Settings {
 
             <h2 class="nav-tab-wrapper">
                 <a href="?page=osint-deck-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>"><?php _e( 'General', 'osint-deck' ); ?></a>
+                <a href="?page=osint-deck-settings&tab=support" class="nav-tab <?php echo $active_tab == 'support' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Soporte / Ayuda', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=data" class="nav-tab <?php echo $active_tab == 'data' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Datos', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=tlds" class="nav-tab <?php echo $active_tab == 'tlds' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Dominios / TLDs', 'osint-deck' ); ?></a>
                 <a href="?page=osint-deck-settings&tab=logs" class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Logs', 'osint-deck' ); ?></a>
@@ -126,6 +127,9 @@ class Settings {
                         break;
                     case 'logs':
                         $this->render_logs_tab();
+                        break;
+                    case 'support':
+                        $this->render_support_tab();
                         break;
                     case 'general':
                     default:
@@ -237,6 +241,196 @@ class Settings {
             </p>
         </form>
         <?php
+    }
+
+    /**
+     * Render Support Tab
+     */
+    private function render_support_tab() {
+        if ( isset( $_POST['osint_deck_support_submit'] ) ) {
+            check_admin_referer( 'osint_deck_support' );
+            $this->save_support_settings();
+        }
+
+        $title = get_option( 'osint_deck_help_card_title', 'Soporte OSINT Deck' );
+        $desc = get_option( 'osint_deck_help_card_desc', '¿Encontraste un error o necesitas reportar algo? Contactanos directamente.' );
+        $buttons_json = get_option( 'osint_deck_help_buttons', '[]' );
+        
+        // Ensure valid JSON
+        $buttons = json_decode( $buttons_json, true );
+        if ( ! is_array( $buttons ) ) {
+            $buttons = array();
+        }
+        ?>
+        <form method="post" action="">
+            <?php wp_nonce_field( 'osint_deck_support' ); ?>
+
+            <h2><?php _e( 'Configuración de Tarjeta de Ayuda', 'osint-deck' ); ?></h2>
+            <p><?php _e( 'Personaliza la tarjeta que aparece cuando el usuario busca "ayuda".', 'osint-deck' ); ?></p>
+
+            <table class="form-table">
+                <tr>
+                    <th><label for="help_card_title"><?php _e( 'Título', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <input type="text" name="help_card_title" id="help_card_title" value="<?php echo esc_attr( $title ); ?>" class="regular-text">
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="help_card_desc"><?php _e( 'Descripción', 'osint-deck' ); ?></label></th>
+                    <td>
+                        <textarea name="help_card_desc" id="help_card_desc" rows="3" class="large-text code"><?php echo esc_textarea( $desc ); ?></textarea>
+                    </td>
+                </tr>
+            </table>
+
+            <h3><?php _e( 'Botones de Acción', 'osint-deck' ); ?></h3>
+            <p class="description"><?php _e( 'Agrega botones a la tarjeta de ayuda. Arrastra para reordenar (próximamente).', 'osint-deck' ); ?></p>
+            
+            <div id="osint-deck-buttons-container">
+                <!-- Buttons will be rendered here by JS -->
+            </div>
+
+            <button type="button" class="button" id="osint-add-button-row"><?php _e( 'Añadir Botón', 'osint-deck' ); ?></button>
+
+            <!-- Hidden input to store JSON -->
+            <input type="hidden" name="help_buttons_json" id="help_buttons_json" value="<?php echo esc_attr( $buttons_json ); ?>">
+
+            <style>
+                .osint-button-row {
+                    background: #f9f9f9;
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 4px;
+                    display: flex;
+                    gap: 10px;
+                    align-items: flex-start;
+                }
+                .osint-button-row .field-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    flex: 1;
+                }
+                .osint-button-row label {
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #666;
+                }
+                .osint-button-row input {
+                    width: 100%;
+                }
+                .osint-remove-row {
+                    margin-top: 20px !important;
+                    color: #b32d2e !important;
+                    border-color: #b32d2e !important;
+                }
+                .osint-remove-row:hover {
+                    background: #b32d2e !important;
+                    color: white !important;
+                }
+            </style>
+
+            <script>
+            jQuery(document).ready(function($) {
+                var container = $('#osint-deck-buttons-container');
+                var jsonInput = $('#help_buttons_json');
+                var buttons = <?php echo json_encode( $buttons ); ?>;
+
+                function renderRows() {
+                    container.empty();
+                    buttons.forEach(function(btn, index) {
+                        var row = $('<div class="osint-button-row" data-index="' + index + '"></div>');
+                        
+                        row.append(`
+                            <div class="field-group">
+                                <label><?php _e( 'Texto del Botón', 'osint-deck' ); ?></label>
+                                <input type="text" class="btn-label" value="${btn.label || ''}" placeholder="Ej: Contactar Soporte">
+                            </div>
+                            <div class="field-group">
+                                <label><?php _e( 'URL', 'osint-deck' ); ?></label>
+                                <input type="text" class="btn-url" value="${btn.url || ''}" placeholder="https://...">
+                            </div>
+                            <div class="field-group" style="flex: 0 0 150px;">
+                                <label><?php _e( 'Icono (RemixIcon)', 'osint-deck' ); ?></label>
+                                <input type="text" class="btn-icon" value="${btn.icon || ''}" placeholder="ri-customer-service-2-fill">
+                                <small><a href="https://remixicon.com/" target="_blank">Ver Iconos</a></small>
+                            </div>
+                            <button type="button" class="button osint-remove-row"><span class="dashicons dashicons-trash"></span></button>
+                        `);
+                        
+                        container.append(row);
+                    });
+                    updateJson();
+                }
+
+                function updateJson() {
+                    var newButtons = [];
+                    container.find('.osint-button-row').each(function() {
+                        var row = $(this);
+                        newButtons.push({
+                            label: row.find('.btn-label').val(),
+                            url: row.find('.btn-url').val(),
+                            icon: row.find('.btn-icon').val()
+                        });
+                    });
+                    jsonInput.val(JSON.stringify(newButtons));
+                }
+
+                $('#osint-add-button-row').on('click', function() {
+                    buttons.push({ label: '', url: '', icon: '' });
+                    renderRows();
+                });
+
+                container.on('click', '.osint-remove-row', function() {
+                    var index = $(this).closest('.osint-button-row').data('index');
+                    buttons.splice(index, 1);
+                    renderRows();
+                });
+
+                container.on('input', 'input', function() {
+                    updateJson();
+                });
+
+                renderRows();
+            });
+            </script>
+
+            <p class="submit">
+                <input type="submit" name="osint_deck_support_submit" class="button button-primary" value="<?php _e( 'Guardar Cambios', 'osint-deck' ); ?>">
+            </p>
+        </form>
+        <?php
+    }
+
+    /**
+     * Save Support Settings
+     */
+    private function save_support_settings() {
+        $title = isset( $_POST['help_card_title'] ) ? sanitize_text_field( $_POST['help_card_title'] ) : '';
+        $desc = isset( $_POST['help_card_desc'] ) ? sanitize_textarea_field( $_POST['help_card_desc'] ) : '';
+        $json = isset( $_POST['help_buttons_json'] ) ? wp_unslash( $_POST['help_buttons_json'] ) : '[]';
+
+        // Validate JSON
+        $decoded = json_decode( $json, true );
+        if ( ! is_array( $decoded ) ) {
+            $json = '[]';
+        } else {
+            // Sanitize individual fields
+            foreach ( $decoded as &$btn ) {
+                $btn['label'] = sanitize_text_field( $btn['label'] ?? '' );
+                $btn['url'] = esc_url_raw( $btn['url'] ?? '' );
+                $btn['icon'] = sanitize_html_class( $btn['icon'] ?? '' );
+            }
+            $json = json_encode( $decoded );
+        }
+
+        update_option( 'osint_deck_help_card_title', $title );
+        update_option( 'osint_deck_help_card_desc', $desc );
+        update_option( 'osint_deck_help_buttons', $json );
+
+        add_settings_error( 'osint_deck', 'settings_saved', __( 'Configuración de soporte guardada', 'osint-deck' ), 'success' );
+        settings_errors( 'osint_deck' );
     }
 
     /**

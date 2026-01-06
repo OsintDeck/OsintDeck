@@ -1069,11 +1069,13 @@ function initOsintDeck(wrap) {
 
     // Special logic for Help Card
     if (detection && detection.intent === "help") {
+       const helpData = (typeof osintDeckAjax !== 'undefined' && osintDeckAjax.helpCard) ? osintDeckAjax.helpCard : {};
        const helpCard = {
            isHelpCard: true,
-           name: "Soporte OSINT Deck",
-           desc: "¿Encontraste un error o necesitas reportar algo? Contactanos directamente.",
-           url: "https://osint.com.ar/contacto", 
+           name: helpData.title || "Soporte OSINT Deck",
+           desc: helpData.desc || "¿Encontraste un error o necesitas reportar algo? Contactanos directamente.",
+           url: "#", 
+           buttons: helpData.buttons || [{ label: "Contactar Soporte", url: "https://osint.com.ar/contacto", icon: "ri-customer-service-2-fill" }],
            category: "Soporte",
            info: { tipo: "Sistema", acceso: "Public", licencia: "Free" },
            cards: [] // Empty cards array to satisfy potential checks elsewhere
@@ -1227,6 +1229,30 @@ function initOsintDeck(wrap) {
         card.style.zIndex = "20";
         card.style.border = "1px solid var(--osint-accent)"; // Highlight
         
+        let buttonsHtml = '';
+        if (t.buttons && Array.isArray(t.buttons)) {
+            buttonsHtml = t.buttons.map(btn => {
+                const iconClass = btn.icon || 'ri-external-link-line';
+                // If icon starts with 'dashicons', use dashicons class structure if needed, but usually just adding the class is enough if it's 'dashicons dashicons-something'
+                // But if user just types 'ri-home-line', we assume it goes into <i class="...">
+                
+                let iconHtml = '';
+                if (iconClass.includes('dashicons')) {
+                    iconHtml = `<span class="${esc(iconClass)}"></span>`;
+                } else {
+                    // Default to RemixIcon
+                    iconHtml = `<i class="${esc(iconClass)}"></i>`;
+                }
+
+                return `
+                    <a href="${esc(btn.url)}" class="osint-btn-animated" target="_blank" rel="noopener" style="width:100%; justify-content: center; margin-bottom: 8px;">
+                        <span class="text">${esc(btn.label)}</span>
+                        ${iconHtml}
+                    </a>
+                `;
+            }).join('');
+        }
+
         card.innerHTML = `
             <div class="osint-card-hdr">
                  <div class="osint-top-row">
@@ -1245,11 +1271,8 @@ function initOsintDeck(wrap) {
                 ${esc(t.desc)}
             </div>
             <div class="osint-deck-footer">
-                <div class="osint-deck-footer-actions">
-                     <a href="${esc(t.url)}" class="osint-btn-animated" target="_blank" rel="noopener">
-                        <span class="text">Contactar Soporte</span>
-                        <span class="icon">🡭</span>
-                     </a>
+                <div class="osint-deck-footer-actions" style="flex-direction: column; width: 100%;">
+                     ${buttonsHtml}
                 </div>
             </div>
         `;
