@@ -140,21 +140,21 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
      * Increment report count
      * 
      * @param int $id Tool ID.
-     * @return int New favorite count.
+     * @return int New report count.
      */
-    public function increment_favorites( $id ) {
+    public function increment_reports( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
             return 0;
         }
 
-        if ( ! isset( $tool['stats']['favorites'] ) ) {
-            $tool['stats']['favorites'] = 0;
+        if ( ! isset( $tool['stats']['reports'] ) ) {
+            $tool['stats']['reports'] = 0;
         }
-        $tool['stats']['favorites']++;
+        $tool['stats']['reports']++;
 
         ToolsTable::upsert( $tool );
-        return $tool['stats']['favorites'];
+        return $tool['stats']['reports'];
     }
 
     /**
