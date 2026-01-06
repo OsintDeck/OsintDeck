@@ -3,10 +3,25 @@
 .osint-help-deck .osint-btn-animated {
     color: #fff !important;
     text-decoration: none !important;
+    /* Ensure the button itself has a background if needed, though ::before handles the fill */
+    background: #000 !important; /* Default background */
 }
+
+/* Ensure text and icons are above the sliding background */
+.osint-help-deck .osint-btn-animated .text,
+.osint-help-deck .osint-btn-animated .osint-btn-icon,
+.osint-help-deck .osint-btn-animated i,
+.osint-help-deck .osint-btn-animated span {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
 .osint-help-deck .osint-btn-animated:hover {
     color: #000 !important;
 }
-.osint-help-deck .osint-btn-animated:hover .osint-btn-icon {
+
+.osint-help-deck .osint-btn-animated:hover .osint-btn-icon,
+.osint-help-deck .osint-btn-animated:hover i,
+.osint-help-deck .osint-btn-animated:hover span {
     color: #000 !important;
 }

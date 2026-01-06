@@ -51,8 +51,8 @@
     top: 0 !important;
     left: 0 !important;
     width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
     margin: 10px !important;
-    min-height: 400px !important;
     padding: 20px !important;
     transform: translateX(2px) translateY(1px) !important;
     opacity: 1 !important;
@@ -61,7 +61,7 @@
     pointer-events: none !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
+    border-radius: var(--osint-radius-lg) !important;
 }
 
 .osint-card.layer-2 {
@@ -69,8 +69,8 @@
     top: 0 !important;
     left: 0 !important;
     width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
     margin: 10px !important;
-    min-height: 400px !important;
     padding: 20px !important;
     transform: translateX(4px) translateY(2px) !important;
     opacity: 1 !important;
@@ -79,7 +79,7 @@
     pointer-events: none !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
+    border-radius: var(--osint-radius-lg) !important;
 }
 
 .osint-card.layer-3 {
@@ -87,8 +87,8 @@
     top: 0 !important;
     left: 0 !important;
     width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
     margin: 10px !important;
-    min-height: 400px !important;
     padding: 20px !important;
     transform: translateX(6px) translateY(3px) !important;
     opacity: 1 !important;
@@ -97,7 +97,7 @@
     pointer-events: none !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
+    border-radius: var(--osint-radius-lg) !important;
 }
 
 .osint-card.layer-4 {
@@ -105,8 +105,8 @@
     top: 0 !important;
     left: 0 !important;
     width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
     margin: 10px !important;
-    min-height: 400px !important;
     padding: 20px !important;
     transform: translateX(8px) translateY(4px) !important;
     opacity: 1 !important;
@@ -115,7 +115,7 @@
     pointer-events: none !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
+    border-radius: var(--osint-radius-lg) !important;
 }
 
 .osint-card.layer-5 {
@@ -123,8 +123,8 @@
     top: 0 !important;
     left: 0 !important;
     width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
     margin: 10px !important;
-    min-height: 400px !important;
     padding: 20px !important;
     transform: translateX(10px) translateY(5px) !important;
     opacity: 1 !important;
@@ -133,7 +133,7 @@
     pointer-events: none !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
-    border-radius: inherit !important;
+    border-radius: var(--osint-radius-lg) !important;
 }
 
 /* Hide edge effect - using proper stack instead */

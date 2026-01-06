@@ -372,6 +372,18 @@ function initOsintDeck(wrap) {
                placeholder="Buscar o pegar una entrada...">
 
         <button type="button"
+                class="osint-btn-ghost"
+                id="${uid}-helpBtn"
+                aria-label="Ayuda"
+                data-title="Ayuda">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+
+        <button type="button"
                 class="osint-btn-ghost osint-toggle-filters"
                 id="${uid}-toggleFilters"
                 aria-label="Mostrar/ocultar filtros"
@@ -934,6 +946,21 @@ function initOsintDeck(wrap) {
   });
 
   /* =========================================================
+   * BOTÓN AYUDA
+   * ========================================================= */
+  const btnHelp = wrap.querySelector(`#${uid}-helpBtn`);
+  if (btnHelp) {
+    btnHelp.addEventListener("click", () => {
+      if ((q.value || "").trim().toLowerCase() === "ayuda") {
+        q.value = "";
+      } else {
+        q.value = "ayuda";
+      }
+      onInput();
+    });
+  }
+
+  /* =========================================================
    * ESTADO DE FILTROS
    * ========================================================= */
   let currentType = "";
@@ -1254,6 +1281,9 @@ function initOsintDeck(wrap) {
         }
 
         card.innerHTML = `
+            <button class="osint-card-close" type="button" aria-label="Cerrar" style="position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: var(--osint-ink-sub); cursor: pointer; padding: 4px; z-index: 30;">
+                <i class="ri-close-line" style="font-size: 20px;"></i>
+            </button>
             <div class="osint-card-hdr">
                  <div class="osint-top-row">
                     <div class="osint-fav">
@@ -1277,6 +1307,17 @@ function initOsintDeck(wrap) {
             </div>
         `;
         deck.appendChild(card);
+        
+        // Add event listener to close button
+        const closeBtn = deck.querySelector('.osint-card-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                q.value = "";
+                onInput();
+            });
+        }
+
         return deck;
     }
 
