@@ -92,48 +92,24 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
     }
 
     /**
-     * Increment favorite count
-     * 
+     * Decrement like count (no baja de 0).
+     *
      * @param int $id Tool ID.
-     * @return int New favorite count.
+     * @return int New like count.
      */
-    public function increment_favorites( $id ) {
+    public function decrement_likes( $id ) {
         $tool = ToolsTable::get_by_id( $id );
         if ( ! $tool ) {
             return 0;
         }
 
-        if ( ! isset( $tool['stats']['favorites'] ) ) {
-            $tool['stats']['favorites'] = 0;
+        if ( ! isset( $tool['stats']['likes'] ) ) {
+            $tool['stats']['likes'] = 0;
         }
-        $tool['stats']['favorites']++;
+        $tool['stats']['likes'] = max( 0, (int) $tool['stats']['likes'] - 1 );
 
         ToolsTable::upsert( $tool );
-        return $tool['stats']['favorites'];
-    }
-
-    /**
-     * Decrement favorite count
-     * 
-     * @param int $id Tool ID.
-     * @return int New favorite count.
-     */
-    public function decrement_favorites( $id ) {
-        $tool = ToolsTable::get_by_id( $id );
-        if ( ! $tool ) {
-            return 0;
-        }
-
-        if ( ! isset( $tool['stats']['favorites'] ) ) {
-            $tool['stats']['favorites'] = 0;
-        }
-        
-        if ( $tool['stats']['favorites'] > 0 ) {
-            $tool['stats']['favorites']--;
-        }
-
-        ToolsTable::upsert( $tool );
-        return $tool['stats']['favorites'];
+        return $tool['stats']['likes'];
     }
 
     /**
@@ -155,6 +131,69 @@ class CustomTableToolRepository implements ToolRepositoryInterface {
 
         ToolsTable::upsert( $tool );
         return $tool['stats']['reports'];
+    }
+
+    /**
+     * Decrement report count (no baja de 0).
+     *
+     * @param int $id Tool ID.
+     * @return int New count.
+     */
+    public function decrement_reports( $id ) {
+        $tool = ToolsTable::get_by_id( $id );
+        if ( ! $tool ) {
+            return 0;
+        }
+
+        if ( ! isset( $tool['stats']['reports'] ) ) {
+            $tool['stats']['reports'] = 0;
+        }
+        $tool['stats']['reports'] = max( 0, (int) $tool['stats']['reports'] - 1 );
+
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['reports'];
+    }
+
+    /**
+     * Increment favorite count
+     * 
+     * @param int $id Tool ID.
+     * @return int New favorite count.
+     */
+    public function increment_favorites( $id ) {
+        $tool = ToolsTable::get_by_id( $id );
+        if ( ! $tool ) {
+            return 0;
+        }
+
+        if ( ! isset( $tool['stats']['favorites'] ) ) {
+            $tool['stats']['favorites'] = 0;
+        }
+        $tool['stats']['favorites']++;
+
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['favorites'];
+    }
+
+    /**
+     * Decrement favorite count (no baja de 0).
+     *
+     * @param int $id Tool ID.
+     * @return int New favorite count.
+     */
+    public function decrement_favorites( $id ) {
+        $tool = ToolsTable::get_by_id( $id );
+        if ( ! $tool ) {
+            return 0;
+        }
+
+        if ( ! isset( $tool['stats']['favorites'] ) ) {
+            $tool['stats']['favorites'] = 0;
+        }
+        $tool['stats']['favorites'] = max( 0, (int) $tool['stats']['favorites'] - 1 );
+
+        ToolsTable::upsert( $tool );
+        return $tool['stats']['favorites'];
     }
 
     /**

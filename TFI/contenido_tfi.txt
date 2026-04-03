@@ -1,0 +1,409 @@
+UNIVERSIDAD NACIONAL RAÚL SCALABRINI ORTIZ
+(UNSO)
+
+LICENCIATURA EN CIBERSEGURIDAD 
+
+TRABAJO FINAL INTEGRADOR (TFI)
+
+TÍTULO DEL TRABAJO FINAL INTEGRADOR: OSINT Deck
+
+Autor/a:
+Sebastián Cendra
+Claudio Pandelo
+Paolo Peña Ramírez
+Guillermo Quintana.
+Damián Radiminsky.
+
+Fecha de Presentación: xx de febrero de 2026
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+San Isidro, Buenos Aires, Argentina
+
+Resumen del Proyecto
+OSINT Deck es un plugin para WordPress orientado a centralizar y organizar en un único entorno diversas herramientas de investigación digital basadas en fuentes abiertas. Su objetivo es brindar a investigadores, periodistas y analistas un medio ágil y accesible para realizar búsquedas y análisis ofreciendo de forma centralizada múltiples plataformas según la herramienta, reduciendo tiempos operativos y evitando la fragmentación del flujo investigativo. El sistema permite ingresar distintos tipos de datos (como correos electrónicos, dominios, direcciones IP, hashes, wallets de criptomonedas o nombres de usuario) y desplegar automáticamente recursos pertinentes según la información detectada, mediante una mecánica estructurada en mazos que favorece una interacción dinámica y ordenada.
+El proyecto surge como respuesta a la dispersión actual de herramientas OSINT, donde la consulta manual de recursos externos incrementa la posibilidad de omisiones y afecta la eficiencia del análisis. OSINT Deck propone una solución integradora que facilita el acceso y uso de herramientas desde un entorno único, favoreciendo la correlación de información y mejorando la experiencia investigativa.
+Los fundamentos conceptuales, el proceso metodológico y la implementación técnica se desarrollan en secciones posteriores del trabajo, junto con la validación del plugin y su alcance potencial dentro del ámbito académico y profesional. Este desarrollo amplía y complementa el proyecto osint.com.ar (2021), con un enfoque orientado a la automatización y la operatividad práctica en investigaciones OSINT.
+Justificación
+En el marco de la investigación desarrollada se identificó la existencia de múltiples directorios, catálogos y plataformas orientadas a la recopilación de herramientas OSINT, ampliamente utilizadas tanto en ámbitos académicos como profesionales. Entre las más relevantes se encuentran Awesome OSINT (Jivoi, s.f.), OSINT Framework (Nordine, s.f.), OSINT Techniques Tools (Bazzell, s.f.), R00M 101 Directory (R00M 101, s.f.), NexusXplore (OSINT Combine, s.f.), Cyber Detective’s Collection (Cyber Detective, s.f.) y OSINT Essentials (OSINT Essentials, s.f.). Estas iniciativas cumplen un rol fundamental como repositorios de referencia, ya que permiten identificar fuentes, metodologías y tipos de herramientas disponibles para investigaciones basadas en fuentes abiertas.
+No obstante, el análisis comparativo de estas soluciones permitió detectar una serie de limitaciones compartidas que afectan su aplicabilidad operativa en contextos reales de investigación. En términos generales, la mayoría de estos proyectos se presenta como listados estáticos de enlaces, cuya actualización depende de procesos manuales y no siempre sigue el ritmo de evolución del ecosistema OSINT. Esto deriva en la presencia de herramientas inactivas, desactualizadas u obsoletas, obligando al analista a realizar tareas adicionales de verificación, validación y documentación antes de poder utilizarlas de manera efectiva.
+Asimismo, estas plataformas suelen funcionar principalmente como instancias de descubrimiento, pero no como entornos de trabajo integrados. El investigador debe acceder de forma individual a cada recurso, ejecutar consultas de manera separada y gestionar los resultados por fuera de la plataforma, lo que fragmenta el flujo de trabajo y aumenta la carga cognitiva. En algunos casos, además, ciertas funcionalidades avanzadas se encuentran restringidas por modelos comerciales, licencias o configuraciones complejas, lo que limita su adopción en ámbitos educativos, comunitarios o de investigación independiente.
+A partir de estas observaciones, se evidenció la necesidad de una solución que supere el enfoque meramente referencial y que permita centralizar, ejecutar y gestionar herramientas OSINT dentro de un mismo entorno operativo. En este contexto surge OSINT Deck, una propuesta orientada a ofrecer una plataforma dinámica e integrada que facilite el acceso a múltiples recursos desde un único punto de entrada. La herramienta busca optimizar el flujo investigativo mediante la activación contextual de recursos según el tipo de dato ingresado, la posibilidad de reportar herramientas inactivas y un sistema de valoración que contribuya a identificar aquellas más confiables y utilizadas.
+De este modo, OSINT Deck se plantea como una respuesta concreta a las limitaciones detectadas en los principales directorios OSINT actuales, aportando una alternativa que combina el valor referencial de estos proyectos con un enfoque operativo, dinámico y alineado con las necesidades reales del analista en investigaciones basadas en fuentes abiertas.
+Conclusión Comparativa y Fundamentación del Desarrollo
+La revisión de las distintas herramientas y repositorios OSINT nos permitió comprender que el ecosistema actual es amplio y diverso, pero también fragmentado. Cada recurso analizado aporta diversos valores, unos funcionan como mapas conceptuales que facilitan la orientación inicial, otros destacan por la amplitud de sus catálogos y algunos incorporan elementos avanzados de análisis. No obstante, observamos que ninguno logra integrar de forma simultánea la automatización operativa y la interacción unificada con las fuentes, elementos decisivos cuando la investigación necesita escalar, sostenerse en el tiempo o mantener la trazabilidad del proceso.
+A partir de esta observación, identificamos un patrón común que trasciende a las herramientas individualmente, la necesidad de que el investigador opere manualmente para validar enlaces, ejecutar búsquedas, correlacionar resultados y administrar la información recolectada. Esto convierte al analista en el verdadero eje de integración entre plataformas, lo que incrementa la carga cognitiva, el tiempo operativo, la posibilidad de error humano y la dependencia del conocimiento experto. Detectamos entonces que la mayor debilidad no está en la falta de herramientas, sino en la ausencia de un mecanismo que las articule y optimice su uso.
+Este diagnóstico general fortaleció de manera directa los cimientos del desarrollo de OSINT Deck, no como reemplazo de los recursos existentes, sino como solución que capitaliza lo mejor de ellos y aborda las brechas que dejaron expuestas. Allí donde el ecosistema ofrece información dispersa, proponemos centralización; donde se exige verificación manual, incorporamos actualización y reporte activo, donde el proceso depende del usuario para relacionar piezas, diseñamos automatización y activación contextual según el tipo de dato. Nuestra plataforma nace, en definitiva, como respuesta a un problema sistémico y no como réplica de una herramienta particular.
+Así, más que contrastar funcionalidades, la comparación nos permitió comprender que el verdadero desafío en OSINT no es acceder a los recursos, sino ordenarlos, ejecutarlos, validarlos y combinarlos de manera eficiente dentro de un proceso investigativo trazable. Este punto se vuelve aún más evidente cuando lo vinculamos con nuestra formación universitaria, a lo largo de la carrera adquirimos competencias metodológicas, pensamiento crítico, criterios de verificación, documentación técnica y procedimientos de aseguramiento de la información que nos permitieron evaluar estas herramientas más allá de su apariencia funcional. 
+Con este análisis, reafirmamos que OSINT Deck se proyecta como una plataforma que surge directamente de ese recorrido académico y del ejercicio reflexivo que realizamos durante este trabajo. La herramienta no pretende sustituir el ecosistema existente, sino dialogar con él, integrarlo y potenciarlo, incorporando criterios profesionales propios de la disciplina, actualización continua, gestión colaborativa de recursos, priorización por confiabilidad, automatización por tipo de dato y centralización del flujo de investigación. La necesidad no era simplemente ampliar el listado de herramientas, sino dar un paso más hacia la operatividad real. 
+Planteamiento del Proyecto
+En la práctica cotidiana de la investigación digital, la mayoría de los usuarios recurren siempre al mismo conjunto reducido de herramientas consideradas confiables. Entre ellas se destacan , servicio que permite analizar archivos y enlaces mediante múltiples motores antivirus, , buscador especializado en dispositivos expuestos en internet, , utilizado para diagnóstico de registros DNS, correo y reputación de dominios, , herramienta orientada a obtener datos técnicos y geográficos de direcciones IP, entre otras que resultan eficaces para casos comunes y cuentan con reconocimiento dentro de la comunidad.
+El problema surge porque el ecosistema de herramientas es mucho más amplio y cambiante. Constantemente aparecen nuevas opciones recomendadas en foros, redes sociales o canales de divulgación, que podrían aportar valor a las investigaciones pero que no se incorporan de forma sistemática al flujo de trabajo. Esto genera tres dificultades principales: dispersión de recursos, pérdida de tiempo en la búsqueda manual y riesgo de pasar por alto alternativas relevantes.
+El problema central identificado es la fragmentación y falta de integración dinámica en el acceso y uso de herramientas de investigación digital. Esta situación limita la eficiencia y la calidad de las investigaciones, que requieren inmediatez y confiabilidad en los resultados.
+OSINT Deck se plantea como una propuesta para abordar este escenario, ofreciendo un entorno que organiza y activa las herramientas de manera automática según el dato ingresado e incorporando funciones de reporte, notificación e indicadores de uso que favorecen una selección más ágil y precisa de recursos.
+La propuesta se apoya en la experiencia previa del proyecto osint.com.ar en el que se permitió identificar la dispersión de recursos y la necesidad de contar con un entorno más dinámico e interactivo.
+Objetivos
+Objetivo General 
+Desarrollar un plugin para WordPress que integre y automatice el uso de herramientas OSINT, facilitando el proceso de investigación digital a través de una plataforma centralizada, dinámica y accesible para investigadores, periodistas y analistas de ciberseguridad.
+Objetivos Específicos
+Analizar las limitaciones presentes en los directorios y catálogos OSINT existentes, identificando los principales desafíos en su actualización y usabilidad.
+Diseñar una arquitectura modular que permita la activación automática de herramientas según el tipo de dato ingresado (correo electrónico, dominio, IP, hash, usuario, etc.).
+Implementar mecanismos de validación, seguridad y control de abusos que garanticen un entorno confiable para los usuarios.
+Incorporar métricas de uso y un sistema de puntuación que permita identificar las herramientas más utilizadas y con mejor rendimiento.
+Realizar pruebas de funcionalidad, escalabilidad y seguridad siguiendo una metodología de desarrollo ágil.
+Documentar el proceso de desarrollo y establecer una base para futuras integraciones con la plataforma osint.com.ar y con otros sitios o proyectos desarrollados sobre WordPress.
+Hipótesis
+La integración automatizada de herramientas OSINT en un entorno unificado y dinámico permite mejorar la eficiencia y la precisión de las investigaciones digitales, reduciendo la dispersión de recursos y optimizando los tiempos de análisis.
+Marco Teórico
+La inteligencia, en su concepción clásica, ha sido definida como un proceso sistemático orientado a la obtención, análisis y producción de conocimiento útil para la toma de decisiones. Kent (1949) establece que la inteligencia estratégica no consiste únicamente en la recolección de información, sino en su adecuada interpretación dentro de un marco analítico estructurado. Esta concepción sienta las bases para comprender la inteligencia como una disciplina metodológica y no como una actividad meramente instrumental.
+
+Lowenthal (2022) amplía esta visión al señalar que la inteligencia moderna debe entenderse como un ciclo continuo que integra recolección, procesamiento, análisis y difusión, donde cada etapa influye directamente en la calidad del producto final. Desde esta perspectiva, la fragmentación de fuentes y herramientas puede afectar negativamente la coherencia del análisis y la confiabilidad de los resultados obtenidos.
+
+Uno de los aportes más relevantes al estudio del análisis de inteligencia es el realizado por Heuer (1999), quien introduce el concepto de limitaciones cognitivas del analista. Según el autor, el exceso de información, la dispersión de fuentes y la necesidad de alternar constantemente entre distintos recursos incrementan la carga cognitiva y favorecen la aparición de sesgos analíticos.
+
+En este sentido, la fragmentación de herramientas y plataformas utilizadas en procesos de investigación digital no solo implica una pérdida de tiempo operativo, sino que también puede impactar en la calidad del razonamiento analítico. La ausencia de entornos integrados dificulta la construcción de una visión holística del objeto de estudio y aumenta el riesgo de omitir información relevante.
+
+La inteligencia de fuentes abiertas (OSINT) se ha consolidado como un componente fundamental dentro de la ciberinteligencia moderna. García Calderón (2019) define la ciberinteligencia como un proceso orientado a transformar grandes volúmenes de información disponible públicamente en conocimiento accionable, destacando la importancia de la sistematización y el análisis contextual.
+
+Sin embargo, tanto INCIBE (2022) como ENISA (2023) coinciden en señalar que uno de los principales desafíos actuales del OSINT radica en la dispersión de recursos, la heterogeneidad de herramientas y la dificultad para mantener actualizados los flujos de trabajo. Esta situación obliga a los analistas a operar en entornos fragmentados, con múltiples plataformas independientes, lo que reduce la eficiencia y dificulta la trazabilidad del análisis.
+
+Desde una perspectiva metodológica, Clark (2019) propone el enfoque de inteligencia centrada en el objetivo (target-centric intelligence), el cual sostiene que la organización de la información debe responder al problema de análisis y no a la herramienta utilizada. Este modelo enfatiza la necesidad de integrar múltiples fuentes dentro de un marco común que facilite la correlación y el análisis sistemático.
+
+En una línea similar, Albors Garrigós y Hervás Oliver (2021), desde el ámbito de la inteligencia competitiva y la vigilancia tecnológica, señalan que la integración de fuentes heterogéneas en entornos unificados permite reducir la redundancia informativa y mejorar la calidad de los procesos de toma de decisiones. Estos enfoques refuerzan la idea de que la fragmentación tecnológica constituye una barrera estructural para el análisis eficiente.
+
+A partir del análisis de los distintos enfoques teóricos revisados, el presente trabajo adopta una postura que concibe al OSINT no solo como una actividad exploratoria basada en el uso aislado de herramientas, sino como un proceso sistemático de inteligencia que requiere integración, automatización y coherencia metodológica.
+
+En concordancia con Kent (1949), Lowenthal (2022) y Clark (2019), se sostiene que la calidad del producto de inteligencia depende directamente de la forma en que se organiza y procesa la información. Asimismo, retomando los aportes de Heuer (1999), se considera que la dispersión de herramientas incrementa la carga cognitiva del analista y afecta negativamente el razonamiento analítico.
+
+Desde esta perspectiva, se plantea que la centralización y activación automatizada de herramientas OSINT, orientadas al tipo de dato analizado, constituye una respuesta adecuada a las limitaciones actuales del ecosistema de investigación digital. El desarrollo de OSINT Deck se fundamenta en esta postura, proponiendo un entorno que busca reducir la fragmentación, optimizar el flujo de trabajo y mejorar la eficiencia del análisis de fuentes abiertas.
+Metodología y Técnicas a Utilizar
+La metodología propuesta para el desarrollo de OSINT Deck se enmarca en un enfoque práctico orientado a la implementación de una solución funcional dentro del ecosistema WordPress. Dado que se trata de un proyecto de desarrollo tecnológico, el proceso combina elementos de investigación aplicada, análisis comparativo de herramientas OSINT y técnicas propias del desarrollo seguro de software. El propósito es asegurar que el plugin sea estable, escalable y útil para la comunidad investigadora.
+Enfoque Metodológico
+El proyecto adoptará una metodología de desarrollo ágil, que permitirá avanzar mediante iteraciones cortas, revisiones continuas y validación frecuente de funcionalidades. Este enfoque resulta adecuado para proyectos que integran múltiples recursos externos -como herramientas OSINT- y requieren ajustes constantes para garantizar su correcto funcionamiento. Las fases clave serán: análisis, diseño, desarrollo, pruebas y documentación.
+Proceso de Desarrollo
+El proceso de desarrollo del plugin se llevó a cabo bajo una estructura modular y escalable, con el objetivo de garantizar la flexibilidad del sistema, facilitar el mantenimiento y permitir futuras extensiones en sitios basados en WordPress. Cada módulo fue diseñado de manera independiente para minimizar el acoplamiento y asegurar que nuevas funcionalidades puedan integrarse sin modificar la arquitectura general. Las etapas que conformaron el proceso se describen a continuación:
+Identificación y clasificación de herramientas OSINT
+En la primera etapa se realizó un relevamiento exhaustivo de herramientas OSINT utilizadas por la comunidad de analistas, investigadores y profesionales de ciberseguridad. El objetivo fue construir un catálogo inicial que permitiera cubrir los tipos de análisis más requeridos en entornos reales, de manera que se procedió a:
+Recolectar fuentes confiables (repositorios OSINT, listas públicas, proyectos comunitarios y casos de uso documentados).
+Evaluar cada herramienta según: tipo de dato analizado, propósito, confiabilidad, accesibilidad y licenciamiento.
+Agruparlas en categorías funcionales, considerando el tipo de entrada que requieren para operar, tales como:
+Direcciones IP
+Dominios y subdominios
+Correos electrónicos
+URLs
+Hashes (MD5/SHA1/SHA256)
+Usuarios / alias
+ASN
+Coordenadas geográficas, entre otros
+Esta clasificación permitió definir con precisión qué acciones debía ejecutar el plugin ante cada tipo de input detectado. A partir de esta estructura, se establecieron los criterios para activar dinámicamente las herramientas relevantes y generar una experiencia de análisis centralizada y coherente dentro del plugin.
+Diseño de la arquitectura del plugin
+La arquitectura del plugin se diseñó siguiendo un enfoque modular y basado en componentes, con el objetivo de facilitar el mantenimiento, la extensibilidad y la integración con otros sitios desarrollados sobre WordPress. Cada responsabilidad principal del sistema se aislará en módulos específicos (gestión de herramientas, detección de tipo de dato, registro de eventos de usuario, métricas, validación de dominios/TLD, interfaz de administración y renderizado del frontend), reduciendo el acoplamiento y permitiendo incorporar nuevas funcionalidades sin afectar el núcleo del plugin.
+En el núcleo del diseño se implementó una lógica central de detección de entradas, responsable de analizar el dato ingresado por el usuario (correo electrónico, dominio, IP, hash, usuario, etc.) y clasificarlo según su tipo. A partir de esta clasificación, el sistema consultará un catálogo de herramientas estructurado en formato JSON y activará dinámicamente aquellos recursos que resulten relevantes para ese tipo de dato. De este modo, el plugin funcionará como un orquestador que vincula el tipo de entrada, con el conjunto de cartas (cards) y mazos (decks) que se mostrarán en la interfaz.
+La arquitectura propuesta contempla una separación clara entre la capa de presentación y la capa de procesamiento interno. El frontend se implementará mediante un shortcode y scripts dedicados exclusivamente a la interfaz de usuario, mientras que todas las funciones internas -como la gestión del catálogo de herramientas, la detección del tipo de dato, el registro de eventos, las métricas de uso y los mecanismos de validación- se desarrollarán en clases PHP independientes y organizadas de forma modular.
+Esta separación facilita la comprensión del sistema, mejora su mantenibilidad, simplifica las pruebas y permite incorporar nuevas herramientas OSINT o módulos adicionales sin modificar la estructura general del plugin. De este modo, el proyecto garantiza una arquitectura ordenada, escalable y adecuada para su uso en entornos WordPress o en implementaciones futuras dentro de contextos académicos o de investigación.
+Programación del plugin
+El desarrollo se llevó a cabo respetando las recomendaciones oficiales de WordPress y empleando un enfoque de ingeniería de software basado en componentes, lo que permitió organizar la funcionalidad en módulos claros y mantenibles. Una vez definida la arquitectura modular, cada funcionalidad se implementó en módulos independientes, lo que permitió distribuir responsabilidades y evitar acoplamiento entre partes del sistema.
+El núcleo del desarrollo se llevó a cabo en PHP, utilizando el sistema de hooks de WordPress (actions y filters) para integrar el plugin de forma nativa dentro del ciclo de ejecución del CMS. Esto permitió registrar funcionalidades como la inicialización del sistema, la carga del catálogo de herramientas, la validación del dato ingresado y la ejecución de procesos vinculados a métricas o eventos del usuario.
+La capa interactiva del sistema se desarrolló mediante JavaScript, utilizada para actualizar dinámicamente la interfaz, gestionar los filtros y desplegar las herramientas correspondientes según el tipo de entrada detectada. Esta lógica se complementó con solicitudes AJAX protegidas mediante nonces, lo que garantiza integridad y seguridad durante la comunicación entre frontend y backend.
+Las configuraciones, preferencias del usuario, métricas de uso y registros operativos se almacenaron utilizando las APIs internas de WordPress para acceso seguro a la base de datos. Este enfoque evita consultas SQL directas y asegura compatibilidad con futuras versiones del CMS, además de simplificar tareas de mantenimiento.
+Durante el desarrollo se incorporaron medidas de seguridad aplicadas al entorno WordPress, tales como sanitización y validación de entradas, verificación de capacidades de usuario, protección contra abuso mediante límites de interacción y controles de integridad en operaciones críticas. Estas prácticas aseguran que el plugin pueda ejecutarse en entornos reales sin introducir riesgos relacionados con la manipulación de datos externos.
+En conjunto, la programación del plugin traduce la arquitectura propuesta en una implementación estable, extensible y coherente con los estándares del ecosistema WordPress, garantizando una herramienta funcional y adaptable tanto para uso académico como para futuras mejoras o integraciones. 
+Implementación del panel de administración
+La implementación del panel de administración se desarrolló como una sección integrada al entorno administrativo de WordPress, con el objetivo de ofrecer a los administradores una interfaz clara para gestionar el comportamiento general del plugin. Este panel centraliza la configuración del sistema, la administración del catálogo de herramientas y el acceso a métricas, logs y opciones de seguridad.
+El módulo se construyó siguiendo las convenciones nativas de WordPress para la creación de menús administrativos, permisos y carga de recursos internos. Desde este panel es posible modificar parámetros operativos como el modo de tema, esquemas de color, límites de uso, preferencias de seguridad y configuración visual del frontend del plugin. Asimismo, se incorporó un espacio específico para gestionar el catálogo de herramientas OSINT, permitiendo visualizar, editar o importar configuraciones en formato JSON.
+Además, el panel incluye una sección destinada a métricas y registros, donde el sistema presenta información sobre el uso del plugin, frecuencia de clics en herramientas, reportes enviados por la comunidad y actividad general tanto de usuarios como de administradores. Esta capa de observabilidad contribuye al mantenimiento continuo del sistema y facilita la identificación de patrones de uso o herramientas que requieren revisión.
+La interfaz se complementa con componentes interactivos implementados mediante JavaScript y bibliotecas externas -como Chart.js-, lo que permite mostrar estadísticas de forma visual y dinámica. La carga de estilos personalizados asegura coherencia y legibilidad en toda la experiencia administrativa, manteniendo la integración estética con el entorno de WordPress.
+En conjunto, este panel proporciona un espacio centralizado para supervisar la operación del plugin, fortalecer su mantenimiento y permitir su evolución futura sin necesidad de modificar la arquitectura principal.
+Técnicas y Herramientas Utilizadas
+Durante el desarrollo del plugin se trabajó en un entorno controlado y reproducible, lo que permitió mantener estabilidad durante todas las etapas de implementación y prueba. A continuación, se detallan las herramientas y recursos empleados:
+Entorno de desarrollo local: Se utilizó una máquina virtual ejecutando Ubuntu Server 24.04LTS, configuradas con la pila LAMP (Apache 2.4, PHP 8.4 y MySQL 8.0) y una instalación dedicada de WordPress. Este entorno permite reproducir condiciones reales de ejecución y facilitar la validación de las funcionalidades del plugin.
+Editor y herramientas de programación: El desarrollo del código se realizó utilizando Visual Studio Code, complementado con una extensión SFTP/SSH que permitió sincronizar archivos y editar contenido directamente sobre la máquina virtual mediante autenticación por certificado. Esta extensión se conectó al servicio OpenSSH, instalado en el servidor Ubuntu, lo que permitió establecer una comunicación segura entre el entorno local y la máquina virtual durante el desarrollo. Asimismo, se utilizó WinSCP para la exploración manual del sistema de archivos y la transferencia segura de componentes del proyecto, aprovechando también el servicio OpenSSH como mecanismo de conexión. En conjunto, estas herramientas facilitaron un flujo de trabajo integrado, seguro y consistente entre el entorno local y el servidor de pruebas.
+Frameworks y librerías utilizadas: La programación incorporó las funciones nativas y el sistema de hooks de WordPress para gestionar la lógica interna del plugin. En la capa de frontend se emplearon diversas librerías JavaScript cargadas mediante CDN, entre ellas Chart.js para la generación de gráficos, Axios para gestionar solicitudes asíncronas y bibliotecas de iconografía como FontAwesome, utilizadas para mejorar la experiencia visual de la interfaz. Además, se utilizó jQuery, provisto por WordPress de forma predeterminada, para la manipulación dinámica del DOM y el soporte de componentes interactivos.
+Debido a que el plugin opera en entornos WordPress con conectividad a Internet y con el fin de evitar incorporar gestores adicionales como Composer -lo que hubiese incrementado la complejidad del despliegue y mantenimiento-, se optó por el uso de librerías alojadas en CDN. Este enfoque permitió reducir la carga local del proyecto, facilitar actualizaciones y mantener una estructura de código más simple y fácil de integrar en distintas instalaciones de WordPress.
+Control de versiones: Durante el desarrollo se empleó Git en entorno local para gestionar cambios, mantener orden en el código y documentar el avance del proyecto. Finalizada la implementación base, el repositorio fue publicado en GitHub con el objetivo de facilitar su acceso público y permitir futuras mejoras colaborativas (ver Anexo B).
+Pruebas y Validación
+La validación se realizó mediante un conjunto de pruebas (véase Anexo D) orientadas a verificar su funcionamiento, estabilidad y comportamiento bajo distintos casos de uso. El objetivo fue asegurar que las funcionalidades operaran de forma consistente.
+Pruebas funcionales: Se evaluó el funcionamiento general del plugin, verificando:
+el flujo de interacción del usuario.
+la detección del tipo de dato ingresado.
+la correcta carga del catálogo de herramientas.
+el renderizado de las cards y decks en el frontend.
+la interacción con el panel administrativo.
+Estas pruebas permitieron confirmar que cada componente respondía de acuerdo con los requerimientos establecidos.
+Pruebas manuales en navegadores: El plugin fue evaluado manualmente en navegadores como Google Chrome y Mozilla Firefox, comprobando su correcta visualización, el funcionamiento de los elementos interactivos y la coherencia del comportamiento en distintos contextos de uso. Estas pruebas confirmaron que la herramienta ofrece una experiencia estable y consistente en los navegadores modernos más utilizados.
+Validación de flujos AJAX: Si bien no se utilizaron herramientas dedicadas como Postman o Thunder Client, la validación de las solicitudes AJAX se realizó directamente en el entorno de WordPress mediante pruebas operativas, monitoreando respuestas con herramientas de desarrollo del navegador (Chrome DevTools), verificando encabezados, códigos de estado y tiempos de respuesta.
+Pruebas de regresión: Cada nueva actualización o modificación del plugin fue acompañada por pruebas de regresión, destinadas a confirmar que los cambios no afectarán funcionalidades previamente desarrolladas. Esto permitió mantener la integridad del sistema a lo largo del ciclo de desarrollo.
+Como parte de la evolución de la calidad del proyecto, en las próximas instancias se planifica profundizar lo siguiente: 
+Pruebas de carga y estrés (JMeter): Con el uso de Apache JMeter, se ejecutarán pruebas orientadas a medir:
+tiempos de respuesta del servidor.
+capacidad de concurrencia.
+estabilidad bajo cargas prolongadas.
+consumo de recursos en escenarios de tráfico elevado.
+El propósito será identificar límites operativos y asegurar que el plugin pueda mantenerse estable ante múltiples solicitudes simultáneas.
+Automatización de pruebas (Selenium WebDriver): Se diseñará un flujo automatizado con Selenium WebDriver que replicará acciones habituales del usuario, incluyendo:
+ingreso de datos.
+activación de herramientas.
+navegación entre secciones del plugin
+interacción con elementos dinámicos.
+La automatización permitirá ejecutar pruebas repetibles y detectar errores difíciles de identificar manualmente.
+Análisis estático y calidad del código: Para garantizar la calidad interna del software se utilizará herramientas de análisis estático como PHPStan, orientadas a identificar:
+malas prácticas de programación.
+errores potenciales.
+inconsistencias en el uso de tipos.
+posibles vulnerabilidades.
+Estas herramientas contribuirán a mejorar la robustez del código antes de su despliegue en entornos de prueba.
+Vinculación del trabajo con la formación académica
+El presente Trabajo Final Integrador se enmarca en el recorrido formativo desarrollado en la Licenciatura en Ciberseguridad de la Universidad Nacional Scalabrini Ortíz (UNSO), la cual propone un enfoque integral que articula conocimientos técnicos, analíticos y metodológicos orientados al abordaje de problemáticas complejas del ciberespacio.
+A lo largo de la carrera, asignaturas como Ciberinteligencia, Sistemas de Análisis y Métodos de Diseño y Metodología de la Investigación Criminal aportaron los fundamentos conceptuales necesarios para comprender la inteligencia como un proceso sistemático de recolección, análisis y producción de conocimiento, así como la importancia de estructurar metodológicamente la investigación y el desarrollo de soluciones tecnológicas.
+Asimismo, materias vinculadas al desarrollo de software y a la arquitectura de sistemas informáticos, tales como Programación de Sistemas, Arquitectura de Tecnologías Informáticas y Conceptos de Desarrollo de Software, permitieron aplicar criterios de diseño, modularidad y eficiencia en la construcción del plugin OSINT Deck. Por su parte, asignaturas como Fundamentos de Ciberseguridad, Administración y Respuesta a Incidentes y Fundamentos del Cibercrimen contribuyeron a contextualizar el uso de herramientas OSINT dentro de escenarios reales de investigación digital y análisis de amenazas.
+En este sentido, OSINT Deck no se concibe únicamente como un desarrollo técnico, sino como el resultado de la integración de los conocimientos adquiridos durante la formación académica, alineándose con el perfil profesional promovido por la UNSO: un graduado capaz de analizar problemáticas del ciberespacio, fundamentar decisiones en marcos teóricos y metodológicos, y desarrollar soluciones tecnológicas orientadas a la investigación y la seguridad de la información.
+Documentación
+Al concluir el desarrollo del plugin se elaboró una documentación técnica destinada a asegurar su mantenimiento, instalación y futura evolución (ver Anexo C). Esta documentación describe el funcionamiento general del sistema, la organización del código, los procedimientos de despliegue y los criterios necesarios para integrar OSINT Deck en sitios basados en WordPress.
+Como complemento, se incorporó un documento técnico unificado (README.md), que recopila la arquitectura del plugin, las instrucciones de uso, la estructura del proyecto y las pautas de actualización. Este archivo constituye la referencia principal para cualquier desarrollador que desee comprender o extender el sistema.
+Encuesta a usuarios finales
+Con el fin de validar las percepciones iniciales y evaluar la necesidad real de una herramienta integradora, se incorporó una instancia de investigación cuantitativa de tipo exploratoria, basada en una encuesta autoadministrada mediante Google Forms. Como se detalla en el Anexo A
+Población y muestra
+La encuesta estuvo dirigida a usuarios vinculados directa o indirectamente con tareas de OSINT: profesionales de ciberseguridad, analistas, personal de fuerzas de seguridad, estudiantes y trabajadores del sector tecnológico.
+Se obtuvo un total de 33 respuestas completas, cifra suficiente para este tipo de estudios exploratorios, dado que el objetivo no es estadístico inferencial sino descriptivo y orientado a validar tendencias.
+Instrumento de recolección
+El cuestionario estuvo compuesto por once preguntas:
+dos de segmentación (edad y sector laboral),
+ocho preguntas cerradas de opción múltiple,
+una pregunta abierta orientada a identificar dificultades particulares.
+El enlace al formulario permanece disponible en la sección Anexos.
+Limitaciones
+La muestra fue no probabilística por conveniencia, lo que implica que los resultados no buscan representar a la totalidad de usuarios OSINT, sino obtener información contextual válida para respaldar la decisión de diseño del proyecto.
+
+Resultados Obtenidos
+A continuación, se presentan los resultados:
+Perfil de los Participantes
+Rango etario.
+
+La mayoría de los participantes (66%) se concentra entre los 26 y 45 años, es decir, en etapas laborales activas, donde el uso de herramientas digitales es habitual.
+Sector laboral o formativo.
+Los sectores más representados son:
+La distribución confirma que la mayoría pertenecen a sectores afines de realizar tareas de investigación digital.
+Hábitos de uso de herramientas OSINT
+Frecuencia de realización de tareas OSINT
+
+Aunque existen diferencias en frecuencia, el uso de OSINT aparece como actividad habitual para la mayoría.
+Necesidad de usar múltiples herramientas
+El dato más relevante es que 72% afirma usar múltiples herramientas siempre o muy frecuentemente.
+
+Dificultades percibidas
+Impacto de la dispersión de herramientas
+El 63% considera que la dispersión de herramientas afecta su trabajo bastante o muchísimo.
+Tiempo perdido buscando herramientas
+Este punto constituye un importante argumento a favor del desarrollo de una herramienta integrada. La idea principal es que tome el menor tiempo posible encontrar la herramienta adecuada.
+
+Interés en contar con una herramienta integradora
+En total, 94% valora la existencia de un entorno unificado.
+Dificultades específicas (pregunta abierta)
+El análisis cualitativo permitió identificar categorías comunes:
+Pérdida de tiempo alternando entre pestañas y plataformas.
+Falta de automatización y de documentación.
+Dificultad para consolidar datos sin duplicaciones.
+Problemas de accesibilidad o idioma.
+Errores o conclusiones incorrectas por información dispersa.
+Incertidumbre sobre qué herramienta usar en cada caso.
+Estas respuestas refuerzan la necesidad operativa de un entorno que centralice flujos y reduzca tiempos improductivos.
+Análisis e Interpretación
+Los resultados empíricos obtenidos confirman de manera consistente el problema identificado durante la investigación preliminar, la dispersión de herramientas OSINT genera pérdida de tiempo, dificulta la continuidad del análisis y obliga a trabajar con múltiples plataformas simultáneamente.
+El hecho de que 7 de cada 10 usuarios pierdan más de 20 minutos por investigación y que casi todos valoren la existencia de un entorno integrado, valida de manera directa el enfoque adoptado en el desarrollo del plugin.
+Asimismo, las respuestas abiertas aportaron evidencia sobre problemáticas específicas (como el desorden en el flujo de trabajo y la dificultad para consolidar resultados) que fueron consideradas en la priorización de funcionalidades.
+En síntesis, la encuesta permitió respaldar con datos reales la necesidad del proyecto OSINT Deck, demostrando que responde a una problemática concreta y percibida por la comunidad usuaria.
+Tabla 1
+Cronograma del Proyecto OSINT Deck
+
+
+
+
+Bibliografía
+Bazzell, M. (2024). OSINT techniques: Resources for uncovering online information (11th ed.). IntelTechniques. Recuperado el 5 de octubre de 2025 de https://inteltechniques.com
+Bazzell, M. (s.f.). OSINT techniques tools. IntelTechniques. Recuperado el 5 de diciembre de 2025 de https://inteltechniques.com/tools/index.html
+Cyber Detective. (s.f.). OSINT tools collection. GitLab. Recuperado el 5 de diciembre de 2025 de https://gitlab.com/cyb_detective/osint_stuff_tool_collection
+Jivoi. (s.f.). Awesome OSINT. GitHub. Recuperado el 5 de diciembre de 2025 de https://github.com/jivoi/awesome-osint
+Nordine, J. (s.f.). OSINT framework. OSINT Framework. Recuperado el 5 de diciembre de 2025 de https://osintframework.com
+OSINT Combine. (s.f.). NexusXplore. OSINT Combine. Recuperado el 5 de diciembre de 2025 de https://www.osintcombine.com
+OSINT Essentials. (s.f.). OSINT Essentials. OSINT Essentials. Recuperado el 5 de diciembre de 2025 de https://www.osintessentials.com
+R00M 101. (s.f.). OSINT tools directory. R00M 101. Recuperado el 5 de diciembre de 2025 de https://r00m101.com/tools
+
+Glosario
+1. Conceptos OSINT y ciberseguridad
+OSINT (Open Source Intelligence): Inteligencia de fuentes abiertas que utiliza información pública disponible en Internet para producir conocimiento útil en contextos de investigación e inteligencia.
+Inteligencia de Fuentes Abiertas: Disciplina que trabaja con datos accesibles de forma legal y pública (redes sociales, foros, registros, medios, etc.) para generar inteligencia accionable.
+Investigación digital: Proceso sistemático de búsqueda, recolección y análisis de información en entornos digitales para esclarecer hechos, incidentes o patrones.
+Recolección de información: Fase inicial del ciclo de inteligencia en la que se obtienen datos desde múltiples fuentes antes de su organización y análisis.
+Análisis de información: Etapa en la que los datos recolectados se interpretan, organizan y transforman en información comprensible y útil para la toma de decisiones.
+Correlación de datos: Técnica que vincula distintos fragmentos de información (por ejemplo, correo, IP y usuario) para identificar relaciones y patrones relevantes.
+Ingeniería social: Conjunto de técnicas de manipulación psicológica usadas para engañar a personas y obtener información sensible o acceso a sistemas.
+Spearphishing: Modalidad de phishing dirigida a objetivos específicos, basada en mensajes personalizados construidos con información previa de la víctima.
+Malware Link: Enlace diseñado para descargar o ejecutar software malicioso o redirigir al usuario a sitios fraudulentos o peligrosos.
+Validación de datos: Verificación de que la información recolectada es correcta, coherente, vigente y relevante para la investigación.
+Automatización: Uso de herramientas o scripts para ejecutar tareas repetitivas de manera automática, reduciendo esfuerzo manual y tiempo operativo.
+Detección automática: Capacidad de un sistema para identificar de forma autónoma el tipo de dato ingresado (por ejemplo, correo, IP o dominio) sin selección manual.
+Técnicas OSINT: Conjunto de métodos específicos para buscar, filtrar y analizar información pública, como dorks de búsqueda, análisis de metadatos o búsqueda inversa de imágenes.
+Herramientas OSINT: Aplicaciones, servicios web o scripts pensados para facilitar la recolección, análisis y correlación de información de fuentes abiertas.
+Directorios OSINT: Listas estructuradas de herramientas OSINT que actúan como mapa o catálogo para encontrar la utilidad adecuada según el tipo de análisis.
+Dispersión de recursos: Situación en la que las herramientas relevantes para investigar se encuentran distribuidas en muchos sitios y plataformas diferentes.
+Pérdida de tiempo operativo: Tiempo que el investigador invierte en buscar, abrir y organizar herramientas, en lugar de dedicarlo al análisis y la interpretación.
+Flujo de trabajo: Secuencia ordenada de tareas y pasos que el investigador sigue desde la recolección de datos hasta la presentación de resultados.
+Métricas de uso: Datos numéricos que indican cómo se utiliza un sistema, como frecuencia de uso de herramientas o cantidad de consultas realizadas.
+Control de abusos: Conjunto de mecanismos para limitar usos excesivos o maliciosos de una plataforma y proteger su rendimiento y estabilidad.
+Seguridad en el desarrollo: Práctica de incorporar controles de seguridad y buenas prácticas desde las primeras etapas de diseño y programación de software.
+Sanitización de entradas: Proceso de limpiar y normalizar los datos que ingresa el usuario para reducir el riesgo de inyección de código u otros ataques.
+Validación de entradas: Comprobación de que los datos ingresados cumplen el formato esperado antes de ser procesados por el sistema.
+Análisis estático: Revisión del código fuente sin ejecutarlo, con el fin de detectar errores lógicos, fallos de calidad o posibles vulnerabilidades.
+Integridad de datos: Propiedad que garantiza que la información no ha sido modificada de forma no autorizada durante su almacenamiento o transmisión.
+Escalabilidad: Capacidad de un sistema para soportar un aumento de usuarios, datos o carga manteniendo un nivel adecuado de rendimiento.
+Estabilidad del sistema: Capacidad del software para funcionar de forma continua y predecible, sin fallos críticos ni interrupciones frecuentes.
+Vulnerabilidades: Debilidades o fallos en el diseño, implementación o configuración de un sistema que pueden ser explotados por un atacante.
+Metadatos: Datos que describen a otros datos, como fecha de creación, autor, dispositivo o ubicación asociada a un archivo o contenido digital.
+Criptomonedas: Activos digitales que utilizan criptografía para asegurar transacciones y controlar la creación de nuevas unidades en una red distribuida.
+Wallet de criptomonedas: Monedero digital que almacena claves criptográficas y permite enviar, recibir y gestionar fondos en criptomonedas.
+Reputación de dominios: Indicador que sintetiza el historial de uso, reportes de abuso y presencia en listas negras de un dominio determinado.
+2. Tecnologías utilizadas
+WordPress: Sistema de gestión de contenidos (CMS) de código abierto utilizado como base para crear y administrar sitios web y plugins como OSINT Deck.
+Plugin: Componente que se instala sobre una plataforma (como WordPress) para agregar nuevas funcionalidades sin modificar el núcleo del sistema.
+Shortcode: Código corto entre corchetes que permite insertar funciones del plugin dentro de páginas o entradas de WordPress.
+PHP: Lenguaje de programación del lado del servidor utilizado para implementar la lógica interna de WordPress y del plugin OSINT Deck.
+JavaScript: Lenguaje de programación que se ejecuta en el navegador y permite crear interfaces dinámicas e interactivas para el usuario.
+AJAX: Técnica que permite enviar y recibir datos del servidor sin recargar completamente la página, mejorando fluidez y experiencia de uso.
+Nonces: Tokens de seguridad de un solo uso que WordPress genera para proteger acciones frente a ataques de falsificación de solicitudes (CSRF).
+jQuery: Biblioteca de JavaScript que simplifica la manipulación del DOM, el manejo de eventos y algunas interacciones en la página.
+Chart.js: Biblioteca de JavaScript utilizada para crear gráficos y visualizaciones de datos, como barras, líneas o gráficos circulares.
+Axios: Biblioteca ligera para realizar peticiones HTTP desde el navegador de manera estructurada y manejable.
+FontAwesome: Colección de iconos vectoriales e imágenes simbólicas utilizada para mejorar la interfaz visual de sitios y aplicaciones web.
+Apache: Servidor web de código abierto encargado de recibir solicitudes HTTP y entregar las páginas o recursos al navegador.
+MySQL: Sistema de gestión de bases de datos relacional donde WordPress almacena contenido, usuarios y configuraciones.
+LAMP: Acrónimo que refiere a una pila tecnológica compuesta por Linux, Apache, MySQL y PHP para entornos de desarrollo web.
+Ubuntu Server: Distribución de Linux orientada a servidores, utilizada como sistema operativo para el entorno de pruebas del proyecto.
+OpenSSH: Conjunto de herramientas que permiten conectarse y administrar servidores de forma remota mediante conexiones cifradas SSH.
+Visual Studio Code: Editor de código multiplataforma utilizado para escribir, revisar y depurar el código fuente del plugin y su documentación.
+Git: Sistema de control de versiones que permite registrar cambios en el código, trabajar con ramas y coordinar trabajo colaborativo.
+WinSCP: Aplicación para Windows que permite transferir archivos de forma segura entre un equipo local y un servidor remoto.
+Composer: Gestor de dependencias para proyectos PHP que automatiza la descarga y actualización de librerías externas.
+CDN (Content Delivery Network): Red de servidores distribuidos geográficamente que entregan contenido estático desde el nodo más cercano al usuario.
+Google Chrome: Navegador web utilizado en las pruebas manuales para validar el comportamiento y la interfaz del plugin.
+Mozilla Firefox: Navegador web adicional utilizado para comprobar compatibilidad y consistencia visual del plugin.
+Google Forms: Herramienta web que permite crear, distribuir y recopilar respuestas de encuestas de forma sencilla.
+PHPStan: Herramienta de análisis estático para proyectos en PHP que ayuda a detectar errores potenciales y mejorar la calidad del código.
+GitHub: Plataforma de alojamiento de repositorios Git que facilita la colaboración, el versionado y la publicación de proyectos de software.
+Chrome DevTools: Conjunto de herramientas de desarrollo integradas en Google Chrome para depurar, monitorear y analizar aplicaciones web.
+3. Infraestructura y componentes de OSINT Deck
+OSINT Deck: Plugin para WordPress diseñado para centralizar, organizar y automatizar el uso de herramientas OSINT dentro de un único entorno de trabajo.
+Decks: Mazos o grupos de herramientas organizadas según su propósito o tipo de dato, concepto central de la interfaz de OSINT Deck.
+Cards: Cartas individuales que representan cada herramienta OSINT dentro de un mazo, mostrando nombre, descripción y acceso.
+Catálogo de herramientas: Conjunto estructurado de herramientas OSINT configuradas en el sistema, con sus propiedades y parámetros.
+JSON: Formato de texto ligero para intercambio de datos utilizado para definir e importar configuraciones de mazos y herramientas.
+Panel de administración: Sección del área administrativa de WordPress donde se gestionan las opciones del plugin, el catálogo y las métricas.
+Interfaz de usuario (UI): Conjunto de elementos visuales con los que interactúa la persona usuaria, como botones, formularios, tarjetas y menús.
+Frontend: Parte visible del sitio donde se ingresan datos, se visualizan resultados y se muestran las cartas y mazos.
+Backend: Parte interna del sistema donde se ejecuta la lógica del plugin, el procesamiento de datos y el acceso a la base de datos.
+Arquitectura modular: Diseño de software que divide el sistema en módulos independientes para facilitar mantenimiento, pruebas y ampliaciones.
+Sistema de hooks: Mecanismo de WordPress que permite ejecutar código adicional en puntos específicos del ciclo de ejecución sin modificar el núcleo.
+Actions: Hooks que permiten ejecutar funciones cuando ocurre un evento concreto dentro del entorno de WordPress.
+Filters: Hooks que permiten interceptar y modificar datos antes de que se presenten o se almacenen en el sistema.
+Logs: Registros estructurados de actividad del sistema, útiles para auditoría, diagnóstico de errores y análisis de comportamiento.
+Registro de eventos: Almacenamiento sistemático de acciones relevantes, indicando qué ocurrió, quién lo hizo y en qué momento.
+Módulos: Bloques funcionales del sistema que agrupan responsabilidades relacionadas dentro del plugin.
+Componentes: Partes más pequeñas y reutilizables de la interfaz o del código, como formularios, botones o vistas específicas.
+Detección de tipo de dato: Funcionalidad que analiza el texto ingresado para determinar si se trata de un correo, una IP, un dominio u otro tipo de entrada.
+IP (Internet Protocol): Dirección numérica única que identifica a un dispositivo en una red o en Internet.
+Dominio: Nombre alfanumérico asignado a un sitio o servicio en Internet que facilita su identificación y acceso.
+Subdominio: Sección que antecede al dominio principal y se utiliza para organizar o separar áreas de un sitio web.
+Correos electrónicos: Direcciones que identifican buzones de correo en Internet y permiten el intercambio de mensajes electrónicos.
+Hashes (MD5, SHA1, SHA256): Valores generados por funciones criptográficas que actúan como huella digital de archivos o textos.
+ASN (Autonomous System Number): Número que identifica una red autónoma administrada por una organización en el sistema de enrutamiento global.
+URL (Uniform Resource Locator): Dirección completa que indica la ubicación exacta de un recurso específico en la web.
+Coordenadas geográficas: Valores de latitud y longitud que permiten situar un punto concreto sobre el mapa.
+osint.com.ar: Proyecto web previo que compila herramientas OSINT y actuó como antecedente conceptual para el desarrollo de OSINT Deck.
+4. Metodología y enfoque académico
+Metodología ágil: Enfoque de gestión de proyectos que privilegia iteraciones cortas, retroalimentación continua y adaptación a cambios.
+Iteraciones: Ciclos de trabajo breves en los que se planifica, desarrolla, prueba y ajusta una parte del proyecto.
+Diseño funcional: Definición de lo que el sistema debe hacer para satisfacer necesidades de usuarios sin entrar aún en detalles técnicos.
+Diseño técnico: Especificación de cómo se implementarán las funciones del sistema, incluyendo tecnologías, arquitecturas y estructuras de datos.
+Revisión continua: Evaluación periódica del trabajo realizado, con ajustes sucesivos para asegurar calidad y coherencia.
+Investigación aplicada: Tipo de investigación orientada a resolver problemas concretos utilizando marcos teóricos y metodológicos.
+Análisis comparativo: Estudio que contrasta distintas soluciones o herramientas para identificar similitudes, diferencias y ventajas relativas.
+Validación de hipótesis: Verificación de si las suposiciones iniciales del proyecto se confirman o no a partir de los datos obtenidos.
+Pruebas funcionales: Conjunto de tests que comprueban que las funciones del sistema se comportan según lo especificado.
+Pruebas de regresión: Pruebas diseñadas para asegurar que cambios nuevos no rompen funcionalidades que ya funcionaban.
+Pruebas de carga: Evaluaciones que miden el comportamiento del sistema bajo un volumen de usuarios o solicitudes esperado.
+Pruebas de estrés: Evaluaciones que someten al sistema a una carga superior a la normal para identificar sus límites de tolerancia.
+Selenium WebDriver: Herramienta que automatiza navegadores para realizar pruebas sobre la interfaz de usuario.
+JMeter: Aplicación destinada a ejecutar pruebas de rendimiento y carga sobre servicios y aplicaciones web.
+Análisis cualitativo: Estudio enfocado en significados, percepciones y aspectos no numéricos de los datos.
+Análisis cuantitativo: Estudio basado en mediciones numéricas, porcentajes y estadísticas para describir fenómenos.
+Encuesta autoadministrada: Cuestionario que cada persona encuestada completa por sí misma, sin la intervención directa de un entrevistador.
+Muestra no probabilística: Selección de participantes basada en criterios de conveniencia o accesibilidad, sin sorteo aleatorio.
+Segmentación: División de una población en subgrupos con características comunes para analizarlos de manera diferenciada.
+Interpretación de resultados: Fase en la que se otorga significado a los datos obtenidos y se extraen conclusiones.
+Población: Conjunto total de personas o casos sobre los que se pretende obtener información en una investigación.
+Muestra: Subconjunto de la población del que se recopilan datos para realizar el estudio.
+Instrumento de recolección: Herramienta utilizada para obtener información en una investigación, como cuestionarios o formularios en línea.
+Encuesta a usuarios finales: Estudio aplicado a personas que utilizan o podrían utilizar la herramienta para conocer sus necesidades y percepciones.
+5. Documentación del TFI
+Resumen del proyecto: Descripción breve que sintetiza el objetivo, el problema abordado, la metodología aplicada y los principales resultados.
+Justificación: Argumento que explica la relevancia, pertinencia y necesidad del proyecto realizado.
+Planteamiento del problema: Exposición formal de la situación, brecha o necesidad que el proyecto busca abordar.
+Objetivo general: Meta principal que orienta el desarrollo del trabajo de manera global.
+Objetivos específicos: Metas parciales y concretas que, en conjunto, permiten alcanzar el objetivo general.
+Hipótesis: Suposición inicial que el proyecto busca comprobar o refutar mediante la investigación.
+Marco teórico: Conjunto de conceptos, definiciones y antecedentes que fundamentan teóricamente el trabajo.
+Metodología: Descripción de métodos, técnicas y procedimientos utilizados para desarrollar el proyecto.
+Cronograma: Plan temporal que detalla actividades, fechas de inicio, fechas de finalización y duración de cada etapa.
+Anexos: Material complementario que se adjunta al final del documento principal, como formularios, tablas, gráficos o código.
+Referencias: Listado ordenado de las fuentes citadas en el trabajo, redactadas siguiendo normas APA 7.
+Documentación técnica: Conjunto de textos destinados a explicar el funcionamiento interno, instalación y mantenimiento del sistema.
+README: Archivo principal de un repositorio de software que explica el propósito del proyecto y las instrucciones básicas de uso.
+Despliegue: Proceso de instalar y poner en funcionamiento el sistema en un entorno real o de producción.
+6. Perfiles de usuario
+Investigadores: Profesionales dedicados a la búsqueda y análisis de información para resolver casos o generar conocimiento.
+Periodistas: Profesionales de la comunicación que utilizan OSINT para verificar datos, investigar hechos y obtener nuevas fuentes.
+Analistas: Especialistas encargados de transformar datos brutos en información e inteligencia útil para la toma de decisiones.
+Profesionales de ciberseguridad: Técnicos y especialistas responsables de proteger sistemas y redes, que emplean OSINT para detectar riesgos y amenazas.
+Fuerzas de seguridad: Miembros de organismos policiales o agencias estatales que utilizan técnicas OSINT en investigaciones criminales o de inteligencia.
+Estudiantes: Personas en formación académica que emplean la herramienta como apoyo para aprender sobre OSINT y ciberseguridad.
+Comunidad OSINT: Conjunto global de entusiastas, profesionales y organizaciones que comparten herramientas, técnicas y buenas prácticas de fuentes abiertas.
+Usuarios finales: Personas que utilizan OSINT Deck en su práctica cotidiana, ya sea para investigaciones simples o complejas.
+Administradores del sistema: Responsables de instalar, configurar y mantener el plugin OSINT Deck en entornos WordPress.
+7. Herramientas y repositorios OSINT citados en el TFI
+Awesome OSINT: Repositorio colaborativo en GitHub que agrupa numerosas herramientas OSINT organizadas por categoría temática.
+OSINT Framework: Mapa visual interactivo que organiza herramientas OSINT según el tipo de dato de entrada y el tipo de análisis.
+R00M 101 Directory: Directorio web que centraliza herramientas OSINT en categorías, con foco en la exploración rápida de recursos.
+NexusXplore: Plataforma comercial que integra múltiples fuentes y capacidades de correlación avanzada para investigaciones OSINT.
+Cyber Detective’s Collection: Repositorio abierto que agrupa herramientas OSINT por tipo de análisis, como dominios, redes sociales o geolocalización.
+OSINT Essentials: Portal que ofrece directorios de herramientas, recursos formativos y guías para comenzar investigaciones OSINT.
+VirusTotal: Servicio en línea que analiza archivos y URLs mediante múltiples motores antivirus y sistemas de reputación.
+Shodan: Buscador especializado en dispositivos conectados a Internet, como servidores, cámaras, routers y otros equipos expuestos.
+MxToolbox (Mx Toolbox): Plataforma orientada al análisis de DNS, correo electrónico, listas negras y diagnósticos de dominios.
+IPinfo (IP Info): Servicio que proporciona información técnica y geográfica asociada a una dirección IP.
+osint.com.ar: Sitio web que reúne herramientas OSINT y funcionó como antecedente de referencia para el diseño de OSINT Deck.
+
+Anexos
+Anexo A. Formulario de la encuesta
+Se incluye el formulario utilizado para recopilar opiniones de usuarios y conocer su nivel de interés en la herramienta.
+Enlace: https://forms.gle/RxDBLTkeWkTSSsGs8
+Anexo B. Repositorio del proyecto
+Contiene el desarrollo completo del plugin OSINT Deck, permitiendo consultar su evolución, estructura y código.
+Enlace: https://github.com/OsintDeck/OsintDeck
+Anexo C. Documentación del plugin
+Sitio donde se detallan las instrucciones de instalación y uso, junto con información general sobre el funcionamiento del proyecto.
+Enlace: https://osintdeck.github.io/docs.html
+Anexo D. Pruebas de calidad
+Incluye los registros de pruebas realizadas durante el desarrollo, junto con evidencias y resultados obtenidos.
+Enlace: https://github.com/OsintDeck/Pruebas_de_Calidad

@@ -27,8 +27,209 @@
     z-index: 100 !important;
 }
 
-/* Fix card to be flexible height */
-.osint-card {
+/*
+ * Neón al hover (mazos): data-theme dark = halo blanco; light = halo negro.
+ * Transición lenta en box-shadow; lift del mazo en osint-deck.css.
+ */
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-0 {
+    transition:
+        box-shadow 0.72s ease-out,
+        filter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-0 {
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.42),
+        0 0 14px rgba(255, 255, 255, 0.2),
+        0 0 32px rgba(255, 255, 255, 0.1),
+        0 12px 28px rgba(0, 0, 0, 0.45) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-0 {
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.22),
+        0 0 14px rgba(0, 0, 0, 0.11),
+        0 0 30px rgba(0, 0, 0, 0.06),
+        0 12px 24px rgba(0, 0, 0, 0.09) !important;
+}
+
+/*
+ * Capas apiladas: mismo neón por tema (blanco / negro), intensidad decreciente hacia atrás.
+ */
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-1,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-2,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-3,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-4,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-5,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-6,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-7,
+.osint-deck:not(.osint-help-deck) > .osint-card.layer-8 {
+    transition:
+        box-shadow 0.72s ease-out,
+        border-color 0.72s ease-out,
+        filter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-1 {
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.22),
+        0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.05),
+        0 8px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-2 {
+    border-color: rgba(255, 255, 255, 0.22) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.16),
+        0 0 8px rgba(255, 255, 255, 0.08),
+        0 0 16px rgba(255, 255, 255, 0.04),
+        0 6px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-3 {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 0 6px rgba(255, 255, 255, 0.06),
+        0 0 14px rgba(255, 255, 255, 0.03),
+        0 5px 12px rgba(0, 0, 0, 0.26) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-4 {
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.09),
+        0 0 5px rgba(255, 255, 255, 0.045),
+        0 0 12px rgba(255, 255, 255, 0.025),
+        0 4px 10px rgba(0, 0, 0, 0.24) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-5 {
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.07),
+        0 0 4px rgba(255, 255, 255, 0.035),
+        0 0 10px rgba(255, 255, 255, 0.02),
+        0 3px 9px rgba(0, 0, 0, 0.22) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-6 {
+    border-color: rgba(255, 255, 255, 0.09) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.055),
+        0 0 3px rgba(255, 255, 255, 0.028),
+        0 0 8px rgba(255, 255, 255, 0.016),
+        0 3px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-7 {
+    border-color: rgba(255, 255, 255, 0.07) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.045),
+        0 0 3px rgba(255, 255, 255, 0.022),
+        0 0 6px rgba(255, 255, 255, 0.012),
+        0 2px 7px rgba(0, 0, 0, 0.18) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-8 {
+    border-color: rgba(255, 255, 255, 0.055) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.035),
+        0 0 2px rgba(255, 255, 255, 0.018),
+        0 0 5px rgba(255, 255, 255, 0.01),
+        0 2px 6px rgba(0, 0, 0, 0.16) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-1 {
+    border-color: rgba(0, 0, 0, 0.14) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.14),
+        0 0 10px rgba(0, 0, 0, 0.07),
+        0 0 20px rgba(0, 0, 0, 0.035),
+        0 8px 16px rgba(0, 0, 0, 0.09) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-2 {
+    border-color: rgba(0, 0, 0, 0.12) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.11),
+        0 0 8px rgba(0, 0, 0, 0.055),
+        0 0 16px rgba(0, 0, 0, 0.028),
+        0 6px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-3 {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.09),
+        0 0 6px rgba(0, 0, 0, 0.045),
+        0 0 14px rgba(0, 0, 0, 0.022),
+        0 5px 10px rgba(0, 0, 0, 0.07) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-4 {
+    border-color: rgba(0, 0, 0, 0.085) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.075),
+        0 0 5px rgba(0, 0, 0, 0.038),
+        0 0 12px rgba(0, 0, 0, 0.02),
+        0 4px 9px rgba(0, 0, 0, 0.065) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-5 {
+    border-color: rgba(0, 0, 0, 0.07) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 0 4px rgba(0, 0, 0, 0.03),
+        0 0 10px rgba(0, 0, 0, 0.016),
+        0 3px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-6 {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.05),
+        0 0 3px rgba(0, 0, 0, 0.025),
+        0 0 8px rgba(0, 0, 0, 0.014),
+        0 3px 7px rgba(0, 0, 0, 0.055) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-7 {
+    border-color: rgba(0, 0, 0, 0.05) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        0 0 3px rgba(0, 0, 0, 0.02),
+        0 0 6px rgba(0, 0, 0, 0.011),
+        0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-deck:not(.osint-help-deck):hover > .osint-card.layer-8 {
+    border-color: rgba(0, 0, 0, 0.042) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.032),
+        0 0 2px rgba(0, 0, 0, 0.016),
+        0 0 5px rgba(0, 0, 0, 0.009),
+        0 2px 5px rgba(0, 0, 0, 0.045) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-0,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-1,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-2,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-3,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-4,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-5,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-6,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-7,
+    .osint-deck:not(.osint-help-deck) > .osint-card.layer-8 {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Solo cartas del mazo (.osint-deck); las del modal no deben min-height ni reglas de apilado */
+.osint-deck > .osint-card {
     width: 100% !important;
     height: auto !important;
     min-height: 400px !important;
@@ -37,6 +238,36 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
+}
+
+/*
+ * Ayuda / comunidad / crisis: mismas dimensiones (referencia ~300×447 en carta comunidad).
+ * Selector con más especificidad que .osint-deck > .osint-card (400px), si no la ayuda queda en 400px.
+ */
+.osint-deck > .osint-card.osint-assist-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 448px !important;
+    height: 448px !important;
+    max-height: 448px !important;
+    justify-content: flex-start !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.osint-help-deck .osint-main-desc {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin-bottom: 12px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+}
+
+.osint-help-deck .osint-deck-footer {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
 }
 
 /* CORRECT stack effect - visible right edges with depth - UP TO 5 LAYERS */
@@ -58,7 +289,8 @@
     opacity: 1 !important;
     filter: brightness(0.97) !important;
     z-index: 5 !important;
-    pointer-events: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
     border-radius: var(--osint-radius-lg) !important;
@@ -76,7 +308,8 @@
     opacity: 1 !important;
     filter: brightness(0.94) !important;
     z-index: 4 !important;
-    pointer-events: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
     border-radius: var(--osint-radius-lg) !important;
@@ -94,7 +327,8 @@
     opacity: 1 !important;
     filter: brightness(0.91) !important;
     z-index: 3 !important;
-    pointer-events: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
     border-radius: var(--osint-radius-lg) !important;
@@ -112,10 +346,149 @@
     opacity: 1 !important;
     filter: brightness(0.88) !important;
     z-index: 2 !important;
-    pointer-events: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
     border-radius: var(--osint-radius-lg) !important;
+}
+
+/* Grilla del modal: forzar layout estable (evita que el tema rompa display:grid) */
+.osint-overlay .osint-sheet .osint-sheet-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+    grid-auto-rows: minmax(min-content, auto) !important;
+    gap: 20px !important;
+    align-items: start !important;
+    align-content: start !important;
+    justify-items: center !important;
+    position: relative !important;
+}
+
+/* Modal: misma proporción ~3:4 que cartas del mazo (fixes); algo más angostas */
+.osint-overlay .osint-sheet .osint-sheet-grid > .osint-card--sheet,
+.osint-sheet .osint-card--sheet {
+    width: 100% !important;
+    max-width: min(280px, 100%) !important;
+    aspect-ratio: 3 / 4 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: hidden !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+    float: none !important;
+    justify-self: center !important;
+    align-self: start !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+}
+
+/*
+ * Menú compartir en modal: overflow visible + z-index alto (cartas vecinas en el grid).
+ * .osint-card--share-lift lo pone JS además de :has por si el navegador / tema rompe :has.
+ */
+.osint-overlay .osint-sheet .osint-sheet-grid > .osint-card--sheet:has(.osint-share-wrapper:hover),
+.osint-overlay .osint-sheet .osint-sheet-grid > .osint-card--sheet:has(.osint-share-menu.active),
+.osint-overlay .osint-sheet .osint-sheet-grid > .osint-card--sheet.osint-card--share-lift,
+.osint-sheet .osint-sheet-grid > .osint-card--sheet:has(.osint-share-wrapper:hover),
+.osint-sheet .osint-sheet-grid > .osint-card--sheet:has(.osint-share-menu.active),
+.osint-sheet .osint-sheet-grid > .osint-card--sheet.osint-card--share-lift {
+    z-index: 50 !important;
+    overflow: visible !important;
+}
+
+/*
+ * El bloque de descripción (-webkit-box + overflow) puede crear contexto de apilamiento y tapar el menú;
+ * la fila secundaria (likes) va después en el DOM y también puede pintar encima del menú absoluto.
+ */
+.osint-overlay .osint-sheet .osint-card--sheet .osint-card-hdr,
+.osint-sheet .osint-card--sheet .osint-card-hdr {
+    position: relative !important;
+    z-index: 0 !important;
+}
+
+.osint-overlay .osint-sheet .osint-card--sheet .osint-main-desc--sheet,
+.osint-sheet .osint-card--sheet .osint-main-desc--sheet {
+    position: relative !important;
+    z-index: 0 !important;
+}
+
+.osint-overlay .osint-sheet .osint-card--sheet .osint-deck-footer,
+.osint-sheet .osint-card--sheet .osint-deck-footer {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.osint-overlay .osint-sheet .osint-card--sheet .osint-actions-secondary,
+.osint-sheet .osint-card--sheet .osint-actions-secondary {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.osint-overlay .osint-sheet .osint-card--sheet .osint-actions-primary,
+.osint-sheet .osint-card--sheet .osint-actions-primary {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+.osint-overlay .osint-sheet .osint-card--sheet .osint-share-wrapper,
+.osint-sheet .osint-card--sheet .osint-share-wrapper {
+    position: relative !important;
+    z-index: 4 !important;
+}
+
+/*
+ * En cartas del sheet, left:0 hace que el menú se extienda a la derecha y lo recorta overflow:hidden.
+ */
+.osint-overlay .osint-sheet .osint-card--sheet .osint-share-menu,
+.osint-sheet .osint-card--sheet .osint-share-menu {
+    left: auto !important;
+    right: 0 !important;
+    z-index: 100 !important;
+}
+
+.osint-sheet .osint-card--sheet .osint-main-desc--sheet {
+    -webkit-line-clamp: 4 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+}
+
+.osint-sheet .osint-card--sheet .osint-fav,
+.osint-sheet-fav {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.osint-sheet .osint-card--sheet .osint-ttl {
+    font-size: 1rem !important;
+}
+
+/* Overlay puede vivir en body (portal) o dentro de .osint-wrap */
+.osint-overlay.osint-overlay--open,
+.osint-overlay[aria-hidden="false"],
+.osint-wrap .osint-overlay.osint-overlay--open,
+.osint-wrap .osint-overlay[aria-hidden="false"] {
+    z-index: 2147483000 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.osint-deck.osint-animate-in {
+    pointer-events: auto !important;
 }
 
 .osint-card.layer-5 {
@@ -130,7 +503,65 @@
     opacity: 1 !important;
     filter: brightness(0.85) !important;
     z-index: 1 !important;
-    pointer-events: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: var(--osint-radius-lg) !important;
+}
+
+.osint-card.layer-6 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    margin: 10px !important;
+    padding: 20px !important;
+    transform: translateX(12px) translateY(6px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.83) !important;
+    z-index: 0 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: var(--osint-radius-lg) !important;
+}
+
+.osint-card.layer-7 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    margin: 10px !important;
+    padding: 20px !important;
+    transform: translateX(14px) translateY(7px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.81) !important;
+    z-index: -1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    border: 1px solid var(--osint-border) !important;
+    background: var(--osint-card-bg) !important;
+    border-radius: var(--osint-radius-lg) !important;
+}
+
+.osint-card.layer-8 {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    margin: 10px !important;
+    padding: 20px !important;
+    transform: translateX(16px) translateY(8px) !important;
+    opacity: 1 !important;
+    filter: brightness(0.79) !important;
+    z-index: -2 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
     border: 1px solid var(--osint-border) !important;
     background: var(--osint-card-bg) !important;
     border-radius: var(--osint-radius-lg) !important;
@@ -316,6 +747,18 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     .osint-card.layer-5 {
         transform: translateX(15px) translateY(7.5px) !important;
     }
+
+    .osint-card.layer-6 {
+        transform: translateX(18px) translateY(9px) !important;
+    }
+
+    .osint-card.layer-7 {
+        transform: translateX(21px) translateY(10.5px) !important;
+    }
+
+    .osint-card.layer-8 {
+        transform: translateX(24px) translateY(12px) !important;
+    }
 }
 
 /* Mobile responsive - prevent stretch */
@@ -332,9 +775,15 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
         margin-bottom: 1.5rem !important;
     }
 
-    .osint-card {
+    .osint-deck > .osint-card {
         min-height: 380px !important;
         padding: 18px !important;
+    }
+
+    .osint-deck > .osint-card.osint-assist-card {
+        min-height: 430px !important;
+        height: 430px !important;
+        max-height: 430px !important;
     }
 
     /* Minimal offset on mobile */
@@ -357,6 +806,18 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     .osint-card.layer-5 {
         transform: translateX(10px) translateY(5px) !important;
     }
+
+    .osint-card.layer-6 {
+        transform: translateX(12px) translateY(6px) !important;
+    }
+
+    .osint-card.layer-7 {
+        transform: translateX(14px) translateY(7px) !important;
+    }
+
+    .osint-card.layer-8 {
+        transform: translateX(16px) translateY(8px) !important;
+    }
 }
 
 /* Small mobile - single column centered, NO STACK */
@@ -373,9 +834,15 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
         margin-bottom: 2rem !important;
     }
 
-    .osint-card {
+    .osint-deck > .osint-card {
         min-height: 360px !important;
         padding: 16px !important;
+    }
+
+    .osint-deck > .osint-card.osint-assist-card {
+        min-height: 400px !important;
+        height: 400px !important;
+        max-height: 400px !important;
     }
 
     /* CRITICAL: Disable card stacking effect on mobile */
@@ -383,7 +850,10 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     .osint-card.layer-2,
     .osint-card.layer-3,
     .osint-card.layer-4,
-    .osint-card.layer-5 {
+    .osint-card.layer-5,
+    .osint-card.layer-6,
+    .osint-card.layer-7,
+    .osint-card.layer-8 {
         display: none !important;
     }
 }
@@ -396,7 +866,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
         margin-top: 2.5rem !important;
     }
 
-    .osint-card {
+    .osint-deck > .osint-card {
         padding: 16px !important;
     }
 }
@@ -415,7 +885,7 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     font-size: 13px !important;
     font-weight: 500 !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-    z-index: 100 !important;
+    z-index: 10060 !important;
     opacity: 0 !important;
     visibility: hidden !important;
     transform: translateX(-50%) translateY(10px) !important;
@@ -426,6 +896,14 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     align-items: center !important;
     gap: 8px !important;
     max-width: calc(100% - 48px) !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.osint-detected span {
+    color: var(--osint-ink) !important;
 }
 
 .osint-detected.active {
@@ -502,24 +980,35 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     gap: 8px;
 }
 
-/* Filter Menu - Slide out from behind effect */
-.osint-chatbar {
+/* Barra + filtros: sticky por encima de .osint-deck:hover (z-index 100) */
+.osint-sticky-head {
+    position: sticky !important;
+    top: var(--osint-deck-chatbar-sticky-top, 0px) !important;
+    z-index: 200 !important;
+}
+
+.osint-wrap[data-osint-chatbar-sticky="0"] .osint-sticky-head {
     position: relative !important;
-    z-index: 50 !important;
+    top: auto !important;
+}
+
+.osint-sticky-head .osint-chatbar {
+    position: relative !important;
+    z-index: 2 !important;
 }
 
 .osint-chatbar.has-filters-open {
    margin-bottom: 0;
 }
 
-/* WRAPPER: animates HEIGHT */
-.osint-filter-wrap {
+/* WRAPPER: animates HEIGHT; debajo de la barra de búsqueda (efecto “detrás”) */
+.osint-sticky-head .osint-filter-wrap {
    width: 100% !important;
-   margin: -6px 0 20px !important;
+   margin: -14px 0 20px !important;
    height: 0;
    overflow: hidden; /* JS toggles this */
    position: relative !important;
-   z-index: 40 !important;
+   z-index: 1 !important;
 }
 
 /* FILTER BAR: GPU ONLY (transform + opacity) */
@@ -570,9 +1059,260 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
   }
 }
 
+/* Con sesión: 42×42 + anillo; invitado: 48×48, pastilla solo en hover (reposo transparente) */
 .osint-sso-btn {
     position: relative !important;
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
 }
+
+.osint-sso-btn:not(.osint-sso-btn--authed) {
+    width: 48px !important;
+    height: 48px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Invitado, tema oscuro: disco claro bajo el logo en reposo; en claro sin disco */
+.osint-sso-btn:not(.osint-sso-btn--authed)::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+}
+.osint-wrap[data-theme="dark"] .osint-sso-btn:not(.osint-sso-btn--authed)::before,
+.osint-wrap[data-site-skin="dark"] .osint-sso-btn:not(.osint-sso-btn--authed)::before {
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+.osint-sso-btn.loading:not(.osint-sso-btn--authed)::before {
+    opacity: 0.35 !important;
+}
+
+/* Ángulo del conic (animable en navegadores recientes) */
+@property --osd-sso-ring-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: -45deg;
+}
+
+/* Con sesión: anillo fino + halo suave + giro lento del arcoiris marca */
+.osint-sso-btn.osint-sso-btn--authed {
+    padding: 1px !important;
+    /* Primera línea: motores sin var() en conic; la segunda la sustituye si aplica */
+    background: conic-gradient(
+        from -45deg,
+        #ea4335 0deg 90deg,
+        #4285f4 90deg 180deg,
+        #34a853 180deg 270deg,
+        #fbbc05 270deg 360deg
+    ) !important;
+    background: conic-gradient(
+        from var(--osd-sso-ring-angle),
+        #ea4335 0deg 90deg,
+        #4285f4 90deg 180deg,
+        #34a853 180deg 270deg,
+        #fbbc05 270deg 360deg
+    ) !important;
+    border-radius: 50% !important;
+    animation:
+        osint-sso-authed-glow 5s ease-in-out infinite,
+        osint-sso-ring-rotate 32s linear infinite !important;
+}
+
+@keyframes osint-sso-authed-glow {
+    0%, 100% {
+        box-shadow:
+            0 0 0 0 rgba(66, 133, 244, 0),
+            0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+    40% {
+        box-shadow:
+            0 0 0 1px rgba(66, 133, 244, 0.14),
+            0 0 9px rgba(66, 133, 244, 0.1);
+    }
+    75% {
+        box-shadow:
+            0 0 0 1px rgba(52, 168, 83, 0.12),
+            0 0 8px rgba(251, 188, 5, 0.08);
+    }
+}
+
+@keyframes osint-sso-ring-rotate {
+    from {
+        --osd-sso-ring-angle: -45deg;
+    }
+    to {
+        --osd-sso-ring-angle: 315deg;
+    }
+}
+
+/* Hover autenticado: el anillo sigue girando + resplandor “neon” marca Google */
+@keyframes osint-sso-authed-hover-neon {
+    0%, 100% {
+        box-shadow:
+            0 0 10px rgba(66, 133, 244, 0.55),
+            0 0 18px rgba(52, 168, 83, 0.35),
+            0 0 6px rgba(251, 188, 5, 0.4);
+    }
+    50% {
+        box-shadow:
+            0 0 14px rgba(234, 67, 53, 0.5),
+            0 0 22px rgba(66, 133, 244, 0.45),
+            0 0 10px rgba(251, 188, 5, 0.38);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .osint-sso-btn.osint-sso-btn--authed,
+    .osint-sso-btn.osint-sso-btn--authed.osint-btn-ghost:hover {
+        animation: none !important;
+        filter: none !important;
+        box-shadow: none !important;
+        background: conic-gradient(
+            from -45deg,
+            #ea4335 0deg 90deg,
+            #4285f4 90deg 180deg,
+            #34a853 180deg 270deg,
+            #fbbc05 270deg 360deg
+        ) !important;
+    }
+}
+
+/* Pastilla (sombras de elevación) + neón en el mismo keyframe: las primeras capas son el disco, las siguientes el glow */
+@keyframes osint-sso-guest-hover-pill-plus-neon-light {
+    0%, 100% {
+        box-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.08),
+            0 4px 14px rgba(0, 0, 0, 0.12),
+            0 0 8px rgba(66, 133, 244, 0.5),
+            0 0 16px rgba(52, 168, 83, 0.28),
+            0 0 4px rgba(234, 67, 53, 0.3);
+    }
+    45% {
+        box-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.08),
+            0 4px 14px rgba(0, 0, 0, 0.12),
+            0 0 11px rgba(251, 188, 5, 0.42),
+            0 0 20px rgba(66, 133, 244, 0.48),
+            0 0 8px rgba(234, 67, 53, 0.38);
+    }
+}
+
+@keyframes osint-sso-guest-hover-pill-plus-neon-dark {
+    0%, 100% {
+        box-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.4),
+            0 2px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 0 8px rgba(66, 133, 244, 0.5),
+            0 0 16px rgba(52, 168, 83, 0.28),
+            0 0 4px rgba(234, 67, 53, 0.3);
+    }
+    45% {
+        box-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.4),
+            0 2px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 0 11px rgba(251, 188, 5, 0.42),
+            0 0 20px rgba(66, 133, 244, 0.48),
+            0 0 8px rgba(234, 67, 53, 0.38);
+    }
+}
+
+/* Hover/focus: fondo pastilla por tema; box-shadow solo vía keyframe (pastilla + neón apilados) */
+.osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+.osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+    transform: translateY(-1px) !important;
+    background: var(--osint-card) !important;
+    animation: osint-sso-guest-hover-pill-plus-neon-dark 2s ease-in-out infinite !important;
+}
+
+.osint-wrap[data-theme="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+.osint-wrap[data-theme="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible,
+.osint-wrap[data-site-skin="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+.osint-wrap[data-site-skin="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+    background: #ffffff !important;
+    animation: osint-sso-guest-hover-pill-plus-neon-light 2s ease-in-out infinite !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+.osint-wrap[data-site-skin="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+.osint-wrap[data-theme="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible,
+.osint-wrap[data-site-skin="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+    background: rgba(255, 255, 255, 0.12) !important;
+    animation: osint-sso-guest-hover-pill-plus-neon-dark 2s ease-in-out infinite !important;
+}
+
+.osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover::before,
+.osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible::before {
+    opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+    .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+        animation: none !important;
+        transform: none !important;
+        box-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.4),
+            0 2px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 0 10px rgba(66, 133, 244, 0.45) !important;
+    }
+    .osint-wrap[data-theme="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+    .osint-wrap[data-theme="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible,
+    .osint-wrap[data-site-skin="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+    .osint-wrap[data-site-skin="light"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+        box-shadow:
+            0 2px 6px rgba(0, 0, 0, 0.08),
+            0 4px 14px rgba(0, 0, 0, 0.12),
+            0 0 10px rgba(66, 133, 244, 0.45) !important;
+    }
+    .osint-wrap[data-theme="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+    .osint-wrap[data-site-skin="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:hover,
+    .osint-wrap[data-theme="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible,
+    .osint-wrap[data-site-skin="dark"] .osint-sso-btn:not(.osint-sso-btn--authed).osint-btn-ghost:focus-visible {
+        box-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.4),
+            0 2px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 0 10px rgba(66, 133, 244, 0.45) !important;
+    }
+}
+
+/* Mismo giro (misma duración = menos salto al entrar/salir del hover) + neon */
+.osint-sso-btn.osint-sso-btn--authed.osint-btn-ghost:hover {
+    animation:
+        osint-sso-authed-hover-neon 2.4s ease-in-out infinite,
+        osint-sso-ring-rotate 32s linear infinite !important;
+    transform: none !important;
+    filter: brightness(1.06) !important;
+}
+
+.osint-wrap[data-theme="dark"] .osint-sso-btn.osint-sso-btn--authed.osint-btn-ghost:hover,
+.osint-wrap[data-site-skin="dark"] .osint-sso-btn.osint-sso-btn--authed.osint-btn-ghost:hover {
+    filter: brightness(1.12) !important;
+}
+
 .osint-sso-btn.loading svg,
 .osint-sso-btn.loading img,
 .osint-sso-btn.loading .osint-sso-initials {
@@ -585,7 +1325,8 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     left: 50% !important;
     width: 18px !important;
     height: 18px !important;
-    transform: translate(-50%, -50%) !important;
+    margin-top: -9px !important;
+    margin-left: -9px !important;
     border-radius: 50% !important;
     border: 3px solid transparent !important;
     border-top-color: #4285F4 !important;
@@ -593,21 +1334,34 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     border-bottom-color: #34A853 !important;
     border-left-color: #FBBC05 !important;
     animation: osd-spin .8s linear infinite !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    z-index: 3 !important;
 }
 @keyframes osd-spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 .osint-sso-initials {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 30px !important;
+    height: 30px !important;
     border-radius: 50% !important;
     background: var(--osint-ink) !important;
     color: var(--osint-bg) !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.osint-sso-btn.osint-sso-btn--authed .osint-sso-initials {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 14px !important;
 }
 .osint-sso-menu {
     min-width: 220px !important;
@@ -616,6 +1370,45 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     border-radius: 12px !important;
     padding: 10px !important;
     box-shadow: var(--osint-shadow) !important;
+}
+
+/* Logo Google / avatar: 30×30 centrados en el contenedor 42/48 o dentro del anillo */
+.osint-sso-btn svg,
+.osint-sso-btn img {
+    width: 30px !important;
+    height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+.osint-sso-btn img:not(.osint-sso-google-mark) {
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Marca Google (PNG / favicon HD): sin recorte tipo avatar */
+.osint-sso-btn img.osint-sso-google-mark {
+    border-radius: 50% !important;
+    object-fit: contain !important;
+    background: transparent !important;
+}
+
+/* Avatar con sesión: más grande → el anillo se ve proporcionalmente más fino */
+.osint-sso-btn.osint-sso-btn--authed img:not(.osint-sso-google-mark) {
+    width: 34px !important;
+    height: 34px !important;
+    max-width: 34px !important;
+    max-height: 34px !important;
+}
+
+/* Fix click target on SSO button elements */
+.osint-sso-btn svg,
+.osint-sso-btn img,
+.osint-sso-btn .osint-sso-initials {
+    pointer-events: none !important;
 }
 .osint-sso-hdr {
     padding: 6px 8px !important;
@@ -639,7 +1432,169 @@ html[data-site-skin="dark"] .osint-btn-animated:hover .icon {
     background: transparent !important;
     color: var(--osint-ink) !important;
     margin-bottom: 6px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
 }
 .osint-sso-act:hover {
-    background: rgba(255,255,255,0.05) !important;
+    background: rgba(0,0,0,0.05) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    transform: translateY(-1px) !important;
+}
+[data-theme="dark"] .osint-sso-act:hover,
+[data-site-skin="dark"] .osint-sso-act:hover {
+    background: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* Cloudflare Turnstile: host invisible + modal de respaldo */
+.osd-turnstile-host--hidden {
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
+    pointer-events: none !important;
+}
+
+.osd-turnstile-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.osd-turnstile-modal--open {
+    display: flex;
+}
+
+.osd-turnstile-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+.osd-turnstile-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 1.25rem 1.35rem 1.1rem;
+    border-radius: var(--osint-radius-lg, 12px);
+    border: 1px solid var(--osint-border, rgba(0, 0, 0, 0.12));
+    background: var(--osint-card-bg, #fff);
+    color: var(--osint-ink, #1e293b);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.osd-turnstile-modal__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.osd-turnstile-modal__intro {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--osint-ink-sub, #64748b);
+}
+
+.osd-turnstile-modal__widget {
+    display: flex;
+    justify-content: center;
+    min-height: 4rem;
+    margin-bottom: 0.85rem;
+}
+
+.osd-turnstile-modal__close {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--osint-border, rgba(0, 0, 0, 0.12));
+    background: transparent;
+    color: var(--osint-ink, #1e293b);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.osd-turnstile-modal__close:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .osd-turnstile-modal__close:hover,
+[data-site-skin="dark"] .osd-turnstile-modal__close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Google Sign-In: respaldo con botón oficial si el “One Tap” no se muestra */
+.osd-gis-fallback {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483645;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+.osd-gis-fallback__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+}
+.osd-gis-fallback__panel {
+    position: relative;
+    z-index: 1;
+    max-width: 400px;
+    width: 100%;
+    padding: 1.25rem 1.1rem;
+    border-radius: var(--osint-radius-lg, 12px);
+    background: var(--osint-card-bg, #fff);
+    border: 1px solid var(--osint-border, rgba(0, 0, 0, 0.12));
+    color: var(--osint-ink, #1e293b);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+.osd-gis-fallback__close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--osint-ink-sub, #64748b);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.osd-gis-fallback__close:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--osint-ink, #1e293b);
+}
+.osd-gis-fallback__hint {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--osint-ink-sub, #64748b);
+    padding-right: 2rem;
+}
+.osd-gis-fallback__host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
 }

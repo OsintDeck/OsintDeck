@@ -3888,6 +3888,122 @@
         "category": "help"
     },
     {
+        "text": "sugerir herramienta",
+        "category": "community"
+    },
+    {
+        "text": "quiero sugerir una herramienta",
+        "category": "community"
+    },
+    {
+        "text": "sugerencia para el deck",
+        "category": "community"
+    },
+    {
+        "text": "proponer herramienta nueva",
+        "category": "community"
+    },
+    {
+        "text": "falta una herramienta en el deck",
+        "category": "community"
+    },
+    {
+        "text": "agregar herramienta al catalogo",
+        "category": "community"
+    },
+    {
+        "text": "nueva herramienta osint",
+        "category": "community"
+    },
+    {
+        "text": "ideas para mejorar el deck",
+        "category": "community"
+    },
+    {
+        "text": "feature request osint deck",
+        "category": "community"
+    },
+    {
+        "text": "pedir funcion nueva",
+        "category": "community"
+    },
+    {
+        "text": "comunidad osint deck",
+        "category": "community"
+    },
+    {
+        "text": "github discussions herramienta",
+        "category": "community"
+    },
+    {
+        "text": "donde propongo una tool",
+        "category": "community"
+    },
+    {
+        "text": "salud mental",
+        "category": "crisis"
+    },
+    {
+        "text": "ayuda mental",
+        "category": "crisis"
+    },
+    {
+        "text": "depresion",
+        "category": "crisis"
+    },
+    {
+        "text": "depresión",
+        "category": "crisis"
+    },
+    {
+        "text": "ansiedad",
+        "category": "crisis"
+    },
+    {
+        "text": "crisis emocional",
+        "category": "crisis"
+    },
+    {
+        "text": "quiero morir",
+        "category": "crisis"
+    },
+    {
+        "text": "no quiero vivir",
+        "category": "crisis"
+    },
+    {
+        "text": "matarme",
+        "category": "crisis"
+    },
+    {
+        "text": "pensamientos suicidas",
+        "category": "crisis"
+    },
+    {
+        "text": "no aguanto mas",
+        "category": "crisis"
+    },
+    {
+        "text": "mental health",
+        "category": "crisis"
+    },
+    {
+        "text": "kill myself",
+        "category": "crisis"
+    },
+    {
+        "text": "suicidal",
+        "category": "crisis"
+    },
+    {
+        "text": "self harm",
+        "category": "crisis"
+    },
+    {
+        "text": "necesito hablar con alguien urgente",
+        "category": "crisis"
+    },
+    {
         "text": "puto",
         "category": "toxic"
     },
@@ -4061,11 +4177,11 @@
     },
     {
         "text": "morir",
-        "category": "toxic"
+        "category": "crisis"
     },
     {
         "text": "suicidio",
-        "category": "toxic"
+        "category": "crisis"
     },
     {
         "text": "muerte",
@@ -4213,7 +4329,7 @@
     },
     {
         "text": "suicidio",
-        "category": "toxic"
+        "category": "crisis"
     },
     {
         "text": "drogas",
@@ -4321,7 +4437,7 @@
     },
     {
         "text": "suicidio",
-        "category": "toxic"
+        "category": "crisis"
     },
     {
         "text": "drogas",
@@ -4429,7 +4545,7 @@
     },
     {
         "text": "suicidio",
-        "category": "toxic"
+        "category": "crisis"
     },
     {
         "text": "drogas",
@@ -4482,5 +4598,33 @@
     {
         "text": "reputacion de ip",
         "category": "reputation"
+    },
+    {
+        "text": "donde esta la ipv6 2001 db8",
+        "category": "geo"
+    },
+    {
+        "text": "ubicacion de la direccion ipv6",
+        "category": "geo"
+    },
+    {
+        "text": "buscar herramientas ipv6 geolocation",
+        "category": "ipv6"
+    },
+    {
+        "text": "necesito analizar esta ipv6 en el mapa",
+        "category": "geo"
+    },
+    {
+        "text": "rastrear ipv6",
+        "category": "ipv6"
+    },
+    {
+        "text": "filtraciones de contraseñas necesito urgente",
+        "category": "leaks"
+    },
+    {
+        "text": "necesito ver si hay cve para este servicio",
+        "category": "vuln"
     }
 ]

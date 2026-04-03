@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInite7a685c897b463db456c5c62d8411be6
 {
+    public static $files = array (
+        'f6d4f6bcee7247df6b777884c3e22f98' => __DIR__ . '/..' . '/yahnis-elsts/plugin-update-checker/load-v5p6.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'O' =>
         array (
@@ -22,6 +26,55 @@ class ComposerStaticInite7a685c897b463db456c5c62d8411be6
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'OsintDeck\\Core\\Bootstrap' => __DIR__ . '/../..' . '/src/Core/Bootstrap.php',
+        'OsintDeck\\Domain\\Repository\\CategoryRepositoryInterface' => __DIR__ . '/../..' . '/src/Domain/Repository/CategoryRepositoryInterface.php',
+        'OsintDeck\\Domain\\Repository\\ToolRepositoryInterface' => __DIR__ . '/../..' . '/src/Domain/Repository/ToolRepositoryInterface.php',
+        'OsintDeck\\Domain\\Service\\DecisionEngine' => __DIR__ . '/../..' . '/src/Domain/Service/DecisionEngine.php',
+        'OsintDeck\\Domain\\Service\\InputParser' => __DIR__ . '/../..' . '/src/Domain/Service/InputParser.php',
+        'OsintDeck\\Domain\\Service\\NaiveBayesClassifier' => __DIR__ . '/../..' . '/src/Domain/Service/NaiveBayesClassifier.php',
+        'OsintDeck\\Infrastructure\\Auth\\OsintUserSession' => __DIR__ . '/../..' . '/src/Infrastructure/Auth/OsintUserSession.php',
+        'OsintDeck\\Infrastructure\\Persistence\\AnonymousLikesStore' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/AnonymousLikesStore.php',
+        'OsintDeck\\Infrastructure\\Persistence\\CategoriesTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/CategoriesTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\CustomTableCategoryRepository' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/CustomTableCategoryRepository.php',
+        'OsintDeck\\Infrastructure\\Persistence\\CustomTableToolRepository' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/CustomTableToolRepository.php',
+        'OsintDeck\\Infrastructure\\Persistence\\DatabaseSchemaMigration' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/DatabaseSchemaMigration.php',
+        'OsintDeck\\Infrastructure\\Persistence\\DeckActivityDataCleanup' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/DeckActivityDataCleanup.php',
+        'OsintDeck\\Infrastructure\\Persistence\\DeckUsers' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/DeckUsers.php',
+        'OsintDeck\\Infrastructure\\Persistence\\DeckUsersTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/DeckUsersTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\LogsTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/LogsTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\ReportThanks' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/ReportThanks.php',
+        'OsintDeck\\Infrastructure\\Persistence\\SsoReportThanksPendingTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/SsoReportThanksPendingTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\SsoToolFavoritesTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/SsoToolFavoritesTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\SsoToolLikesTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/SsoToolLikesTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\ToolReports' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/ToolReports.php',
+        'OsintDeck\\Infrastructure\\Persistence\\ToolReportsTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/ToolReportsTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\ToolsTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/ToolsTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\UserFavorites' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/UserFavorites.php',
+        'OsintDeck\\Infrastructure\\Persistence\\UserHistory' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/UserHistory.php',
+        'OsintDeck\\Infrastructure\\Persistence\\UserHistoryTable' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/UserHistoryTable.php',
+        'OsintDeck\\Infrastructure\\Persistence\\UserLikes' => __DIR__ . '/../..' . '/src/Infrastructure/Persistence/UserLikes.php',
+        'OsintDeck\\Infrastructure\\Security\\Turnstile' => __DIR__ . '/../..' . '/src/Infrastructure/Security/Turnstile.php',
+        'OsintDeck\\Infrastructure\\Service\\DataSeeder' => __DIR__ . '/../..' . '/src/Infrastructure/Service/DataSeeder.php',
+        'OsintDeck\\Infrastructure\\Service\\DeckFullBackup' => __DIR__ . '/../..' . '/src/Infrastructure/Service/DeckFullBackup.php',
+        'OsintDeck\\Infrastructure\\Service\\GitHubRepairIssueNotifier' => __DIR__ . '/../..' . '/src/Infrastructure/Service/GitHubRepairIssueNotifier.php',
+        'OsintDeck\\Infrastructure\\Service\\IconFetchFailureStore' => __DIR__ . '/../..' . '/src/Infrastructure/Service/IconFetchFailureStore.php',
+        'OsintDeck\\Infrastructure\\Service\\IconManager' => __DIR__ . '/../..' . '/src/Infrastructure/Service/IconManager.php',
+        'OsintDeck\\Infrastructure\\Service\\Logger' => __DIR__ . '/../..' . '/src/Infrastructure/Service/Logger.php',
+        'OsintDeck\\Infrastructure\\Service\\Migration' => __DIR__ . '/../..' . '/src/Infrastructure/Service/Migration.php',
+        'OsintDeck\\Infrastructure\\Service\\TLDManager' => __DIR__ . '/../..' . '/src/Infrastructure/Service/TLDManager.php',
+        'OsintDeck\\Presentation\\Admin\\AdminMenu' => __DIR__ . '/../..' . '/src/Presentation/Admin/AdminMenu.php',
+        'OsintDeck\\Presentation\\Admin\\AiTrainingManager' => __DIR__ . '/../..' . '/src/Presentation/Admin/AiTrainingManager.php',
+        'OsintDeck\\Presentation\\Admin\\CategoriesManager' => __DIR__ . '/../..' . '/src/Presentation/Admin/CategoriesManager.php',
+        'OsintDeck\\Presentation\\Admin\\DashboardChartsData' => __DIR__ . '/../..' . '/src/Presentation/Admin/DashboardChartsData.php',
+        'OsintDeck\\Presentation\\Admin\\ImportExport' => __DIR__ . '/../..' . '/src/Presentation/Admin/ImportExport.php',
+        'OsintDeck\\Presentation\\Admin\\MetricsScreen' => __DIR__ . '/../..' . '/src/Presentation/Admin/MetricsScreen.php',
+        'OsintDeck\\Presentation\\Admin\\Settings' => __DIR__ . '/../..' . '/src/Presentation/Admin/Settings.php',
+        'OsintDeck\\Presentation\\Admin\\TLDManagerAdmin' => __DIR__ . '/../..' . '/src/Presentation/Admin/TLDManagerAdmin.php',
+        'OsintDeck\\Presentation\\Admin\\ToolReportsAdmin' => __DIR__ . '/../..' . '/src/Presentation/Admin/ToolReportsAdmin.php',
+        'OsintDeck\\Presentation\\Admin\\ToolsManager' => __DIR__ . '/../..' . '/src/Presentation/Admin/ToolsManager.php',
+        'OsintDeck\\Presentation\\Api\\AjaxHandler' => __DIR__ . '/../..' . '/src/Presentation/Api/AjaxHandler.php',
+        'OsintDeck\\Presentation\\Api\\UserEvents' => __DIR__ . '/../..' . '/src/Presentation/Api/UserEvents.php',
+        'OsintDeck\\Presentation\\Frontend\\Shortcodes' => __DIR__ . '/../..' . '/src/Presentation/Frontend/Shortcodes.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

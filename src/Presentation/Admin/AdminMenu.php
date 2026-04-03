@@ -12,6 +12,7 @@ use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
 use OsintDeck\Infrastructure\Service\TLDManager;
 use OsintDeck\Domain\Service\NaiveBayesClassifier;
 use OsintDeck\Infrastructure\Service\Logger;
+use OsintDeck\Infrastructure\Persistence\ToolReports;
 
 /**
  * Class AdminMenu
@@ -49,6 +50,13 @@ class AdminMenu {
     private $classifier;
 
     /**
+     * Métricas / gráficos
+     *
+     * @var MetricsScreen
+     */
+    private $metrics_screen;
+
+    /**
      * Constructor
      *
      * @param ToolRepositoryInterface $tool_repository Tool Repository.
@@ -57,10 +65,11 @@ class AdminMenu {
      * @param NaiveBayesClassifier $classifier Classifier.
      */
     public function __construct( ToolRepositoryInterface $tool_repository, CategoryRepositoryInterface $category_repository, TLDManager $tld_manager, NaiveBayesClassifier $classifier ) {
-        $this->tool_repository = $tool_repository;
+        $this->tool_repository     = $tool_repository;
         $this->category_repository = $category_repository;
-        $this->tld_manager = $tld_manager;
-        $this->classifier = $classifier;
+        $this->tld_manager         = $tld_manager;
+        $this->classifier          = $classifier;
+        $this->metrics_screen      = new MetricsScreen( $tool_repository, $category_repository );
     }
 
     /**
@@ -70,6 +79,7 @@ class AdminMenu {
      */
     public function init() {
         add_action( 'admin_menu', array( $this, 'register_menu' ) );
+        $this->metrics_screen->init();
     }
 
     /**
@@ -78,8 +88,8 @@ class AdminMenu {
      * @return void
      */
     public function register_menu() {
-        // Calculate report count bubble
-        $report_count = $this->tool_repository->count_total_reports();
+        // Cola de reportes abiertos (filas en base, no suma de stats).
+        $report_count = ToolReports::count_open_total();
         $menu_title = __( 'OSINT Deck', 'osint-deck' );
         
         if ( $report_count > 0 ) {
@@ -89,6 +99,14 @@ class AdminMenu {
             );
         }
 
+        $menu_icon = 'dashicons-images-alt2';
+        if ( defined( 'OSINT_DECK_PLUGIN_FILE' ) && defined( 'OSINT_DECK_PLUGIN_DIR' ) ) {
+            $menu_icon = plugins_url( 'assets/images/menu-deck-icon.png', OSINT_DECK_PLUGIN_FILE );
+            $icon_path = OSINT_DECK_PLUGIN_DIR . 'assets/images/menu-deck-icon.png';
+            $icon_ver  = file_exists( $icon_path ) ? (string) filemtime( $icon_path ) : ( defined( 'OSINT_DECK_VERSION' ) ? OSINT_DECK_VERSION : '1' );
+            $menu_icon = add_query_arg( 'ver', rawurlencode( $icon_ver ), $menu_icon );
+        }
+
         // Main menu
         add_menu_page(
             __( 'OSINT Deck', 'osint-deck' ),
@@ -96,7 +114,7 @@ class AdminMenu {
             'manage_options',
             'osint-deck',
             array( $this, 'render_dashboard' ),
-            'dashicons-search',
+            $menu_icon,
             25
         );
 
@@ -123,6 +141,22 @@ class AdminMenu {
             array( $this, 'render_tools' )
         );
 
+        $reports_subtitle = __( 'Reportes', 'osint-deck' );
+        if ( $report_count > 0 ) {
+            $reports_subtitle .= sprintf(
+                ' <span class="awaiting-mod">%d</span>',
+                $report_count
+            );
+        }
+        add_submenu_page(
+            'osint-deck',
+            __( 'Reportes', 'osint-deck' ),
+            $reports_subtitle,
+            'manage_options',
+            'osint-deck-tool-reports',
+            array( $this, 'render_tool_reports' )
+        );
+
         // Categories
         add_submenu_page(
             'osint-deck',
@@ -131,6 +165,16 @@ class AdminMenu {
             'manage_options',
             'osint-deck-categories',
             array( $this, 'render_categories' )
+        );
+
+        // Métricas y reportes
+        add_submenu_page(
+            'osint-deck',
+            __( 'Métricas y reportes', 'osint-deck' ),
+            __( 'Métricas', 'osint-deck' ),
+            'manage_options',
+            'osint-deck-metrics',
+            array( $this, 'render_metrics' )
         );
 
         // TLDs (Legacy Redirect)
@@ -182,57 +226,123 @@ class AdminMenu {
      * @return void
      */
     public function render_dashboard() {
-        $tools_count = $this->tool_repository->count_tools();
+        $tools_count      = $this->tool_repository->count_tools();
         $categories_count = $this->category_repository->count_categories();
-        
+        $reports_open     = ToolReports::count_open_total();
+        $reports_total    = $this->tool_repository->count_total_reports();
+
         ?>
-        <div class="wrap osint-deck-admin-wrap">
-            <h1><?php _e( 'OSINT Deck - Dashboard', 'osint-deck' ); ?></h1>
-            
+        <div class="wrap osint-deck-admin-wrap osint-deck-dashboard-page">
+            <h1><?php esc_html_e( 'OSINT Deck', 'osint-deck' ); ?></h1>
+            <p class="osint-deck-dashboard-intro">
+                <?php esc_html_e( 'Panel de control: métricas rápidas, accesos al listado de herramientas y recordatorios para publicar el buscador en el sitio.', 'osint-deck' ); ?>
+            </p>
+
+            <?php if ( $reports_open > 0 ) : ?>
+                <div class="notice notice-warning">
+                    <p>
+                        <?php
+                        printf(
+                            /* translators: %d: number of open user reports */
+                            esc_html( _n( 'Hay %d reporte de usuario sin resolver (mensajes y huellas activas).', 'Hay %d reportes de usuarios sin resolver (mensajes y huellas activas).', $reports_open, 'osint-deck' ) ),
+                            (int) $reports_open
+                        );
+                        ?>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-tool-reports' ) ); ?>" class="button button-small"><?php esc_html_e( 'Ver reportes', 'osint-deck' ); ?></a>
+                    </p>
+                </div>
+            <?php endif; ?>
+
             <div class="osint-deck-dashboard">
-                <div class="osint-deck-stats">
-                    <div class="stat-card">
-                        <h3><?php echo esc_html( $tools_count ); ?></h3>
-                        <p><?php _e( 'Herramientas', 'osint-deck' ); ?></p>
-                        <a href="<?php echo admin_url( 'admin.php?page=osint-deck-tools' ); ?>" class="button">
-                            <?php _e( 'Gestionar', 'osint-deck' ); ?>
+                <div class="osint-deck-stats" role="region" aria-label="<?php esc_attr_e( 'Resumen', 'osint-deck' ); ?>">
+                    <div class="stat-card stat-card--tools">
+                        <span class="stat-card__label"><?php esc_html_e( 'Herramientas', 'osint-deck' ); ?></span>
+                        <span class="stat-card__value"><?php echo esc_html( (string) $tools_count ); ?></span>
+                        <p class="stat-card__hint"><?php esc_html_e( 'Registros en la base del plugin.', 'osint-deck' ); ?></p>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-tools' ) ); ?>" class="button">
+                            <?php esc_html_e( 'Gestionar listado', 'osint-deck' ); ?>
                         </a>
                     </div>
-                    
-                    <div class="stat-card">
-                        <h3><?php echo esc_html( $categories_count ); ?></h3>
-                        <p><?php _e( 'Categorías', 'osint-deck' ); ?></p>
-                        <a href="<?php echo admin_url( 'admin.php?page=osint-deck-categories' ); ?>" class="button">
-                            <?php _e( 'Gestionar', 'osint-deck' ); ?>
+
+                    <div class="stat-card stat-card--categories">
+                        <span class="stat-card__label"><?php esc_html_e( 'Categorías', 'osint-deck' ); ?></span>
+                        <span class="stat-card__value"><?php echo esc_html( (string) $categories_count ); ?></span>
+                        <p class="stat-card__hint"><?php esc_html_e( 'Usadas en filtros y en el front.', 'osint-deck' ); ?></p>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-categories' ) ); ?>" class="button">
+                            <?php esc_html_e( 'Gestionar categorías', 'osint-deck' ); ?>
+                        </a>
+                    </div>
+
+                    <div class="stat-card stat-card--reports">
+                        <span class="stat-card__label"><?php esc_html_e( 'Reportes', 'osint-deck' ); ?></span>
+                        <span class="stat-card__value"><?php echo esc_html( (string) $reports_total ); ?></span>
+                        <p class="stat-card__hint">
+                            <?php
+                            printf(
+                                /* translators: %d: open reports count */
+                                esc_html( __( 'Acumulado histórico en stats. Pendientes sin resolver: %d.', 'osint-deck' ) ),
+                                (int) $reports_open
+                            );
+                            ?>
+                        </p>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-tool-reports' ) ); ?>" class="button">
+                            <?php esc_html_e( 'Cola de reportes', 'osint-deck' ); ?>
                         </a>
                     </div>
                 </div>
 
-                <div class="osint-deck-quick-actions">
-                    <h2><?php _e( 'Acciones Rápidas', 'osint-deck' ); ?></h2>
+                <div class="osint-deck-dashboard-metrics-teaser osint-card-panel">
+                    <h2><?php esc_html_e( 'Métricas y reportes', 'osint-deck' ); ?></h2>
+                    <p class="description">
+                        <?php esc_html_e( 'Gráficos por categoría, top de clics e interacciones, con filtros por categoría, estado de vista previa, nombre y rango de fechas de alta en la base.', 'osint-deck' ); ?>
+                    </p>
                     <p>
-                        <a href="<?php echo admin_url( 'admin.php?page=osint-deck-tools&action=add' ); ?>" class="button button-primary">
-                            <?php _e( '+ Nueva Herramienta', 'osint-deck' ); ?>
-                        </a>
-                        <a href="<?php echo admin_url( 'admin.php?page=osint-deck-categories&action=add' ); ?>" class="button">
-                            <?php _e( '+ Nueva Categoría', 'osint-deck' ); ?>
-                        </a>
-                        <a href="<?php echo admin_url( 'admin.php?page=osint-deck-import-export' ); ?>" class="button">
-                            <?php _e( 'Importar/Exportar', 'osint-deck' ); ?>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-metrics' ) ); ?>" class="button button-primary">
+                            <?php esc_html_e( 'Abrir métricas y reportes', 'osint-deck' ); ?>
                         </a>
                     </p>
                 </div>
 
-                <div class="osint-deck-info">
-                    <h2><?php _e( 'Uso del Shortcode', 'osint-deck' ); ?></h2>
-                    <p><?php _e( 'Para mostrar el buscador OSINT en una página, usá el siguiente shortcode:', 'osint-deck' ); ?></p>
+                <div class="osint-deck-quick-actions osint-card-panel">
+                    <h2><?php esc_html_e( 'Acciones rápidas', 'osint-deck' ); ?></h2>
+                    <p class="osint-deck-action-buttons">
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-tools&action=add' ) ); ?>" class="button button-primary button-hero">
+                            <?php esc_html_e( 'Nueva herramienta', 'osint-deck' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-categories&action=add' ) ); ?>" class="button button-secondary button-hero">
+                            <?php esc_html_e( 'Nueva categoría', 'osint-deck' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-settings&tab=data' ) ); ?>" class="button button-secondary button-hero">
+                            <?php esc_html_e( 'Importar / exportar datos', 'osint-deck' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-settings' ) ); ?>" class="button button-secondary button-hero">
+                            <?php esc_html_e( 'Configuración', 'osint-deck' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=osint-deck-metrics' ) ); ?>" class="button button-secondary button-hero">
+                            <?php esc_html_e( 'Métricas y reportes', 'osint-deck' ); ?>
+                        </a>
+                    </p>
+                </div>
+
+                <div class="osint-deck-info osint-card-panel">
+                    <h2><?php esc_html_e( 'Shortcodes', 'osint-deck' ); ?></h2>
+                    <p><?php esc_html_e( 'Para mostrar el buscador en una página o entrada:', 'osint-deck' ); ?></p>
                     <code class="osint-code-block">[osint_deck]</code>
-                    <p><?php _e( 'También podés filtrar por categoría:', 'osint-deck' ); ?></p>
+                    <p><?php esc_html_e( 'Con categoría y límite:', 'osint-deck' ); ?></p>
                     <code class="osint-code-block">[osint_deck category="seguridad" limit="10"]</code>
                 </div>
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Métricas (submenú)
+     *
+     * @return void
+     */
+    public function render_metrics() {
+        $this->metrics_screen->render();
     }
 
     /**
@@ -244,6 +354,13 @@ class AdminMenu {
         $logger = new Logger();
         $manager = new ToolsManager( $this->tool_repository, $this->category_repository, $logger );
         $manager->render();
+    }
+
+    /**
+     * Reportes abiertos desde usuarios.
+     */
+    public function render_tool_reports() {
+        ToolReportsAdmin::render_page( $this->tool_repository );
     }
 
     /**

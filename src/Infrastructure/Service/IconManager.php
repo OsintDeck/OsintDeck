@@ -73,7 +73,7 @@ class IconManager {
     }
 
     /**
-     * Download icon from URL and save locally
+     * Download icon from URL and save locally (import / legado: ante fallo usa icono por defecto).
      *
      * @param string $url Remote URL of the icon.
      * @param string $slug Tool slug/name to use for filename.
@@ -85,100 +85,143 @@ class IconManager {
         if ( empty( $url ) ) {
             return $default_icon;
         }
-        
+
         // If it's the old plugin default icon, replace with new one
         if ( strpos( $url, 'assets/images/default-icon.svg' ) !== false && strpos( $url, OSINT_DECK_PLUGIN_URL ) !== false ) {
             return $default_icon;
         }
-        
-        // If already local, return as is
+
+        $attempt = $this->attempt_remote_icon_download( $url, $slug );
+        if ( $attempt['ok'] ) {
+            return $attempt['url'];
+        }
+
+        return $default_icon;
+    }
+
+    /**
+     * Descarga un favicon remoto y lo guarda en uploads/osint-deck/icons.
+     * No asigna icono por defecto si falla (para mantener la URL en la herramienta y reintentar).
+     *
+     * @param string $url  URL http(s) o ya alojada en uploads.
+     * @param string $slug Slug para nombre de archivo.
+     * @return array{ok: bool, url: ?string, error: ?string} url solo si ok; error código o mensaje corto en inglés para logs.
+     */
+    public function attempt_remote_icon_download( $url, $slug ) {
         $upload_dir = wp_upload_dir();
         if ( isset( $upload_dir['error'] ) && ! empty( $upload_dir['error'] ) ) {
             $this->log( 'Upload directory error: ' . $upload_dir['error'], 'error' );
-            return $default_icon;
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'upload_dir',
+            );
         }
 
-        // Prepare directory immediately
+        if ( strpos( $url, $upload_dir['baseurl'] ) !== false ) {
+            return array(
+                'ok'    => true,
+                'url'   => $url,
+                'error' => null,
+            );
+        }
+
+        if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'invalid_url',
+            );
+        }
+
         $upload_basedir = $upload_dir['basedir'];
-        $osint_deck_dir = $upload_basedir . '/osint-deck';
-        $icons_dir = $osint_deck_dir . '/icons';
+        $icons_dir      = $upload_basedir . '/osint-deck/icons';
 
         if ( ! file_exists( $icons_dir ) ) {
             $this->log( 'Icons directory does not exist, attempting to create: ' . $icons_dir, 'info' );
             if ( ! wp_mkdir_p( $icons_dir ) ) {
                 $this->log( 'Failed to create icons directory: ' . $icons_dir, 'error' );
-                // Don't return yet, we might still be able to use default, but let's note it.
-            } else {
-                $this->log( 'Icons directory created successfully: ' . $icons_dir, 'info' );
+                return array(
+                    'ok'    => false,
+                    'url'   => null,
+                    'error' => 'mkdir_failed',
+                );
             }
+            $this->log( 'Icons directory created successfully: ' . $icons_dir, 'info' );
         }
 
-        if ( strpos( $url, $upload_dir['baseurl'] ) !== false ) {
-            return $url;
-        }
-
-        // Validate URL
-        if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
-            return $default_icon;
-        }
-
-        // Get file content
         $this->log( 'Downloading icon from ' . $url, 'info' );
-        $response = wp_remote_get( $url, array( 
-            'timeout' => 15, // Increased timeout
-            'sslverify' => false // Keep false for now to ensure compatibility
-        ) );
+        $response = wp_remote_get(
+            $url,
+            array(
+                'timeout'   => 15,
+                'sslverify' => false,
+            )
+        );
 
         if ( is_wp_error( $response ) ) {
             $this->log( 'Icon download failed for ' . $url . ' - ' . $response->get_error_message(), 'error' );
-            return $default_icon;
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'request: ' . $response->get_error_message(),
+            );
         }
-        
-        if ( wp_remote_retrieve_response_code( $response ) !== 200 ) {
-            $this->log( 'Icon download failed for ' . $url . ' - HTTP ' . wp_remote_retrieve_response_code( $response ), 'error' );
-            return $default_icon; // Return default on failure
+
+        $code = wp_remote_retrieve_response_code( $response );
+        if ( $code !== 200 ) {
+            $this->log( 'Icon download failed for ' . $url . ' - HTTP ' . $code, 'error' );
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'http_' . (string) $code,
+            );
         }
 
         $body = wp_remote_retrieve_body( $response );
         if ( empty( $body ) ) {
-            return $default_icon;
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'empty_body',
+            );
         }
 
-        // Determine extension
         $content_type = wp_remote_retrieve_header( $response, 'content-type' );
-        $ext = $this->get_extension_from_mime( $content_type );
-        
+        $ext          = $this->get_extension_from_mime( is_string( $content_type ) ? $content_type : '' );
+
         if ( ! $ext ) {
             $path = parse_url( $url, PHP_URL_PATH );
-            $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        }
-        
-        if ( ! $ext ) {
-            $ext = 'png'; // Default fallback
+            $ext  = $path ? pathinfo( (string) $path, PATHINFO_EXTENSION ) : '';
         }
 
-        // Prepare filename
+        if ( ! $ext ) {
+            $ext = 'png';
+        }
+
         $safe_slug = sanitize_title( $slug );
         if ( empty( $safe_slug ) ) {
             $safe_slug = 'tool-' . uniqid();
         }
-        $filename = $safe_slug . '.' . $ext;
-        
-        // Save file
+        $filename  = $safe_slug . '.' . $ext;
         $file_path = $icons_dir . '/' . $filename;
-        
-        // If file exists, we might want to overwrite or skip. 
-        // User said "avoid duplicates" but also "rename to tool name".
-        // If we rename to tool name, we are effectively deduplicating by name.
-        // Let's overwrite to ensure fresh icon if re-imported.
+
         if ( file_put_contents( $file_path, $body ) === false ) {
             $this->log( 'Failed to save icon file to ' . $file_path, 'error' );
-            return $default_icon;
+            return array(
+                'ok'    => false,
+                'url'   => null,
+                'error' => 'save_failed',
+            );
         }
 
         $this->log( 'Icon saved successfully to ' . $file_path, 'info' );
-        // Return local URL
-        return $upload_dir['baseurl'] . '/osint-deck/icons/' . $filename;
+
+        return array(
+            'ok'    => true,
+            'url'   => $upload_dir['baseurl'] . '/osint-deck/icons/' . $filename,
+            'error' => null,
+        );
     }
 
     /**

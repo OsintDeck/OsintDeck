@@ -17,7 +17,7 @@ class ToolsTable {
     /**
      * Table name (without prefix)
      */
-    const TABLE_NAME = 'osint_deck_tools_v2';
+    const TABLE_NAME = 'osint_deck_tools';
 
     /**
      * Get full table name with prefix
@@ -101,50 +101,64 @@ class ToolsTable {
         }
 
         $name = sanitize_text_field( $tool['name'] );
-        $slug = sanitize_title( $name );
+        $slug = sanitize_title( $tool['slug'] ?? $name );
         $preview_status = isset( $tool['preview_status'] ) ? sanitize_text_field( $tool['preview_status'] ) : 'unaudited';
-        $data = wp_json_encode( $tool );
 
-        // Check if exists
-        $existing_id = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT id FROM {$table_name} WHERE slug = %s",
-                $slug
-            )
-        );
+        $stored = $tool;
+        foreach ( array( '_db_id', '_db_slug', '_db_created_at', '_db_updated_at' ) as $meta_key ) {
+            unset( $stored[ $meta_key ] );
+        }
+        $stored['slug'] = $slug;
+        $data_json = wp_json_encode( $stored );
+
+        $existing_id = null;
+        if ( ! empty( $tool['_db_id'] ) ) {
+            $check_id = (int) $tool['_db_id'];
+            $row_id    = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE id = %d", $check_id ) );
+            if ( $row_id ) {
+                $existing_id = (int) $row_id;
+            }
+        }
+
+        if ( ! $existing_id ) {
+            $existing_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$table_name} WHERE slug = %s",
+                    $slug
+                )
+            );
+        }
 
         if ( $existing_id ) {
-            // Update
             $wpdb->update(
                 $table_name,
                 array(
-                    'name' => $name,
-                    'preview_status' => $preview_status,
-                    'data' => $data,
+                    'name'             => $name,
+                    'slug'             => $slug,
+                    'preview_status'   => $preview_status,
+                    'data'             => $data_json,
                 ),
                 array( 'id' => $existing_id ),
-                array( '%s', '%s', '%s' ),
+                array( '%s', '%s', '%s', '%s' ),
                 array( '%d' )
             );
 
-            // Always return ID on update (even if 0 rows affected)
             return (int) $existing_id;
-        } else {
-            // Insert
-            $result = $wpdb->insert(
-                $table_name,
-                array(
-                    'name'       => $name,
-                    'slug'       => $slug,
-                    'preview_status' => $preview_status,
-                    'data'       => $data,
-                    'created_at' => current_time( 'mysql' ),
-                ),
-                array( '%s', '%s', '%s', '%s', '%s' )
-            );
-
-            return $result !== false ? $wpdb->insert_id : false;
         }
+
+        $result = $wpdb->insert(
+            $table_name,
+            array(
+                'name'           => $name,
+                'slug'           => $slug,
+                'preview_status' => $preview_status,
+                'data'           => $data_json,
+                'created_at'     => current_time( 'mysql' ),
+            ),
+            array( '%s', '%s', '%s', '%s', '%s' )
+        );
+
+        return $result !== false ? (int) $wpdb->insert_id : false;
     }
 
     /**

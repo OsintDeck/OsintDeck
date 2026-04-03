@@ -409,6 +409,48 @@ class DecisionEngine {
     }
 
     /**
+     * Fold string for accent-insensitive search (lowercase + strip combining marks).
+     *
+     * @param string $str Input.
+     * @return string Folded string.
+     */
+    private function fold_for_search( $str ) {
+        $str = (string) $str;
+        if ( '' === $str ) {
+            return '';
+        }
+        if ( function_exists( 'normalizer_normalize' ) && class_exists( 'Normalizer' ) ) {
+            $n = normalizer_normalize( $str, \Normalizer::FORM_D );
+            if ( false !== $n && is_string( $n ) ) {
+                $str = $n;
+            }
+        }
+        $out = preg_replace( '/\p{M}+/u', '', $str );
+        if ( null === $out ) {
+            $out = $str;
+        }
+
+        return strtolower( $out );
+    }
+
+    /**
+     * Haystack contains needle after accent folding.
+     *
+     * @param string $haystack Haystack.
+     * @param string $needle   Needle.
+     * @return bool
+     */
+    private function folded_contains( $haystack, $needle ) {
+        $n = $this->fold_for_search( $needle );
+        // strpos( $h, '' ) es 0 en PHP y coincidiría con todo; evitar.
+        if ( '' === $n ) {
+            return false;
+        }
+
+        return false !== strpos( $this->fold_for_search( $haystack ), $n );
+    }
+
+    /**
      * Check if tool matches search query
      *
      * @param array  $tool Tool data.
@@ -420,17 +462,15 @@ class DecisionEngine {
             return true;
         }
 
-        $query = strtolower( $query );
-
         // Search in name
-        if ( stripos( $tool['name'], $query ) !== false ) {
+        if ( $this->folded_contains( $tool['name'] ?? '', $query ) ) {
             return true;
         }
 
         // Search in tags
         if ( ! empty( $tool['tags_global'] ) ) {
             foreach ( $tool['tags_global'] as $tag ) {
-                if ( stripos( $tag, $query ) !== false ) {
+                if ( $this->folded_contains( $tag, $query ) ) {
                     return true;
                 }
             }
@@ -439,7 +479,7 @@ class DecisionEngine {
         // Search in categories
         if ( ! empty( $tool['categories'] ) ) {
             foreach ( $tool['categories'] as $category ) {
-                if ( stripos( $category, $query ) !== false ) {
+                if ( $this->folded_contains( $category, $query ) ) {
                     return true;
                 }
             }
@@ -447,7 +487,7 @@ class DecisionEngine {
 
         // Search in OSINT context
         if ( ! empty( $tool['osint_context']['uso_principal'] ) ) {
-            if ( stripos( $tool['osint_context']['uso_principal'], $query ) !== false ) {
+            if ( $this->folded_contains( $tool['osint_context']['uso_principal'], $query ) ) {
                 return true;
             }
         }

@@ -130,6 +130,23 @@ class LogsTable {
     }
 
     /**
+     * Vacía por completo la tabla de logs (solo estructura; usar con cuidado).
+     *
+     * @return void
+     */
+    public static function truncate_all() {
+        global $wpdb;
+
+        if ( ! self::table_exists() ) {
+            return;
+        }
+
+        $table = self::get_table_name();
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- nombre de tabla interno.
+        $wpdb->query( "TRUNCATE TABLE `{$table}`" );
+    }
+
+    /**
      * Delete old logs
      *
      * @param int $days Retention days.

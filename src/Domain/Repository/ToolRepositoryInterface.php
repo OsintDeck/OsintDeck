@@ -13,9 +13,11 @@ interface ToolRepositoryInterface {
     public function search_tools( $query );
     public function increment_clicks( $id );
     public function increment_likes( $id );
+    public function decrement_likes( $id );
     public function increment_favorites( $id );
     public function decrement_favorites( $id );
     public function increment_reports( $id );
+    public function decrement_reports( $id );
     public function delete_tool( $id );
     public function save_tool( $data );
     public function import_from_json( $json_data );

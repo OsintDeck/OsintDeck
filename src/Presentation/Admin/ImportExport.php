@@ -9,9 +9,9 @@ namespace OsintDeck\Presentation\Admin;
 
 use OsintDeck\Domain\Repository\ToolRepositoryInterface;
 use OsintDeck\Domain\Repository\CategoryRepositoryInterface;
-use OsintDeck\Infrastructure\Service\Migration;
 use OsintDeck\Infrastructure\Service\IconManager;
 use OsintDeck\Infrastructure\Service\Logger;
+use OsintDeck\Infrastructure\Service\DeckFullBackup;
 
 /**
  * Class ImportExport
@@ -74,24 +74,14 @@ class ImportExport {
             $this->handle_import();
         }
 
-        // Handle export
-        if ( isset( $_GET['action'] ) && $_GET['action'] === 'export' ) {
-            check_admin_referer( 'osint_deck_export' );
-            $this->handle_export();
-            exit;
+        // Import backup completo (.zip)
+        if ( isset( $_POST['osint_deck_full_backup_import_submit'] ) ) {
+            check_admin_referer( 'osint_deck_full_backup_import' );
+            $this->handle_full_backup_import();
         }
 
-        // Handle seed categories
-        if ( isset( $_POST['osint_deck_seed_submit'] ) ) {
-            check_admin_referer( 'osint_deck_seed' );
-            $this->handle_seed();
-        }
-
-        // Handle migration
-        if ( isset( $_POST['osint_deck_migrate_submit'] ) ) {
-            check_admin_referer( 'osint_deck_migrate' );
-            $this->handle_migration();
-        }
+        $export_url      = wp_nonce_url( admin_url( 'admin.php?page=osint-deck-settings&tab=data&action=export' ), 'osint_deck_export' );
+        $export_full_url = wp_nonce_url( admin_url( 'admin.php?page=osint-deck-settings&tab=data&action=export_full' ), 'osint_deck_export_full' );
 
         ?>
         <div class="wrap osint-deck-admin-wrap">
@@ -106,47 +96,53 @@ class ImportExport {
                     <form method="post" enctype="multipart/form-data">
                         <?php wp_nonce_field( 'osint_deck_import' ); ?>
 
-                        <h3><?php _e( 'Opción 1: Subir archivo JSON', 'osint-deck' ); ?></h3>
-                        <input type="file" name="import_file" accept=".json">
+                        <h4><?php esc_html_e( 'Opción 1: subir archivo JSON', 'osint-deck' ); ?></h4>
+                        <input type="file" name="import_file" accept=".json,application/json">
 
-                        <h3 style="margin-top:20px;"><?php _e( 'Opción 2: Pegar JSON', 'osint-deck' ); ?></h3>
-                        <textarea name="import_json" rows="10" class="osint-json-textarea" placeholder='[{"name":"Tool Name",...}]'></textarea>
+                        <h4 class="osint-import-mt"><?php esc_html_e( 'Opción 2: pegar JSON', 'osint-deck' ); ?></h4>
+                        <textarea name="import_json" rows="10" class="osint-json-textarea" placeholder='[{"name":"Tool Name","category":"codigo-cat",...}]'></textarea>
 
                         <p class="submit">
-                            <input type="submit" name="osint_deck_import_submit" class="button button-primary" value="<?php _e( 'Importar', 'osint-deck' ); ?>">
+                            <input type="submit" name="osint_deck_import_submit" class="button button-primary" value="<?php esc_attr_e( 'Importar', 'osint-deck' ); ?>">
                         </p>
                     </form>
                 </div>
 
                 <!-- Export -->
                 <div class="osint-card-panel">
-                    <h2><?php _e( 'Exportar Herramientas', 'osint-deck' ); ?></h2>
-                    <p><?php _e( 'Exportá todas las herramientas a un archivo JSON:', 'osint-deck' ); ?></p>
+                    <h3><?php esc_html_e( 'Backup / exportar', 'osint-deck' ); ?></h3>
+                    <p><?php esc_html_e( 'Descarga un único archivo JSON con todas las herramientas (copia de seguridad ligera).', 'osint-deck' ); ?></p>
 
                     <p>
-                        <strong><?php _e( 'Total de herramientas:', 'osint-deck' ); ?></strong>
-                        <?php echo $this->tool_repository->count_tools(); ?>
+                        <strong><?php esc_html_e( 'Total de herramientas:', 'osint-deck' ); ?></strong>
+                        <?php echo esc_html( (string) $this->tool_repository->count_tools() ); ?>
                     </p>
 
                     <p>
-                        <a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=osint-deck-import-export&action=export' ), 'osint_deck_export' ); ?>" class="button button-primary">
-                            <?php _e( 'Descargar JSON', 'osint-deck' ); ?>
+                        <a href="<?php echo esc_url( $export_url ); ?>" class="button button-primary">
+                            <?php esc_html_e( 'Descargar backup JSON', 'osint-deck' ); ?>
                         </a>
                     </p>
 
-                    <div class="osint-import-export-actions">
-                        <h3><?php _e( 'Scripts de Utilidad', 'osint-deck' ); ?></h3>
-                        
-                        <form method="post" style="margin-bottom:10px;">
-                            <?php wp_nonce_field( 'osint_deck_seed' ); ?>
-                            <input type="submit" name="osint_deck_seed_submit" class="button" value="<?php _e( 'Crear Herramientas de Prueba', 'osint-deck' ); ?>" onclick="return confirm('<?php _e( '¿Estás seguro? Esto importará las herramientas por defecto.', 'osint-deck' ); ?>');">
-                        </form>
+                    <p class="description" style="margin-top:1em;">
+                        <?php esc_html_e( 'Backup completo (ZIP): categorías, herramientas, usuarios SSO, favoritos, likes, reportes, modelo de clasificador y carpeta de iconos en uploads. No incluye tablas de logs ni historial de eventos.', 'osint-deck' ); ?>
+                    </p>
+                    <p>
+                        <a href="<?php echo esc_url( $export_full_url ); ?>" class="button button-secondary">
+                            <?php esc_html_e( 'Descargar backup completo (ZIP)', 'osint-deck' ); ?>
+                        </a>
+                    </p>
 
-                        <form method="post">
-                            <?php wp_nonce_field( 'osint_deck_migrate' ); ?>
-                            <input type="submit" name="osint_deck_migrate_submit" class="button" value="<?php _e( 'Migrar desde Legacy', 'osint-deck' ); ?>" onclick="return confirm('<?php _e( '¿Estás seguro? Esto migrará las herramientas desde la opción antigua.', 'osint-deck' ); ?>');">
-                        </form>
-                    </div>
+                    <form method="post" enctype="multipart/form-data" class="osint-full-backup-import-form" style="margin-top:1em;">
+                        <?php wp_nonce_field( 'osint_deck_full_backup_import' ); ?>
+                        <label for="osint_full_backup_zip"><strong><?php esc_html_e( 'Importar backup completo (ZIP)', 'osint-deck' ); ?></strong></label>
+                        <p>
+                            <input type="file" name="full_backup_zip" id="osint_full_backup_zip" accept=".zip,application/zip">
+                        </p>
+                        <p class="submit">
+                            <input type="submit" name="osint_deck_full_backup_import_submit" class="button button-primary" value="<?php esc_attr_e( 'Restaurar desde ZIP', 'osint-deck' ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Esto reemplazará categorías, herramientas, datos SSO, reportes e iconos del backup. Los logs y el historial de eventos no se tocan. ¿Continuar?', 'osint-deck' ) ); ?>">
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -263,48 +259,75 @@ class ImportExport {
     }
 
     /**
-     * Handle export
+     * Envía la descarga JSON y termina la petición. Llamar solo antes de enviar HTML.
+     *
+     * @return void
      */
-    private function handle_export() {
+    public function stream_export_download() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'No tienes permisos para exportar herramientas.', 'osint-deck' ) );
+        }
+
         $tools = $this->tool_repository->get_all_tools();
-        
-        // Clean up internal fields
+
         $export_tools = array();
         foreach ( $tools as $tool ) {
-            $clean_tool = $this->tool_repository->export_to_json( $tool['_db_id'] );
+            if ( empty( $tool['_db_id'] ) ) {
+                continue;
+            }
+            $clean_tool = $this->tool_repository->export_to_json( (int) $tool['_db_id'] );
             if ( $clean_tool ) {
                 $export_tools[] = $clean_tool;
             }
         }
 
-        $json = json_encode( $export_tools, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
-        
-        header( 'Content-Type: application/json' );
-        header( 'Content-Disposition: attachment; filename="osint-deck-tools-' . date('Y-m-d') . '.json"' );
+        $json = wp_json_encode( $export_tools, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+        nocache_headers();
+        header( 'Content-Type: application/json; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="osint-deck-tools-' . gmdate( 'Y-m-d' ) . '.json"' );
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $json;
         exit;
     }
 
     /**
-     * Handle seed
+     * Envía ZIP con payload + uploads/osint-deck.
+     *
+     * @return void
      */
-    private function handle_seed() {
-        // Implement seeding logic here if needed, or rely on repository
-        add_settings_error( 'osint_deck', 'seed_info', __( 'Funcionalidad de seed manual no implementada completamente aquí.', 'osint-deck' ), 'info' );
-        settings_errors( 'osint_deck' );
+    public function stream_full_backup_download() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'No tienes permisos para exportar.', 'osint-deck' ) );
+        }
+
+        $backup = new DeckFullBackup();
+        $backup->stream_zip_download( $this->tool_repository, $this->category_repository );
     }
 
     /**
-     * Handle migration
+     * Restaura desde archivo ZIP subido en el mismo formulario de datos.
+     *
+     * @return void
      */
-    private function handle_migration() {
-        $migration = new Migration( $this->tool_repository );
-        $result = $migration->migrate_from_option();
+    private function handle_full_backup_import() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'No tienes permisos para importar.', 'osint-deck' ) );
+        }
 
-        if ( $result['success'] ) {
-             add_settings_error( 'osint_deck', 'migrate_success', $result['message'], 'success' );
+        if ( empty( $_FILES['full_backup_zip']['tmp_name'] ) || ! is_uploaded_file( $_FILES['full_backup_zip']['tmp_name'] ) ) {
+            add_settings_error( 'osint_deck', 'full_backup_no_file', __( 'No se subió ningún archivo ZIP.', 'osint-deck' ), 'error' );
+            settings_errors( 'osint_deck' );
+            return;
+        }
+
+        $backup = new DeckFullBackup();
+        $result = $backup->import_from_zip( $_FILES['full_backup_zip']['tmp_name'], $this->tool_repository, $this->category_repository );
+
+        if ( ! empty( $result['ok'] ) ) {
+            add_settings_error( 'osint_deck', 'full_backup_ok', $result['message'], 'success' );
         } else {
-             add_settings_error( 'osint_deck', 'migrate_error', $result['message'], 'error' );
+            add_settings_error( 'osint_deck', 'full_backup_err', $result['message'], 'error' );
         }
         settings_errors( 'osint_deck' );
     }

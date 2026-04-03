@@ -1,0 +1,34 @@
+/**
+ * Icono del menú lateral: debe cargarse en todo el admin (no solo en pantallas osint-deck).
+ */
+#adminmenu #toplevel_page_osint-deck .wp-menu-image,
+#adminmenu .toplevel_page_osint-deck .wp-menu-image {
+    position: relative;
+    overflow: hidden !important;
+    width: 36px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#adminmenu #toplevel_page_osint-deck .wp-menu-image img,
+#adminmenu .toplevel_page_osint-deck .wp-menu-image img {
+    display: block !important;
+    max-width: 22px !important;
+    max-height: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    object-fit: contain !important;
+    object-position: center;
+    /* Icono a color (azul/blanco): sin filter; opacidad suave cuando el ítem no está activo */
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+
+#adminmenu #toplevel_page_osint-deck.wp-has-current-submenu .wp-menu-image img,
+#adminmenu #toplevel_page_osint-deck.current .wp-menu-image img {
+    opacity: 1;
+}

@@ -110,7 +110,16 @@ class Shortcodes {
 
         // Generate unique ID
         $uid = 'osint-' . wp_generate_password( 6, false, false );
-        
+
+        $sticky_top = (int) get_option( 'osint_deck_chatbar_sticky_top', 0 );
+        if ( $sticky_top < 0 ) {
+            $sticky_top = 0;
+        }
+        if ( $sticky_top > 500 ) {
+            $sticky_top = 500;
+        }
+        $sticky_enabled = (bool) get_option( 'osint_deck_chatbar_sticky_enabled', true );
+
         // Config for JavaScript
         $config = array(
             'uid'           => $uid,
@@ -124,6 +133,8 @@ class Shortcodes {
         ?>
         <div id="<?php echo esc_attr( $uid ); ?>"
              class="osint-wrap"
+             data-osint-chatbar-sticky="<?php echo $sticky_enabled ? '1' : '0'; ?>"
+             style="<?php echo esc_attr( '--osint-deck-chatbar-sticky-top:' . $sticky_top . 'px;' ); ?>"
              data-tools='<?php echo esc_attr( wp_json_encode( $tools ) ); ?>'
              data-config='<?php echo esc_attr( wp_json_encode( $config ) ); ?>'>
         </div>
