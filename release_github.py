@@ -517,15 +517,16 @@ if __name__ == "__main__":
     try:
         main()
     except RuntimeError as ex:
-        say(f"\nCancelado o error: {ex}", file=sys.stderr)
-        if "── Cómo renovar GITHUB_TOKEN ──" not in str(ex) and d.github_auth_failure_heuristic(
-            str(ex)
+        detail = str(ex).strip() or repr(ex)
+        say(f"\nCancelado o error: {detail}", file=sys.stderr)
+        if "── Cómo renovar GITHUB_TOKEN ──" not in detail and d.github_auth_failure_heuristic(
+            detail
         ):
             say("\n" + d.hint_github_token_renewal_es(), file=sys.stderr)
         sys.exit(1)
     except Exception as ex:
-        em = str(ex)
-        say(f"\nFallo: {ex}", file=sys.stderr)
+        em = str(ex).strip() or repr(ex)
+        say(f"\nFallo: {em}", file=sys.stderr)
         if "── Cómo renovar GITHUB_TOKEN ──" not in em and d.github_auth_failure_heuristic(em):
             say("\n" + d.hint_github_token_renewal_es(), file=sys.stderr)
         sys.exit(1)
