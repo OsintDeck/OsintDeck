@@ -93,7 +93,10 @@ def print_requirements() -> None:
     say()
     say("  • Git instalado y en el PATH.")
     say("  • Un clon del repo OsintDeck/OsintDeck con remote origin correcto.")
-    say("  • Variable de entorno GITHUB_TOKEN con permiso para releases/repos.")
+    say("  • GITHUB_TOKEN: API de releases + push por HTTPS (mismo token con permiso repo).")
+    say("    PAT classic (ghp_): listo. Fine-grained: además $env:GITHUB_LOGIN=\"tu_usuario\"")
+    say("    Renovar o crear token: https://github.com/settings/tokens")
+    say("    (Si vence o falla la auth, el script imprime los pasos detallados.)")
     say('    PowerShell:  $env:GITHUB_TOKEN="ghp_xxxx"')
     say("  • Opcional: archivo .env en esta carpeta con GITHUB_TOKEN=…")
     say("    (deploy_python.py lo lee automáticamente).")
@@ -181,8 +184,12 @@ def check_github_token_report() -> bool:
     tok = os.environ.get("GITHUB_TOKEN", "").strip()
     if tok:
         say(f"    GITHUB_TOKEN: OK (longitud {len(tok)}).")
+        say("    Si caduca o lo revocás, al fallar el push o la API verás cómo generar uno nuevo.")
         return True
     say("    GITHUB_TOKEN: NO definido — sin esto fallará la API de GitHub.")
+    say()
+    for line in d.hint_github_token_renewal_es().split("\n"):
+        say(f"    {line}")
     return False
 
 
@@ -511,7 +518,14 @@ if __name__ == "__main__":
         main()
     except RuntimeError as ex:
         say(f"\nCancelado o error: {ex}", file=sys.stderr)
+        if "── Cómo renovar GITHUB_TOKEN ──" not in str(ex) and d.github_auth_failure_heuristic(
+            str(ex)
+        ):
+            say("\n" + d.hint_github_token_renewal_es(), file=sys.stderr)
         sys.exit(1)
     except Exception as ex:
+        em = str(ex)
         say(f"\nFallo: {ex}", file=sys.stderr)
+        if "── Cómo renovar GITHUB_TOKEN ──" not in em and d.github_auth_failure_heuristic(em):
+            say("\n" + d.hint_github_token_renewal_es(), file=sys.stderr)
         sys.exit(1)
