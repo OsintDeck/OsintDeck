@@ -63,8 +63,9 @@ class Turnstile {
         $response = wp_remote_post(
             'https://challenges.cloudflare.com/turnstile/v0/siteverify',
             array(
-                'timeout' => 12,
-                'body'    => array(
+                'timeout'   => 12,
+                'sslverify' => true,
+                'body'      => array(
                     'secret'   => $secret,
                     'response' => $token,
                     'remoteip' => self::remote_ip(),

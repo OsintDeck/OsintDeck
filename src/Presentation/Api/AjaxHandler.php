@@ -125,10 +125,7 @@ class AjaxHandler {
      * @return void
      */
     public function handle_check_iframe() {
-        // Allow public access, but verify nonce if present for security
-        if ( isset( $_POST['nonce'] ) ) {
-            check_ajax_referer( 'osint_deck_public', 'nonce' );
-        }
+        check_ajax_referer( 'osint_deck_public', 'nonce' );
 
         $this->verify_turnstile_or_exit();
 
@@ -142,23 +139,38 @@ class AjaxHandler {
         $urls = array_slice( $urls, 0, 20 );
         $results = array();
 
-        foreach ( $urls as $url ) {
+        foreach ( $urls as $url_raw ) {
+            if ( ! is_string( $url_raw ) ) {
+                continue;
+            }
+            $url_key   = $url_raw;
+            $url       = esc_url_raw( trim( $url_raw ) );
+            $validated = ( $url !== '' && wp_http_validate_url( $url ) );
+
+            if ( ! $validated ) {
+                $results[ $url_key ] = false;
+                continue;
+            }
+
             // Check cache first (v2 to flush old cache)
             $cache_key = 'osd_iframe_v2_' . md5( $url );
             $cached = get_transient( $cache_key );
             
             if ( $cached !== false ) {
-                $results[$url] = (bool) $cached;
+                $results[ $url_key ] = (bool) $cached;
                 continue;
             }
 
-            // Perform HEAD request
+            // wp_safe_remote_* bloquea localhost y RFC1918; eso rompe preview en intranet.
+            // Usamos wp_remote_*: solo http(s) válido (arriba), nonce y Turnstile reducen abuso.
+            // sslverify por defecto false (TLS roto en red interna / certs propios).
+            // Endurecer TLS: add_filter( 'osint_deck_iframe_check_sslverify', '__return_true' );
             $args = array(
                 'timeout'     => 5, // Increased timeout slightly
                 'redirection' => 5, // Follow more redirects
                 'httpversion' => '1.1',
                 'user-agent'  => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', // Modern UA
-                'sslverify'   => false,
+                'sslverify'   => (bool) apply_filters( 'osint_deck_iframe_check_sslverify', false, $url ),
             );
             
             $response = wp_remote_head( $url, $args );
@@ -171,7 +183,7 @@ class AjaxHandler {
 
             if ( is_wp_error( $response ) ) {
                 // If we can't reach it, assume it won't load
-                $results[$url] = false;
+                $results[ $url_key ] = false;
                 set_transient( $cache_key, 0, 12 * HOUR_IN_SECONDS );
                 continue;
             }
@@ -204,7 +216,7 @@ class AjaxHandler {
                 }
             }
 
-            $results[$url] = $can_embed;
+            $results[ $url_key ] = $can_embed;
             set_transient( $cache_key, $can_embed ? 1 : 0, 24 * HOUR_IN_SECONDS );
         }
 
@@ -262,14 +274,12 @@ class AjaxHandler {
      * @return void
      */
     public function handle_report_block() {
-        if ( isset( $_POST['nonce'] ) ) {
-            check_ajax_referer( 'osint_deck_public', 'nonce' );
-        }
+        check_ajax_referer( 'osint_deck_public', 'nonce' );
 
         $this->verify_turnstile_or_exit();
 
-        $url = isset( $_POST['url'] ) ? esc_url_raw( $_POST['url'] ) : '';
-        if ( ! $url ) {
+        $url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+        if ( ! $url || ! wp_http_validate_url( $url ) ) {
             wp_send_json_error( array( 'message' => 'No URL provided' ) );
         }
 
@@ -702,7 +712,13 @@ class AjaxHandler {
             wp_send_json_error( array( 'message' => __( 'Token inválido', 'osint-deck' ) ) );
         }
 
-        $resp = wp_remote_get( 'https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode( $id_token ), array( 'timeout' => 10, 'sslverify' => false ) );
+        $resp = wp_remote_get(
+            'https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode( $id_token ),
+            array(
+                'timeout'   => 10,
+                'sslverify' => true,
+            )
+        );
         if ( is_wp_error( $resp ) ) {
             wp_send_json_error( array( 'message' => __( 'Error verificando token', 'osint-deck' ) ) );
         }

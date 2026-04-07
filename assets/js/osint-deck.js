@@ -4372,7 +4372,7 @@ function initOsintDeck(wrap) {
       (async () => {
         const data = new URLSearchParams();
         data.append("action", "osint_deck_report_block");
-        if (ajaxCfg.nonce) data.append("nonce", ajaxCfg.nonce);
+        data.append("nonce", ajaxCfg.nonce || "");
         data.append("url", url);
         await window.osintDeckTurnstileAppendToParams(data);
         fetch(ajaxCfg.url, {
@@ -4449,7 +4449,7 @@ function initOsintDeck(wrap) {
     // Send batch request
     const data = new URLSearchParams();
     data.append("action", "osint_deck_check_iframe");
-    if (ajaxCfg.nonce) data.append("nonce", ajaxCfg.nonce);
+    data.append("nonce", ajaxCfg.nonce || "");
     data.append("urls", JSON.stringify(uniqueUrls));
 
     (async () => {
